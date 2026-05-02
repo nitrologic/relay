@@ -1,0 +1,12 @@
+- [dev] load on start feature switch
+- [dev] in history administrator role exclusive to mut under prompt, other muts quoted with user role
+- [issue] sloppybot ragged tables - need discord string width rules
+- [issue] slopprompt ctrl z >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+- [issue] slopprompt paste 🌟
+- [issue] shared files 🔗 does not indicate shared state inside a begin finish block
+- [issue] drop individual share by index
+- [test] slopPrompt cursor left, backspace, delete
+- [test] ssh disconnects - validate best practice with discord sloppy bot
+- [dev] add [RELAY] responses tool support
+- [dev] new audit command to track latest model release dates and versions
+- [dev] audition markup output with meta data

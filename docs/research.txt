@@ -1,0 +1,2 @@
+- explore vector_store and fine tuning of models
+- fork experimental branch and rescue stuff.txt

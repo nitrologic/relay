@@ -1,0 +1,85 @@
+// slopfountain refactor attempt
+
+import { decodeBase64, encodeBase64 } from "https://deno.land/std/encoding/base64.ts";
+
+function annotateCode(name,description){
+	echo("annotateCode",name,description);
+}
+
+function annotateTag(name,description){
+	if(!name){
+		throw("null name");
+	}
+	if(!(name in roha.tags)) {
+		roha.tags[name]={};
+//		throw("tag not found "+name);
+	}
+	roha.tags[name].description=description;
+}
+
+function annotateShare(name,description){
+	let index=roha.sharedFiles.findIndex(item => item.id === name);
+	if(index==-1) {
+		throw("annotateShare name not found "+name);
+	}
+	roha.sharedFiles[index].description=description;
+	echo("annotateShare annotated file share",name);
+}
+
+async function onCall(toolCall,verbose) {
+    let name=toolCall.function.name;
+    switch(name) {
+        case "read_time":{
+            const time=new Date().toLocaleString();
+            const tz=userregion.timeZone;
+            const locale=userregion.locale;
+            return {time,tz,locale};
+        }
+        case "submit_file":{
+            let args=JSON.parse(toolCall.function.arguments);
+            echo(args.contentType);
+            if (verbose) echo(args.content);
+            let timestamp=Math.floor(Date.now()/1000).toString(16);
+            let extension=extensionForType(args.contentType)
+            let name= "submission-"+timestamp+extension;
+            let filePath=resolve(forgePath,name);
+            await Deno.writeTextFile(filePath, args.content);
+            echo("File saved to:", filePath);
+            roha.forge.push({name,path:filePath,type:args.contentType});
+            return { success: true, path: filePath };
+        }
+        case "fetch_file":{
+            const { fileName }=JSON.parse(toolCall.function.arguments || "{}");
+            echo("Fetching file:", fileName);
+            const path="forge/"+fileName;
+            const data=await Deno.readFile(path);
+            const base64=encodeBase64(data);
+            return { success: true, path: fileName, Base64:base64 };
+        }
+        case "annotate_forge":{
+            try {
+                const { name, type, description }=JSON.parse(toolCall.function.arguments || "{}");
+                switch(type){
+                    case "code":
+                        annotateCode(name,description);
+                        break;
+                    case "tag":
+                        annotateTag(name,description);
+                        break;
+                    case "share":
+                        annotateShare(name,description);
+                        break;
+                }
+                await writeForge(); // Persist changes
+                return { success: true, updated: 1 };
+            } catch (error) {
+                echo("annotate_forge error:",error);
+            }
+            return { success: false, updated: 0 };
+        }
+        default:
+            echo("onCall unhandled function name:",name);
+            debugValue("toolCall",toolCall);
+            return { success: false, updated: 0 };
+    }
+}

@@ -4,15 +4,11 @@ A research tool for advanced model manipulation.
 
 Timestamps in logging files use slopmarks, a hexadecimal encoding of sixteenths of a second since 2025.4.12.
 
-# plan
-
-replace tool logging with [mahi] tags and test per API
-
-# documentation
+## documentation
 
 CLI Reference Manual - forge user documentation [forge.md](forge.md)
 
-# setup
+## setup
 
 Requires an api environment variable, see accounts.json for latest
 
@@ -40,7 +36,7 @@ The following native API are used by Slop Relay:
 
 # deprecated
 
-Cohere 
+Accounts and SDK support for Cohere Mistral Nvidia and Alibaba retired until previous notice.
 
 # history
 
@@ -51,22 +47,3 @@ Second stage nitrologic foundry [foundry](https://github.com/nitrologic/foundry)
 Third stage nitrologic forge [forge](https://github.com/nitrologic/forge)
 
 Fourth stage slop fountain [forge](https://github.com/nitrologic/fountain)
-
-
-# notes
-
-Commands in development
-
-### /think
-
-### /bibli
-
-### /spec
-
-### /balance
-
-### /nic
-
-### /listen
-
-Accept connections from web clients on port

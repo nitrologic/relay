@@ -1,0 +1,296 @@
+
+# notes
+
+Commands in development
+
+### /think
+
+### /bibli
+
+### /spec
+
+### /balance
+
+### /nic
+
+### /listen
+
+Accept connections from web clients on port
+
+
+
+	"nvidia":{
+		"emoji":"💚",
+		"env": "NVIDIA_API_KEY",
+		"url": "https://integrate.api.nvidia.com/v1",
+		"docs": "https://docs.api.nvidia.com/nim/reference/models-1",
+		"platform": "https://build.nvidia.com/explore/discover",
+		"api": "OpenAI",
+		"locale": "en-US",
+		"disabled":true
+	},
+
+
+	"alibaba": {
+		"emoji": "𝓪",
+		"env": "ALIBABA_API_KEY",
+		"url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
+		"platform": "https://bailian.console.alibabacloud.com/",
+		"api": "OpenAI",
+		"locale": "zh-CN",
+		"disabled":true
+	},
+	"cohere": {
+		"emoji": "🧩",
+		"env": "COHERE_API_KEY",
+		"url": "https://api.cohere.com/v2",
+		"docs": "https://docs.cohere.com/reference/about",
+		"platform": "https://dashboard.cohere.com/billing",
+		"api": "Cohere",
+		"locale": "en-CA"
+	},
+	"mistral": {
+		"emoji": "⚡️",
+		"env": "MISTRAL_API_KEY",
+		"url": "https://api.mistral.ai/v1",
+		"docs": "https://docs.mistral.ai/",
+		"platform": "https://console.mistral.ai/home",
+		"api": "Mistral",
+		"locale": "fr-FR"
+	},
+
+
+import { CohereClientV2 } from "npm:cohere-ai";
+import { Mistral } from "npm:@mistralai/mistralai";
+
+// API support for mistral
+
+function prepareMistralRequest(payload){
+	const history=[];
+	let blob={};
+	for(const item of payload.messages){
+		const content=item.content;
+		switch(item.role){
+			case "system":
+				history.push({role:"system",content});
+				break;
+			case "user":
+				if(item.name=="blob"){
+					blob=JSON.parse(content);
+					continue;
+				}
+				if(item.name=="image"){
+					const image_url={url:"https://jpeg.org/images/jpeg-home.jpg"}
+					history.push({role:"user",content:[{type:"image_url",image_url}]});
+					continue;
+				}
+				history.push({role:"user",content});
+				break;
+			case "assistant":
+				history.push({role:"assistant",content});
+				break;
+		}
+	}
+	const temperature=grokTemperature;
+	const request={
+		model:payload.model,
+		temperature,
+		stream:false,
+		messages:history
+	};
+	return request;
+}
+
+async function connectMistral(account,config){
+	try{
+		const baseURL=config.url;
+		const apiKey=getEnv(config.env);
+		if(!apiKey) return null;
+		const client=new Mistral({apiKey:apiKey});
+		const models=await client.models.list();
+//		echo("[MISTRAL]",models);
+		const list=[];
+		for(const model of models.data){
+//			echo("[MISTRAL]",model);//model.id);
+			if(model.capabilities.completionChat){
+				const name=model.id+"@"+account;
+				list.push(name);
+				const spec={id:model.id,object:"model",owner:"owner"}
+				specModel(spec,account);
+			}
+		}
+		modelList.push(...list);
+		return {
+			client,
+			apiKey,
+			baseURL,
+			modelList:list,
+			models: {
+				list: async () => models, // Return cached models or fetch fresh
+			},
+			chat: {
+				completions: {
+					create: async (payload) => {
+						const model=payload.model;
+						const request=prepareMistralRequest(payload);
+						const response = await client.chat.complete(request);
+						if(roha.config.debugging){
+							echo("[MISTRAL] response",response);
+						}
+						const text="mistral says what?";
+						const prompt_tokens=response.usage.promptTokens;
+						const completion_tokens=response.usage.completionTokens;
+						const total_tokens=response.usage.totalTokens;
+						const usage={prompt_tokens,completion_tokens,total_tokens};
+						const choices=[];
+						for(const choice of response.choices){
+							choices.push({message:{content:choice.message.content}});
+						}
+						return {model,choices,usage};
+					}
+				}
+			}
+		};
+	}catch( error){
+		echo("[MISTRAL] error:",error);
+	}
+}
+
+// API support for cohere
+
+function specCohereModel(model,account){
+	if(roha.config.debugging) echo("[cohere] spec",model);
+	const name=model.name+"@"+account;
+	const exists=name in roha.mut;
+	const info=exists?roha.mut[name]:{name,notes:[],errors:[],relays:0,cost:0};
+	info.id=model.name;
+	info.object="model";
+	// TODO: fix me
+	info.created="created";
+	info.owner="owner";
+	if (!info.notes) info.notes=[];
+	if (!info.errors) info.errors=[];
+//	echo("mut",name,info);
+	roha.mut[name]=info;
+}
+
+function prepareCohereRequest(payload){
+	const history=[];
+	let blob={};
+	for(const item of payload.messages){
+		const content=item.content;
+		switch(item.role){
+			case "system":
+				history.push({role:"system",content});
+				break;
+			case "user":
+				if(item.name=="blob"){
+					blob=JSON.parse(content);
+					continue;
+				}
+				if(item.name=="image"){
+					const image_url={url:"https://jpeg.org/images/jpeg-home.jpg"}
+					history.push({role:"user",content:[{type:"image_url",image_url}]});
+					continue;
+				}
+				history.push({role:"user",content});
+				break;
+			case "assistant":
+				history.push({role:"assistant",content});
+				break;
+		}
+	}
+	const temperature=grokTemperature;
+	const request={
+		model:payload.model,
+		temperature,
+		stream:false,
+		messages:history
+	};
+	return request;
+}
+
+async function connectCohere(account,config){
+	try{
+		const baseURL=config.url;
+		const apiKey=getEnv(config.env);
+		if(!apiKey) return null;
+		const headers={
+			"Authorization":"Bearer "+apiKey,
+			"Content-Type":"application/json",
+			"Accept":"application/json",
+			"X-Client-Name": "slopfountain.ts"
+		};
+		const client=new CohereClientV2({token:apiKey});
+		const models=await client.models.list();
+//		echo("[COHERE]",models);
+		const list=[];
+		for(const model of models.models){
+//			echo("[COHERE]",model);//model.name);
+			if(model.endpoints?.includes("chat")){
+//				echo("[COHERE]",model.name);
+				const name=model.name+"@"+account;
+				list.push(name);
+				const spec={id:model.name,object:"model",owner:"owner"}
+				specModel(spec,account);
+			}
+		}
+		modelList.push(...list);
+		return {
+			client,
+			apiKey,
+			baseURL,
+			modelList:list,
+			models: {
+				list: async () => models, // Return cached models or fetch fresh
+			},
+			chat: {
+				completions: {
+					create: async (payload) => {
+						const model=payload.model;
+						const content=prepareCohereRequest(payload);
+						const url=baseURL+"/chat";
+						const usage={prompt_tokens:0,completion_tokens:0,total_tokens:0};
+						if(roha.config.debugging){
+							echo("[cohere] url",url);
+							echo("[cohere] content",content);
+							//echo("[cohere] usage",usage);
+							echo("[cohere] headers",headers);
+						}
+						try{
+							const response=await fetch(url,{method:"POST",headers,body:JSON.stringify(content)});
+							if(roha.config.debugging){
+								echo("[cohere] response.ok",response.ok);
+							}
+							if (response.ok) {
+								const reply=[];
+								const json=await response.json();
+								const role=json.message.role;
+								for(const item of json.message.content){
+									if(item.type=="text") reply.push(item.text);
+								}
+								const text=reply.join("\n");
+								// echo("[cohere]",text)
+								const tokens=json.usage.tokens;
+								const total_tokens=tokens.input_tokens+tokens.output_tokens;
+								const usage={prompt_tokens:tokens.input_tokens,completion_tokens:tokens.output_tokens,total_tokens};
+								return {model,choices:[{message:{content:text}}],usage};
+							}
+							if(roha.config.debugging){
+								echo("[cohere] status",response.status,response.statusText);
+								echo("[cohere] content",content);
+							}
+						}catch(e){
+							echo("[cohere] exception",e.message);
+						}
+						const temperature=grokTemperature;
+						return {model,temperature,choices:[],usage};
+					},
+				},
+			},
+		};
+	}catch( error){
+		echo("[COHERE] error:",error);
+	}
+
+}
