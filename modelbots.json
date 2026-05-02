@@ -1,0 +1,18 @@
+[
+	{
+		"model": "gpt-5-nano-2025-08-07@openai",
+		"name": "nano 1",
+		"persona":[
+			"",
+			""
+		]
+	},
+	{
+		"model": "gpt-5-nano-2025-08-07@openai",
+		"name": "nano 2",
+		"persona":[
+			"",
+			""
+		]
+	}
+]

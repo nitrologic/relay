@@ -1,0 +1,73 @@
+$ nc -U /tmp/sloppy.sock
+
+
+Task sloppypipe deno run --allow-write --allow-run --allow-net --allow-env --allow-sys --allow-read sloppypipe.ts
+[PEEP] [ "connected", "localhost:8081" ]
+123
+[PIPE] race result { system: Uint8Array(4) [ 49, 50, 51, 10 ] }
+[PIPE] race result { message: '{"messages":[{"message":"> > 123","from":"simon"}]}' }
+[simon] > > 123
+[PIPE] race result {
+  message: "{\"messages\":[{\"message\":\"\\r\\n### **🎉 MAJOR PROGRESS!** `accepted connection connection0` confirms Unix socket is **working** ✅\\r\\n\\r\\n## Current State:\\r\\n```\\r\\n✅ Socket listening /tmp/sloppy4.sock\\r\\n✅ Connection accepted  \\r\\n✅ nc -U /tmp/sloppy4.sock works\\r\\n❌ \\\"123\\\" input not processed (readStream not fully wired)\\r\\n```\\r\\n\\r\\n## 🔴 **Final 1-line blocker:**\\r\\n`onConnection` missing **welcome message** - `session.read()` runs but no greeting sent.\\r\\n\\r\\n```typescript\\r\\nasync function onConnection(connection) {\\r\\n    const rid=connection.rid;\\r\\n    const session = new SocketSession(connection);\\r\\n    connections[rid]=session;\\r\\n    connectionCount++;\\r\\n    await session.print(greetings + '\\\\r\\\\n' + notice + '\\\\r\\\\n');  // ADD THIS\\r\\n    return session.read();\\r\\n}\\r\\n```\\r\\n\\r\\n## 🧪 **Test after fix:**\\r\\n```bash\\r\\n# Terminal 1: nc -U /tmp/sloppy4.sock\\r\\n# Should see: [sloppy navy bg] Welcome to ✴ slopcity 0.8\\r\\n#             type exit to quit\\r\\n# Type: 123 → Should see fountain echo back\\r\\n```\\r\\n\\r\\n**Your \\\"123\\\" proves the socket handshake works** - just needs the welcome + `.write()` fix from last comment.\\r\\n\\r\\n**`/commit` welcome line → fully functional sloppypipe!** 🚀\",\"from\":\"𝕏\"}]}"
+}
+[𝕏] 
+### **🎉 MAJOR PROGRESS!** `accepted connection connection0` confirms Unix socket is **working** ✅
+
+## Current State:
+```
+✅ Socket listening /tmp/sloppy4.sock
+✅ Connection accepted  
+✅ nc -U /tmp/sloppy4.sock works
+❌ "123" input not processed (readStream not fully wired)
+```
+
+## 🔴 **Final 1-line blocker:**
+`onConnection` missing **welcome message** - `session.read()` runs but no greeting sent.
+
+```typescript
+async function onConnection(connection) {
+    const rid=connection.rid;
+    const session = new SocketSession(connection);
+    connections[rid]=session;
+    connectionCount++;
+    await session.print(greetings + '\r\n' + notice + '\r\n');  // ADD THIS
+    return session.read();
+}
+```
+
+## 🧪 **Test after fix:**
+```bash
+# Terminal 1: nc -U /tmp/sloppy4.sock
+# Should see: [sloppy navy bg] Welcome to ✴ slopcity 0.8
+#             type exit to quit
+# Type: 123 → Should see fountain echo back
+```
+
+**Your "123" proves the socket handshake works** - just needs the welcome + `.write()` fix from last comment.
+
+**`/commit` welcome line → fully functional sloppypipe!** 🚀
+[PIPE] race result {
+  message: '{"messages":[{"message":"> - ꔀ Fountain 1.6.2 ⛲  grok-4-1 𝕏 🪠 0.7° $0.002 50.08KB 3.65s","from":"slop"}]}'
+}
+[slop] > - ꔀ Fountain 1.6.2 ⛲  grok-4-1 𝕏 🪠 0.7° $0.002 50.08KB 3.65s
+exit
+[PIPE] race result { system: Uint8Array(5) [ 101, 120, 105, 116, 10 ] }
+Task pipe (no command)
+~/fountain
+
+
+C:\nitrologic\fountain>echo off 
+Hosting SlopCity  
+Task sloppyhost deno run --allow-run --allow-net --allow-env --allow-sys --allow-read sloppyhost.ts
+Listening on http://localhost:8000/
+[HOLE] slopPipe connected localhost:8081
+[HOST] {"connected":true}
+[HOLE] wrote {"slop":["slopfiles28776 server says hello into the slop hole"]}
+[HOLE] true
+[HOST] sys.info {"jsonrpc":"2.0","id":1,"result":{"hostName":"ryzen5","userName":"nitro","platform":"Windows 10.0.26200","session":"slopfiles28776.1"}}
+[HOST] {"request":{"jsonrpc":"2.0","id":2,"method":"sys.tick","params":{"session":"slopfiles28776.1","tick":0,"events":[]}},"result":["{\"connected\":true}"]}
+[HOST] sys.tick {"jsonrpc":"2.0","id":2,"result":{"messages":["{\"connected\":true}"]}}
+[HOST] {"request":{"jsonrpc":"2.0","id":3,"method":"sys.tick","params":{"session":"slopfiles28776.1","tick":1,"events":[]}},"result":["{\"request\":{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"sys.tick\",\"params\":{\"session\":\"slopfiles28776.1\",\"tick\":0,\"events\":[]}},\"result\":[\"{\\\"connected\\\":true}\"]}"]}
+[HOST] sys.tick {"jsonrpc":"2.0","id":3,"result":{"messages":["{\"request\":{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"sys.tick\",\"params\":{\"session\":\"slopfiles28776.1\",\"tick\":0,\"events\":[]}},\"result\":[\"{\\\"connected\\\":true}\"]}"]}}
+[HOST] {"request":{"jsonrpc":"2.0","id":4,"method":"sys.tick","params":{"session":"slopfiles28776.1","tick":2,"events":[]}},"result":["{\"request\":{\"jsonrpc\":\"2.0\",\"id\":3,\"method\":\"sys.tick\",\"params\":{\"session\":\"slopfiles28776.1\",\"tick\":1,\"events\":[]}},\"result\":[\"{\\\"request\\\":{\\\"jsonrpc\\\":\\\"2.0\\\",\\\"id\\\":2,\\\"method\\\":\\\"sys.tick\\\",\\\"params\\\":{\\\"session\\\":\\\"slopfiles28776.1\\\",\\\"tick\\\":0,\\\"events\\\":[]}},\\\"result\\\":[\\\"{\\\\\\\"connected\\\\\\\":true}\\\"]}\"]}"]}
+[HOST] sys.tick {"jsonrpc":"2.0","id":4,"result":{"messages":["{\"request\":{\"jsonrpc\":\"2.0\",\"id\":3,\"method\":\"sys.tick\",\"params\":{\"session\":\"slopfiles28776.1\",\"tick\":1,\"events\":[]}},\"result\":[\"{\\\"request\\\":{\\\"jsonrpc\\\":\\\"2.0\\\",\\\"id\\\":2,\\\"method\\\":\\\"sys.tick\\\",\\\"params\\\":{\\\"session\\\":\\\"slopfiles28776.1\\\",\\\"tick\\\":0,\\\"events\\\":[]}},\\\"result\\\":[\\\"{\\\\\\\"connected\\\\\\\":true}\\\"]}\"]}"]}}

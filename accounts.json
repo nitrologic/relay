@@ -1,0 +1,72 @@
+{
+	"deepseek": {
+		"emoji": "🐋",
+		"env": "DEEPSEEK_API_KEY",
+		"url": "https://api.deepseek.com",
+		"docs": "https://api-docs.deepseek.com",
+		"platform": "https://platform.deepseek.com/usage",
+		"api": "DeepSeek",
+		"locale": "zh-CN"
+	},
+	"zai": {
+		"emoji": "Z",
+		"env": "ZAI_API_KEY",
+		"url": "https://api.z.ai/api/paas/v4",
+		"docs": "https://docs.z.ai/guides/overview/quick-start",
+		"platform": "https://z.ai/manage-apikey/billing",
+		"api": "OpenAI",
+		"locale": "zh-CN"
+	},
+	"moonshot": {
+		"emoji": "🜁",
+		"env": "MOONSHOT_API_KEY",
+		"url": "https://api.moonshot.ai/v1",
+		"docs": "https://platform.moonshot.ai/docs/",
+		"platform":"https://platform.moonshot.ai/console/account",
+		"api": "OpenAI",
+		"locale": "zh-CN"
+	},
+	"anthropic": {
+		"emoji": "A\\",
+		"env": "ANTHROPIC_API_KEY",
+		"url": "https://api.anthropic.com/v1",
+		"docs": "https://docs.anthropic.com/en/home/",
+		"platform": "https://console.anthropic.com/dashboard",
+		"api": "Anthropic",
+		"locale": "en-US"
+	},
+	"openai": {
+		"emoji": "🌀",
+		"env": "OPENAI_API_KEY",
+		"url": "https://api.openai.com/v1",
+		"platform":"https://platform.openai.com/settings",
+		"api": "OpenAI",
+		"locale": "en-US"
+	},
+	"xai": {
+		"emoji": "𝕏",
+		"env": "XAI_API_KEY",
+		"url": "https://api.x.ai/v1",
+		"docs": "https://docs.x.ai/docs/overview",
+		"platform":"https://console.x.ai",
+		"api": "OpenAI",
+		"locale": "en-US"
+	},
+	"gemini": {
+		"emoji": "🌟",
+		"env": "GEMINI_API_KEY",
+		"url2": "https://generativelanguage.googleapis.com/v1alpha",
+		"url": "https://generativelanguage.googleapis.com/v1beta",
+		"docs": "https://ai.google.dev/gemini-api/docs",
+		"platform":"https://console.cloud.google.com/",
+		"api": "Google",
+		"locale": "en-US"
+	},
+	"ollama":{
+		"emoji": "🔗",
+		"url":"http://192.168.1.10:11434/v1",
+		"platform":"https://ollama.com/library",
+		"api": "OpenAI",
+		"disabled":false
+	}
+}
