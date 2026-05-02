@@ -1,3 +1,51 @@
+/* 
+
+// system stdin support for sloppies
+
+const systemDecoder = new TextDecoder();
+async function onSystem(rx:Uint8Array){
+	const message:string=systemDecoder.decode(rx);
+	const lines=message.split("\r\n");
+	lines.pop();//ignore the incomplete
+	for(const line of lines){
+		console.log("[STDIO]",line);
+		if(line=="exit") Deno.exit(0);
+		if(line.startsWith("/announce ")){
+			const message=line.substring(10);
+			await messageSloppy(message,"🌏");	// was "system"
+		}
+		if(!line.startsWith("/")){
+			await writeFountain(line);
+		}
+	}
+}
+
+const systemBufferSize=1e6;
+let readingSystem:boolean=false;
+const systemBuffer = new Uint8Array(systemBufferSize);
+async function readSystem(){
+	if(!slopPipe) return;
+	readingSystem=true;
+	let n=null;
+	try{
+		n = await Deno.stdin.read(systemBuffer);
+	}catch(e){
+		splurt("readFountain",e);
+	}
+	readingSystem=false;
+	if (n == null) {
+		// TODO: share exit hatch with below
+		const disconnected=disconnectFountain();
+		return null;
+	}else{
+		const received = systemBuffer.subarray(0, n);
+		return {system:received};
+	}
+}
+*/
+
+
+
 
 # notes
 

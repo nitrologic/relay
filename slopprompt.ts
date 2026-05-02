@@ -85,7 +85,7 @@ async function listenPort(port:number,slopName:string){
 	const name="connection"+(connectionCount++);
 	return {connection,name};
 }
-
+/*
 export function listenService(){
 	if(listenerPromise) {
 		echo("[PROMPT] listenService - listenPort already active");
@@ -95,6 +95,31 @@ export function listenService(){
 	listenerPromise=sloppyPromise;
 	sloppyListen=true;
 }
+*/
+let sloppyListener: Deno.Listener | null = null;
+let riffListener: Deno.Listener | null = null;
+
+export function listenService() {
+	if (sloppyListener) return; // already listening
+
+	try {
+		sloppyListener = Deno.listen({ hostname: "localhost", port: 8081 });
+		riffListener = Deno.listen({ hostname: "localhost", port: 8082 });
+		console.log("[PROMPT] listening on ports 8081 (sloppy) and 8082 (riff)");
+	} catch (e) {
+		console.error("[PROMPT] listen failed:", e);
+	}
+}
+
+// In the main loop, race both accept promises:
+async function acceptBoth() {
+	if (!sloppyListener || !riffListener) return;
+	const acceptSloppy = sloppyListener.accept().then(conn => ({ connection: conn, name: "sloppy", port: 8081 }));
+	const acceptRiff = riffListener.accept().then(conn => ({ connection: conn, name: "riff", port: 8082 }));
+	return Promise.race([acceptSloppy, acceptRiff]);
+}
+
+
 
 export async function announceCommand(words:string[]){
 	const text=words.join(" ");
@@ -533,7 +558,7 @@ export async function slopPrompt(message:string,interval:number,refreshHandler?:
 			delete receivePromises[name];
 			throw(error); // this will cause a crash - an existing slop fountain process can cause this
 		}
-		// 
+		//
 		if (connection) {
 			if(name in receivePromises){
 				echo("promise already exists for",name);
@@ -545,10 +570,12 @@ export async function slopPrompt(message:string,interval:number,refreshHandler?:
 			slopConnections.set(name,connection);
 			// TODO: call listenService helper
 			if(sloppyListen){
+				attachPersona(8081,"sloppy");
 				riffPromise=listenPort(8082,"riff");
 				listenerPromise=riffPromise;
 				sloppyListen=false;
 			}else{
+				attachPersona(8082,"riff");
 				sloppyPromise=listenPort(8081,"sloppy");
 				listenerPromise=sloppyPromise;
 				sloppyListen=true;
@@ -559,7 +586,7 @@ export async function slopPrompt(message:string,interval:number,refreshHandler?:
 			continue;
 		}
 		if(source){
-			//echo("receivePromise name,source",name,source);//,receive
+			echo("[PROMPT] receivePromise name,source",name,source);//,receive
 			delete receivePromises[name];
 			const receiver=readNamedConnection(name,source);
 			receivePromises[name]=receiver;
