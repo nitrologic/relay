@@ -30,19 +30,7 @@ function echo(...args:any[]){
 	console.error(text);
 }
 
-let sloppyPromise;
-let riffPromise;
-let listenerPromise;
-
-let sloppyPort=null;
-let riffPort=null;
-let foggyPort=null;
-
-let sloppyListen:boolean=false;
 const slopConnections=new Map();
-let receivePromises={};
-
-//: Promise<{source:Deno.TcpConn, receive:Uint8Array}>[]=[];
 
 const connectionDecoders = new Map<string, TextDecoder>();
 
@@ -56,7 +44,7 @@ const rxDecoder=new TextDecoder("utf-8",{stream:true});
 async function readNamedConnection(name:string,connection:Deno.TcpConn){
 	try{
 		const n=await connection.read(rxBuffer);
-		//echo("readNamedConnection",n,name);
+		echo("readNamedConnection",n,name);
 		if(n==null) return {source:connection};
 		const bytes=rxBuffer.subarray(0,n);
 		return {source:connection,receive:bytes,name};
@@ -66,72 +54,38 @@ async function readNamedConnection(name:string,connection:Deno.TcpConn){
 	}
 }
 
+let connectionCount=0;
+let listenerPromise;
+let botListener: Deno.Listener | null = null;
+let receivePromises={};
+
 // take care - collides with slopnet.ts
 // TODO: short circuit - Fatal JavaScript out of memory: Ineffective mark-compacts near heap limit
 
-let connectionCount=0;
-let slopListener=[];
-let slopPortName={};
-
-// returns {connection,name} or {error}
-
-function listenPort(port:number,slopName:string){
-	if(!slopListener[port]){
-		try{
-			slopListener[port]=Deno.listen({ hostname: "localhost", port, transport: "tcp" });
-		}catch(error){
-			echo("listenPort listen failure",port);
-			return {error:error};
+async function acceptConnections(listener: Deno.Listener) {
+	try {
+		while (true) {
+			const name="connection"+connectionCount++;
+			const connection = await listener.accept();
+			slopConnections.set(name, connection);
+			echo("[PROMPT] connection accepted", name);
+			readNamedConnection(name, connection).then(result => {receivePromises[name] = result;});
 		}
+	} catch (e) {
+		echo("[RELAY] acceptConnections error:", e.message);
 	}
-	slopPortName[port]=slopName;
-	echo("[PROMPT] listening for slop",port,slopName);
-	return slopListener[port];
 }
-
-async function acceptPort(port:number){
-	const connection=await slopListener[port].accept();
-	const name="connection"+(connectionCount++);
-	return {connection,name};
-}
-/*
-export function listenService(){
-	if(listenerPromise) {
-		echo("[PROMPT] listenService - listenPort already active");
-		return;
-	}
-	sloppyPromise=listenPort(8081,"sloppy");
-	listenerPromise=sloppyPromise;
-	sloppyListen=true;
-}
-*/
-let sloppyListener: Deno.Listener | null = null;
-let riffListener: Deno.Listener | null = null;
-let foggyListener: Deno.Listener | null = null;
 
 export function listenService() {
-	if (sloppyListener) return; // already listening
-
+	if (botListener) return; // already listening
 	try {
-		sloppyListener = Deno.listen({ hostname: "localhost", port: 8081 });
-		riffListener = Deno.listen({ hostname: "localhost", port: 8082 });
-		foggyListener = Deno.listen({ hostname: "localhost", port: 8083 });
-		console.log("[PROMPT] listening 8081 (sloppy) 8082 (riff) 8083(foggy)");
+		botListener = Deno.listen({ hostname: "localhost", port: 8081 });
+		acceptConnections(botListener)
 	} catch (e) {
 		console.error("[PROMPT] listen failed:", e);
 	}
+	console.log("[PROMPT] listening for bots on port 8081");
 }
-
-// In the main loop, race both accept promises:
-async function acceptAll() {
-	if (!sloppyListener || !riffListener || !foggyListener) return;
-	const acceptSloppy = sloppyListener.accept().then(conn => ({ connection: conn, name: "sloppy", port: 8081 }));
-	const acceptRiff = riffListener.accept().then(conn => ({ connection: conn, name: "riff", port: 8082 }));
-	const acceptFoggy = foggyListener.accept().then(conn => ({ connection: conn, name: "foggy", port: 8083 }));
-	return Promise.race([acceptSloppy, acceptRiff, acceptFoggy]);
-}
-
-
 
 export async function announceCommand(words:string[]){
 	const text=words.join(" ");
@@ -532,9 +486,6 @@ export async function slopPrompt(message:string,interval:number,refreshHandler?:
 		await writeString(message)
 	}
 	let busy=true;
-	sloppyPort=listenPort(8081,"sloppy");
-	riffPort=listenPort(8082,"riff");
-	foggyPort=listenPort(8083,"foggy");
 	while(true){
 		let bytes=[];
 		if(!readPromise) readPromise=reader.read();
@@ -543,7 +494,6 @@ export async function slopPrompt(message:string,interval:number,refreshHandler?:
 			const timerPromise=new Promise<null>(res => setTimeout(() => res(null), interval));
 			const receivers=Object.values(receivePromises);
 			const race=listenerPromise?[readPromise,timerPromise,listenerPromise,...receivers]:[readPromise,timerPromise,...receivers];
-//			const race=listenerPromise?[readPromise,timerPromise,listenerPromise,...receivers]:[readPromise,timerPromise,...receivers];
 //			const race=listenerPromise?[readPromise,timerPromise,listenerPromise]:[readPromise,timerPromise];
 			winner=await Promise.race(race);
 			if(winner==null){
@@ -584,20 +534,6 @@ export async function slopPrompt(message:string,interval:number,refreshHandler?:
 			echo("connection received for",name);
 			slopConnections.set(name,connection);
 			// TODO: call listenService helper
-
-/*			
-			if(sloppyListen){
-				riffPromise=listenPort(8082,"riff");
-				listenerPromise=riffPromise;
-				sloppyListen=false;
-				riffListen=true;
-			}else{
-				sloppyPromise=listenPort(8081,"sloppy");
-				listenerPromise=sloppyPromise;
-				sloppyListen=true;
-			}
-*/
-
 			const receiver=readNamedConnection(name,connection);
 			receivePromises[name]=receiver;
 			//echo("reading connection 1",name);

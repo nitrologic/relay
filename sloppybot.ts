@@ -14,7 +14,13 @@ const portNumber=Deno.args[2]||8081;
 // keep json flat single line
 // guildmembers intent not enabled at this time
 
-const sloppyTag = botName+" - a stochastic parrot from slop fountain";
+let sloppyInfo={
+	"sloppy":"a stochastic parrot from slop fountain",
+	"rif":"intern energy and fun",
+	"foggy":"admin role"
+};
+
+const sloppyTag = botName+" "+sloppyInfo[botName];
 const sloppyBanner="[SLOPPY] sloppy 0.10 🦜 splurt:"+sloppyTag;
 
 async function sleep(ms:number) {

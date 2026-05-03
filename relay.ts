@@ -339,7 +339,7 @@ const flagNames={
 	slops : "console worker scripts",
 	budget : "cheap models for the win",
 	syncRelay : "one thing at a time mode",
-	listen : "listen for remote connections on port 8081..8082",
+	listen : "listen for remote connections on port 8081",
 	thinking : "enable thinking mode with dual prupose models"
 };
 
@@ -4408,6 +4408,8 @@ echo("type /help for latest and exit to quit");
 
 const birds=padChars("𓅷𓅸𓅹𓅺𓅻𓅼𓅽",HairSpace);
 echo(birds);
+
+let acceptPromise=null;
 
 if(roha.config.listen){
 	listenService();

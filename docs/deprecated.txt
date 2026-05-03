@@ -1,3 +1,65 @@
+async function acceptBot() {
+	const connection=await botListener.accept();
+	const name="connection"+(connectionCount++);
+	echo("acceptBot connected:",name);
+	return {name,connection};
+}
+
+
+let slopListener=[];
+let receivePromises={};
+
+let sloppyPromise;
+let riffPromise;
+
+let sloppyPort=null;
+let riffPort=null;
+let foggyPort=null;
+
+let sloppyListen:boolean=false;
+
+//: Promise<{source:Deno.TcpConn, receive:Uint8Array}>[]=[];
+
+
+// returns TCPListener
+
+function listenForBots(port:number){
+	if(!slopListener[port]){
+		try{
+			slopListener[port]=Deno.listen({ hostname: "localhost", port, transport: "tcp" });
+		}catch(error){
+			echo("listenPort listen failure",port);
+			return {error:error};
+		}
+	}
+	return slopListener[port];
+}
+
+
+/*			
+			if(sloppyListen){
+				riffPromise=listenPort(8082,"riff");
+				listenerPromise=riffPromise;
+				sloppyListen=false;
+				riffListen=true;
+			}else{
+				sloppyPromise=listenPort(8081,"sloppy");
+				listenerPromise=sloppyPromise;
+				sloppyListen=true;
+			}
+*/
+
+
+// In the main loop, race both accept promises:
+async function acceptAll() {
+	if (!sloppyListener || !riffListener || !foggyListener) return;
+	const acceptSloppy = sloppyListener.accept().then(conn => ({ connection: conn, name: "sloppy", port: 8081 }));
+	const acceptRiff = riffListener.accept().then(conn => ({ connection: conn, name: "riff", port: 8082 }));
+	const acceptFoggy = foggyListener.accept().then(conn => ({ connection: conn, name: "foggy", port: 8083 }));
+	return Promise.race([acceptSloppy, acceptRiff, acceptFoggy]);
+}
+
+
 /* 
 
 // system stdin support for sloppies
