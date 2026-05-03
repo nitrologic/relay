@@ -1,4 +1,4 @@
-// sloppybot.ts 
+// slopbot.ts 
 // A research tool connecting large language models and tiny humans
 // Copyright (c) 2026 Simon Armstrong
 // Licensed under the MIT License
@@ -6,22 +6,23 @@
 
 import { Client, GatewayIntentBits, AttachmentBuilder } from "npm:discord.js@14.15.3";
 
+let sloppyInfo={
+	"sloppy":{emoji:"🦜",about:"stochastic parrot from slop fountain"},
+	"riff":{emoji:"🐶",about:"fun intern energy"},
+	"foggy":{emoji:"🐸",about:"layout"}
+};
+
 const key=Deno.args[0]||"DISCORD_BOT";
 const botName=Deno.args[1]||"sloppy";
 const portNumber=Deno.args[2]||8081;
 
+const slopbot = sloppyInfo[botName];
+
+const sloppyBanner="[SLOPBOT] slopbot 0.21 "+slopbot.emoji+" "+botName+" - "+slopbot.about;
+
 // receive message from fountain /announce and echo to discord bot with splurt
 // keep json flat single line
 // guildmembers intent not enabled at this time
-
-let sloppyInfo={
-	"sloppy":"a stochastic parrot from slop fountain",
-	"rif":"intern energy and fun",
-	"foggy":"admin role"
-};
-
-const sloppyTag = botName+" "+sloppyInfo[botName];
-const sloppyBanner="[SLOPPY] sloppy 0.10 🦜 splurt:"+sloppyTag;
 
 async function sleep(ms:number) {
 	await new Promise(function(resolve) {setTimeout(resolve, ms);});
@@ -37,7 +38,7 @@ const Splurt=false;	// debug sloppy bot
 
 function splurt(...data: any[]){
 	if(Splurt){
-		console.error("[SPLURT]",botName,data);
+		console.error("[SLOPBOT]",botName,data);
 	}
 }
 
@@ -246,9 +247,9 @@ const discordClient = new Client({
 
 discordClient.once('ready', () => {
 	// was console.log
-	splurt("[SLOPPY] discordClient online",discordClient.user?.tag||"");
+	splurt("discordClient online",discordClient.user?.tag||"");
 	discordClient.user?.setPresence({ status: 'online' });
-//	console.log("[SLOPPY] channels",discordClient.channels);
+//	console.log("channels",discordClient.channels);
 });
 
 function chunkContent(content:string,chunk:number):string[]{
@@ -303,7 +304,7 @@ discordClient.on('messageCreate', async (message) => {
 		openChannel=message.channelId;
 		const flake=message.channelId.toString();
 		// was console.log
-		splurt("[SLOPPY]","pong flake",flake,openChannel);
+		splurt("pong flake",flake,openChannel);
 		return;
 	}
     const mentioned=(message.mentions.has(discordClient.user) && !message.author.bot);
@@ -351,7 +352,7 @@ Deno.addSignalListener("SIGINT", () => {
 	// todo: validate disconnect?
 	discordClient.destroy();
 	// was console.log
-	splurt("[SLOPPY] exit");
+	splurt("exit");
 	Deno.exit(0);
 });
 
@@ -364,12 +365,15 @@ writeFountain("{\"action\":\"connect\"}");
 let portPromise=readFountain();
 let systemPromise=initSystem();
 
+// system - 
+// port
+
 while(true){
 	const race=[portPromise,systemPromise];
 	const result=await Promise.race(race);
 	if (result==null) break;
 	if(result.system) {
-		splurt("[SLOPPY] result system");
+		splurt("esult system");
 		await onSystem(result.system);
 		systemPromise=readSystem();
 	}
@@ -377,7 +381,7 @@ while(true){
 		await onFountain(result.message);
 		portPromise=readFountain();		
 	}
-//	splurt("result",result);
+	splurt("result",result);
 	await(sleep(500));
 }
 

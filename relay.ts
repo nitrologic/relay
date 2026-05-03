@@ -20,8 +20,8 @@ import { resolve } from "https://deno.land/std/path/mod.ts";
 
 // Testing with Deno 2.7.14, V8  14.7.173.20-rusty, TypeScript 5.9.2
 
-const brandFountain="Fountain";
-const fountainVersion="1.8.0";
+const brandFountain="nitrologic Relay";
+const fountainVersion="1.8.1";
 const fountainName=brandFountain+" "+fountainVersion;
 
 const defaultModel="deepseek-v4-flash@deepseek";
@@ -4275,7 +4275,8 @@ if (!fileExists) {
 
 // forge lists models from active accounts
 
-echo_wideLatin(rohaTitle);
+
+echo(rohaTitle);
 echo("Running from "+rohaPath);
 
 await flush();
