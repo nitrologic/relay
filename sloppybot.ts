@@ -288,7 +288,9 @@ discordClient.on('messageCreate', async (message) => {
 		splurt("DM!");
 		return;
 	}
-	if (message.author.bot) return;
+	if (botName=="foggy"&&message.author.username!="foggy") {
+		await message.react("👍"); 
+	}
 	if (message.content === '!ping') {
 		await message.react("🦜");
 		await message.reply('pong!');
