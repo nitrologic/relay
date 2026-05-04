@@ -10,7 +10,7 @@
 		"sloppyhost": "deno run --allow-run --allow-net --allow-env --allow-sys --allow-read sloppy/sloppyhost.ts",
 		"fountain":{"dependencies":["sloprelay"]},
 		"relay":{"dependencies":["sloprelay"]},
-		"sloppy":{"dependencies":["foggybot","sloppybot","riffbot"]}
+		"sloppy":{"dependencies":["fountain","foggybot","sloppybot","riffbot"]}
 	},
 	"imports": {
 		"@openai/openai": "jsr:@openai/openai@^5.23.0"

@@ -6,10 +6,12 @@
 
 import { Client, GatewayIntentBits, AttachmentBuilder } from "npm:discord.js@14.15.3";
 
+const Splurt=true;	// debug sloppy bot
+
 let sloppyInfo={
+	"foggy":{emoji:"🐸",about:"layout editor"},
 	"sloppy":{emoji:"🦜",about:"stochastic parrot from slop fountain"},
-	"riff":{emoji:"🐶",about:"fun intern energy"},
-	"foggy":{emoji:"🐸",about:"layout"}
+	"riff":{emoji:"🐶",about:"intern dog"}
 };
 
 const key=Deno.args[0]||"DISCORD_BOT";
@@ -33,8 +35,6 @@ const quotes=[
 	"did sing sing call for a plunge? 🪠",
 	"stochastic parrot wants a cracker 🥤"
 ];
-
-const Splurt=false;	// debug sloppy bot
 
 function splurt(...data: any[]){
 	if(Splurt){
@@ -93,14 +93,11 @@ async function messageSloppy(message:string,userId:string){
 	message = message.replace(/https\S+/g, "<$&>");
 	if(openChannel){
 		const channel = await discordClient.channels.fetch(openChannel);
-
 		if(DumpChannel)
 			await dumpChannel(channel);
-
 		if(DumpUser && userId){
 			await dumpUser(channel,userId);
 		}
-
 		if (channel?.isTextBased()) {
 			splurt("discord fetch from",userId,channel.name,message.length);
 			const chunks=chunkContent(message,2000-400);
@@ -120,9 +117,10 @@ async function onFountain(message:string){
 	const line=message;
 	if(line.startsWith("/announce ")){
 		const message=line.substring(10);
-		await messageSloppy(message,"⛲");
-	}
-	if(line.startsWith("{")||line.startsWith("[")){
+		if(botName=="foggy"){
+			await messageSloppy(message,"foggy");	//"⛲"
+		}
+	}else if(line.startsWith("{")||line.startsWith("[")){
 		try{
 			let cursor=0;
 			while(cursor<line.length){
@@ -132,13 +130,17 @@ async function onFountain(message:string){
 				cursor+=json.length;
 				const payload=JSON.parse(json);
 				for(const {message,from} of payload.messages){
+					if(from=="slop" && botName!="foggy") continue;
 					await messageSloppy(message,from);
+					splurt("onFountain",from,message);
 				}
 			}
 		}catch(error){
 			splurt("JSON parse error",error);
 			splurt("JSON parse error",line);
 		}
+	}else{
+		splurt("onFountain line parse error",line);
 	}
 }
 
@@ -307,8 +309,10 @@ discordClient.on('messageCreate', async (message) => {
 		splurt("pong flake",flake,openChannel);
 		return;
 	}
+	// WIP: below either foggy forwards all user messages or @ mentions in messages get special treatment
     const mentioned=(message.mentions.has(discordClient.user) && !message.author.bot);
-	if (message.channelId==openChannel && mentioned) {
+	const forward=(botName=="foggy" && message.author.bot!="foggy");
+	if (message.channelId==openChannel && (forward || mentioned)) {
 		const from=message.author.username+"@discord";	//skudmarks@discord
 		const name=message.author.displayName;	
 		// check for commands
@@ -373,7 +377,7 @@ while(true){
 	const result=await Promise.race(race);
 	if (result==null) break;
 	if(result.system) {
-		splurt("esult system");
+		splurt("result.system");
 		await onSystem(result.system);
 		systemPromise=readSystem();
 	}

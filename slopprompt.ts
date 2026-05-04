@@ -2,6 +2,8 @@
 // Copyright (c) 2026 Simon Armstrong
 // Licensed under the MIT License
 
+// [STATUS] messages include listening, connection accepted, 
+
 // uses winner=await Promise.race(race) logic to maintain communications
 // packed tab code style - unsafe typescript formatted with tabs and minimal white space - sorry
 // no abort controllers if you don't mind
@@ -42,14 +44,15 @@ const rxDecoder=new TextDecoder("utf-8",{stream:true});
 // these async functions end up in receiver promise lists
 // retun source,receive,name or source,error,name
 async function readNamedConnection(name:string,connection:Deno.TcpConn){
+	echo("[STATUS] readNamedConnection",name);
 	try{
 		const n=await connection.read(rxBuffer);
-		echo("readNamedConnection",n,name);
 		if(n==null) return {source:connection};
 		const bytes=rxBuffer.subarray(0,n);
+		echo("[STATUS] readNamedConnection",name,n,bytes);
 		return {source:connection,receive:bytes,name};
 	}catch(error){
-		echo("readNamedConnection error",error);
+		echo("[STATUS] readNamedConnection error",error);
 		return {source:connection,error,name};
 	}
 }
@@ -68,12 +71,37 @@ async function acceptConnections(listener: Deno.Listener) {
 			const name="connection"+connectionCount++;
 			const connection = await listener.accept();
 			slopConnections.set(name, connection);
-			echo("[PROMPT] connection accepted", name);
+			echo("[STATUS] connection accepted", name);
 			readNamedConnection(name, connection).then(result => {receivePromises[name] = result;});
 		}
 	} catch (e) {
 		echo("[RELAY] acceptConnections error:", e.message);
 	}
+}
+
+export function dropConnections(){
+	echo("[DROP]");
+	if (botListener) {
+		try {
+			botListener.close();
+			echo("[STATUS] bot listener closed");
+		} catch (e) {
+			echo("[STATUS] error closing bot listener:", e.message);
+		}
+		botListener = null;
+	}
+
+	for (const [name, connection] of slopConnections) {
+		try {
+			connection.close();
+			echo("[STATUS] connection dropped:", name);
+		} catch (e) {
+			echo("[STATUS] error dropping connection", name, e.message);
+		}
+	}
+	slopConnections.clear();
+	receivePromises = {};
+	echo("[STATUS] dropConnections complete");
 }
 
 export function listenService() {
@@ -84,7 +112,7 @@ export function listenService() {
 	} catch (e) {
 		console.error("[PROMPT] listen failed:", e);
 	}
-	console.log("[PROMPT] listening for bots on port 8081");
+	echo("[STATUS] listening for bots on port 8081");
 }
 
 export async function announceCommand(words:string[]){
@@ -540,7 +568,6 @@ export async function slopPrompt(message:string,interval:number,refreshHandler?:
 			continue;
 		}
 		if(source){
-			echo("[PROMPT] receivePromise name,source",name,source);//,receive
 			delete receivePromises[name];
 			const receiver=readNamedConnection(name,source);
 			receivePromises[name]=receiver;

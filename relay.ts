@@ -3,10 +3,12 @@
 // Licensed under the MIT License
 
 // packed tab code style - unsafe typescript formatted with tabs and minimal white space
+// relay(depth,from)
+
 
 // ⛲🪣🐸🪠🐋🜁🐉🏛️❁𝕏🌟💫🌏📆💰👀🤖🫦💻👄🔧🧊❃🎙️🔉📷🖼️🗣️📡👁🧮📠⣯⛅⚙️🗜️🧰 🌕🌙✿
 
-import { replaceShortCodes, safeString, discordStringWidth, stringWidth, announceCommand, listenService, slopPrompt, slopBroadcast } from "./slopprompt.ts";
+import { replaceShortCodes, safeString, discordStringWidth, stringWidth, announceCommand, listenService, dropConnections, slopPrompt, slopBroadcast } from "./slopprompt.ts";
 
 import { OpenAI, ChatCompletionRequest, ChatCompletionResponse } from "jsr:@openai/openai@5.23.0";
 
@@ -387,6 +389,7 @@ function sanitizeNic(nic){
 }
 
 async function exitForge(){
+	dropConnections();
 	const pid=slopPid;
 	if(pid){
 		Deno.kill(Number(pid),"SIGTERM");
@@ -695,6 +698,7 @@ async function echoStatus(...args:any){
 }
 
 function echoInfo(...args:any):void{
+	if(!(roha.config.verbose||roha.config.debugging)) return;
 	const lines=[];
 	for(const arg of args){
 		const line=toString(arg);
@@ -836,7 +840,7 @@ async function readFileNames(path:string,suffix:string){
 	try {
 		for await (const entry of Deno.readDir(path)) {
 			if (entry.isFile && entry.name.endsWith(suffix)) {
-				if(roha.config.verbose) echo("readDir",path,entry);
+				echoInfo("readDir",path,entry);
 				result.push(entry.name);
 			}
 		}
@@ -1755,7 +1759,7 @@ function specAccount(account){
 	}
 	if(roha.config.debugging){
 		const lode=roha.lode[account];
-		if(roha.config.verbose) echo("[FOUNTAIN] specAccount",account,lode);
+		echoInfo("[FOUNTAIN] specAccount",account,lode);
 	}
 }
 
@@ -1803,14 +1807,14 @@ async function aboutModel(modelname){
 	const balance=(lode&&lode.credit)?price(lode.credit):"$-";
 	if(roha.config.verbose){
 		const keys={strict,multi,inline,responses};
-		echo("model:",{name,brand,rate,limit,modelname,balance,keys});
+		echoInfo("model:",{name,brand,rate,limit,modelname,balance,keys});
 	}else{
 		echo("model:",{name,brand,rate,limit,balance,modelname});
 	}
-	if(roha.config.verbose && info){
-		if(info.purpose)echo("purpose:",info.purpose);
-		if(info.press)echo("press:",info.press);
-		if(info.reality)echo("reality:",info.reality);
+	if(info){
+		if(info.purpose)echoInfo("purpose:",info.purpose);
+		if(info.press)echoInfo("press:",info.press);
+		if(info.reality)echoInfo("reality:",info.reality);
 	}
 	await writeForge();
 }
@@ -1858,7 +1862,7 @@ async function nextActiveModel(){
 		const info=(modelname in modelSpecs)?modelSpecs[modelname]:null;
 		const active=info?info.active:false;
 		if(active){
-			if(roha.config.verbose)echo("next active model is",modelname);
+			echoInfo("next active model is",modelname);
 			return resetModel(modelname);
 		}
 	}
@@ -2643,9 +2647,7 @@ async function commitShares(tag) {
 					dirty=true;
 					if (!rohaShares.includes(path)) {
 						rohaShares.push(path);
-						if(roha.config.verbose){
-							echoInfo("[KOHA] Shared path",path);
-						}
+						echoInfo("[KOHA] Shared path",path);
 					}else{
 						echoInfo("[KOHA] Updated share path",path);
 					}
@@ -2669,7 +2671,7 @@ async function commitShares(tag) {
 	if (dirty && tag) {
 		rohaHistory.push({ role: "system", title:"Fountain Tool Hint", content: "Feel free to call tag_slop to tag " + tag });
 	}
-	if (count && roha.config.verbose) {
+	if (count) {
 		echoInfo("[KOHA] Updated files",count,"of",validShares.length);
 	}
 	return dirty;
@@ -3645,14 +3647,14 @@ function inlineHistory(history){
 let relayTaskPromise: Promise<void> | null = null;
 let completionQueue: string[] = [];
 
-async function beginRelay() {
+async function beginRelay(from:string) {
 	const send = () => {
 		if (completionQueue.length === 0) return;
 		const text = completionQueue.shift();
 		rohaHistory.push({role:"assistant", content:text});
 		flush();
 	};
-	const spend = await relay(0);
+	const spend = await relay(0,from);
 	completionQueue.push("completion ready");
 	setImmediate(send);
 }
@@ -3720,7 +3722,7 @@ async function bumpModel(spent3,elapsed,account,useTools){
 // warning - tool_calls resolved with recursion
 // endpoints may provide alternative implementations of completions - watch for bugs
 
-async function relay(depth:number) {
+async function relay(depth:number,from:string) {
 	const debugging=roha.config.debugging&&roha.config.verbose;
 	const now=performance.now();
 	const verbose=roha.config.verbose;
@@ -3879,7 +3881,7 @@ async function relay(depth:number) {
 			}
 			if(replies.length){
 				const content=flattenTables(replies.join("\n"));
-				slopBroadcast(content,emoji);	// was mut
+				slopBroadcast(emoji+" "+content,from);
 				rohaHistory.push({role:"assistant",mut,emoji,name:model,content,elapsed,price:spend});
 			}
 			return spend;
@@ -4033,7 +4035,7 @@ async function relay(depth:number) {
 					echo("[RELAY] validCallResult FALSE");
 				}
 
-				const spent=await relay(depth+1); // Recursive call to process tool results
+				const spent=await relay(depth+1,from); // Recursive call to process tool results
 				spend+=spent;
 			}
 
@@ -4202,7 +4204,7 @@ async function chat() {
 				if(roha.config.returntopush && !lines.length) {
 					echo("auto pushing...");
 					await callCommand("push");
-					await relay(0);
+					await relay(0,"AUTO");
 				}
 				break;
 			}
@@ -4234,7 +4236,7 @@ async function chat() {
 					const info=(grokModel in modelSpecs)?modelSpecs[grokModel]:null;
 					rohaHistory.push({ role: "user", name:rohaNic, content: query });
 					slopBroadcast("> > "+query,rohaNic);
-					await relay(0);
+					await relay(0,rohaNic);
 				}
 			}
 		}else{
@@ -4243,7 +4245,7 @@ async function chat() {
 				if(query.length){
 					const info=(grokModel in modelSpecs)?modelSpecs[grokModel]:null;
 					rohaHistory.push({ role: "user", name:rohaNic, content: query });
-					beginRelay(0);
+					beginRelay(rohaNic);
 					// TODO: slopBroadcast with syncRelay false
 				}
 			}
@@ -4275,7 +4277,6 @@ if (!fileExists) {
 
 // forge lists models from active accounts
 
-
 echo(rohaTitle);
 echo("Running from "+rohaPath);
 
@@ -4294,9 +4295,7 @@ async function enumerateModels(){
 		const elapsed=(performance.now()-t)/1000;
 		if(endpoint) {
 			const count=endpoint.modelList?.length||0;		//",endpoint.modelList
-			if(roha.config.verbose){
-				echoInfo("[FORGE] Connected to",account,count,elapsed.toFixed(2)+"s");
-			}
+			echoInfo("[FORGE] Connected to",account,count,elapsed.toFixed(2)+"s");
 			rohaEndpoint[account]=endpoint;
 			specAccount(account);
 			const lode=roha.lode[account];
