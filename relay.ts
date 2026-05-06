@@ -23,10 +23,10 @@ import { resolve } from "https://deno.land/std/path/mod.ts";
 // Testing with Deno 2.7.14, V8  14.7.173.20-rusty, TypeScript 5.9.2
 
 const brandFountain="nitrologic Relay";
-const fountainVersion="1.8.1";
+const fountainVersion="1.8.2";
 const fountainName=brandFountain+" "+fountainVersion;
 
-const defaultModel="deepseek-v4-flash@deepseek";
+const defaultModel="deepseek-v4-pro@deepseek";	// was -flash
 
 const statusChar=" ꔀ "; //courtesy Vai Syllabary
 const activeChar="❃";
@@ -4062,7 +4062,7 @@ async function relay(depth:number,from:string) {
 			const content=flattenTables(replies.join("\n"));
 			rohaHistory.push({role:"assistant",mut,emoji,name:model,content,elapsed,price:spend});
 			const content2="\n### "+content;
-			slopBroadcast(content2,emoji);	// was mut
+			slopBroadcast(content2,from);	// from was emoji
 		}
 	} catch (error) {
 		const line=error.message || String(error);
@@ -4192,7 +4192,8 @@ async function chat() {
 						if(m.message){
 							// TODO: enforce message content rules
 							const content=m.message.content||m.message.message||JSON.stringify(m.message)||"<nocontent>";
-							lines.push(content);
+							const content2="["+m.from+"] "+content;
+							lines.push(content2);
 							logForge(content,m.from);
 						}
 					}
@@ -4235,7 +4236,7 @@ async function chat() {
 				if(query.length){
 					const info=(grokModel in modelSpecs)?modelSpecs[grokModel]:null;
 					rohaHistory.push({ role: "user", name:rohaNic, content: query });
-					slopBroadcast("> > "+query,rohaNic);
+					slopBroadcast("<"+rohaNic+"> "+query,rohaNic);
 					await relay(0,rohaNic);
 				}
 			}
@@ -4408,8 +4409,6 @@ echo("type /help for latest and exit to quit");
 
 const birds=padChars("𓅷𓅸𓅹𓅺𓅻𓅼𓅽",HairSpace);
 echo(birds);
-
-let acceptPromise=null;
 
 if(roha.config.listen){
 	listenService();

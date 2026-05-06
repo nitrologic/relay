@@ -1,11 +1,12 @@
 // slopbot.ts 
-// A research tool connecting large language models and tiny humans
+// per process discord bots and users
 // Copyright (c) 2026 Simon Armstrong
 // Licensed under the MIT License
 // status messages are sent to standard.error - no use of standard in out
 
 import { Client, GatewayIntentBits, AttachmentBuilder } from "npm:discord.js@14.15.3";
 
+const verbose=false;
 const Splurt=true;	// debug sloppy bot
 
 let sloppyInfo={
@@ -20,7 +21,7 @@ const portNumber=Deno.args[2]||8081;
 
 const slopbot = sloppyInfo[botName];
 
-const sloppyBanner="[SLOPBOT] slopbot 0.21 "+slopbot.emoji+" "+botName+" - "+slopbot.about;
+const sloppyBanner="[SLOPBOT] slopbot 0.22 "+slopbot.emoji+" "+botName+" - "+slopbot.about;
 
 // receive message from fountain /announce and echo to discord bot with splurt
 // keep json flat single line
@@ -149,7 +150,7 @@ async function onSignal(){
 }
 
 async function initSystem(){
-	splurt("Listening for SIGINT");
+	if(verbose) splurt("Listening for SIGINT");
 	Deno.addSignalListener("SIGINT",onSignal);
 	const promise=new Promise<void>((resolve) => {
 		Deno.addSignalListener("SIGINT", () => {
@@ -311,7 +312,7 @@ discordClient.on('messageCreate', async (message) => {
 	}
 	// WIP: below either foggy forwards all user messages or @ mentions in messages get special treatment
     const mentioned=(message.mentions.has(discordClient.user) && !message.author.bot);
-	const forward=(botName=="foggy" && message.author.bot!="foggy");
+	const forward=false;//(botName=="foggy" && message.author.bot!="foggy");
 	if (message.channelId==openChannel && (forward || mentioned)) {
 		const from=message.author.username+"@discord";	//skudmarks@discord
 		const name=message.author.displayName;	
@@ -329,6 +330,8 @@ discordClient.on('messageCreate', async (message) => {
 			}
 			return;
 		}
+		splurt("[MESSAGE]",from,message.content.length);	//	splurt("[User commands in discord channel currently disabled",command,args,from)
+
 		if(message.attachments){
 			message.attachments.forEach(attachment => {
 				// was console.log
@@ -341,12 +344,9 @@ discordClient.on('messageCreate', async (message) => {
 			const blob={messages:[{message:content,from}]};
 			await slopFountain(blob);
 		}
-		if(true||contents.length==0){
+		if(false){// testing wip true||contents.length==0){
 			const quote=quotes[quoteCount++%quotes.length];
 			message.reply("@"+name+" "+quote);
-		}
-		if(false){
-			splurt("[MESSAGE]",message);
 		}
 	}
 });
@@ -366,14 +366,14 @@ await discordClient.login(token)
 await sleep(20e3);
 await connectFountain(portNumber);
 writeFountain("{\"action\":\"connect\"}");
-let portPromise=readFountain();
+let fountainPromise=readFountain();
 let systemPromise=initSystem();
 
 // system - 
 // port
 
 while(true){
-	const race=[portPromise,systemPromise];
+	const race=[fountainPromise,systemPromise];
 	const result=await Promise.race(race);
 	if (result==null) break;
 	if(result.system) {
@@ -382,8 +382,9 @@ while(true){
 		systemPromise=readSystem();
 	}
 	if(result.message) {
+		splurt("result.message");
 		await onFountain(result.message);
-		portPromise=readFountain();		
+		fountainPromise=readFountain();		
 	}
 	splurt("result",result);
 	await(sleep(500));

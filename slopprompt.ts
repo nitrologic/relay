@@ -4,10 +4,14 @@
 
 // [STATUS] messages include listening, connection accepted, 
 
+// work in progress
+
 // uses winner=await Promise.race(race) logic to maintain communications
 // packed tab code style - unsafe typescript formatted with tabs and minimal white space - sorry
 // no abort controllers if you don't mind
-// may crash on complex paste on windows - work in progress
+// may crash on complex paste on windows
+
+const verbose=false;
 
 const vscodeNonce=Deno.env.get("VSCODE_NONCE")||Deno.env.get("VSCODE_INJECTION")||"";
 
@@ -44,12 +48,11 @@ const rxDecoder=new TextDecoder("utf-8",{stream:true});
 // these async functions end up in receiver promise lists
 // retun source,receive,name or source,error,name
 async function readNamedConnection(name:string,connection:Deno.TcpConn){
-	echo("[STATUS] readNamedConnection",name);
 	try{
 		const n=await connection.read(rxBuffer);
+		if(verbose) echo("[STATUS] readNamedConnection",name,n);
 		if(n==null) return {source:connection};
 		const bytes=rxBuffer.subarray(0,n);
-		echo("[STATUS] readNamedConnection",name,n,bytes);
 		return {source:connection,receive:bytes,name};
 	}catch(error){
 		echo("[STATUS] readNamedConnection error",error);
@@ -71,8 +74,9 @@ async function acceptConnections(listener: Deno.Listener) {
 			const name="connection"+connectionCount++;
 			const connection = await listener.accept();
 			slopConnections.set(name, connection);
-			echo("[STATUS] connection accepted", name);
-			readNamedConnection(name, connection).then(result => {receivePromises[name] = result;});
+			if (verbose) echo("[STATUS] connection accepted", name);
+			const receiver=readNamedConnection(name, connection);//.then(result => {receivePromises[name] = result;});
+			receivePromises[name]=receiver;
 		}
 	} catch (e) {
 		echo("[RELAY] acceptConnections error:", e.message);
@@ -84,7 +88,7 @@ export function dropConnections(){
 	if (botListener) {
 		try {
 			botListener.close();
-			echo("[STATUS] bot listener closed");
+			if (verbose) echo("[STATUS] bot listener closed");
 		} catch (e) {
 			echo("[STATUS] error closing bot listener:", e.message);
 		}
@@ -94,14 +98,14 @@ export function dropConnections(){
 	for (const [name, connection] of slopConnections) {
 		try {
 			connection.close();
-			echo("[STATUS] connection dropped:", name);
+			if (verbose) echo("[STATUS] connection dropped:", name);
 		} catch (e) {
 			echo("[STATUS] error dropping connection", name, e.message);
 		}
 	}
 	slopConnections.clear();
 	receivePromises = {};
-	echo("[STATUS] dropConnections complete");
+	if(verbose) echo("[STATUS] dropConnections complete");
 }
 
 export function listenService() {
@@ -173,7 +177,6 @@ const shortcode=JSON.parse(await Deno.readTextFile("./shortcode.json"));
 export function replaceShortCodes(text: string): string {
 	return text.replace(/:([a-z_]+):/g, (match, code) => {return shortcode[code] || match;});
 }
-
 
 // grapheme clusters are the new u8 ???
 
