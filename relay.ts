@@ -374,12 +374,14 @@ const emptyRoha={
 	config:emptyConfig,
 	tags:{},
 	sharedFiles:[],
+	keyedShares:{},
 	attachedFiles:[],
 	saves:[],
 	counters:{},
 	mut:{},
 	lode:{},
 	forge:[],
+	project:"roha",
 	nic:"friend"
 };
 
@@ -2067,13 +2069,14 @@ async function shareCommand(words:string[]){
 }
 
 async function listShare(){
+	const project=roha.project;
 	const list=[];
 	let count=0;
 	const sorted=roha.sharedFiles.slice();
 	sorted.sort((a, b) => b.size - a.size);
 	for (const share of sorted) {
 		const shared=(rohaShares.includes(share.path))?"🔗":"";
-		const tags="[ "+rohaUser+" "+share.tag+"]";	//+rohaTitle
+		const tags="[ "+share.tag+" "+rohaUser+" "+project+" ]";	//+rohaTitle
 		const detail=(share.description)?share.description:"";
 		let size=share.size;
 		try{
@@ -2429,6 +2432,8 @@ async function resetRoha(){
 	grokTemperature=ResetTemperature;
 	rohaShares=[];
 	roha.sharedFiles=[];
+	roha.keyedShares={};
+	roha.project="roha";
 //	roha.tags={};
 	if(roha.config.resetcounters) {
 		roha.counters={};
@@ -2496,6 +2501,9 @@ async function addShare(share){
 	if(share.tag) {
 		await setTag(share.tag,share.id);
 	}
+	// new keyedShares per project sharedFiles
+	const key=roha.project;
+	roha.keyedShares[key]=roha.sharedFiles;
 }
 
 async function shareDir(dir:string, tag:string, depth=1, maxDepth=5) {
@@ -2529,7 +2537,7 @@ async function shareDir(dir:string, tag:string, depth=1, maxDepth=5) {
 				continue;
 			}
 		}
-		echoInfo("Shared",paths.length,"files from",dir,"with tag",tag);
+		echo("[KOHA] shared",paths.length,"files from",dir,"with tag",tag);
 	} catch (error) {
 		echo("shareDir error",String(error)); //.message
 		throw error;
@@ -3153,6 +3161,7 @@ async function callCommand(command:string) {
 						const nic=sanitizeNic(words[1].trim()||"nix");
 						roha.nic=nic;
 						rohaNic=nic;
+						await writeForge();
 					}else{
 						echo(roha.nic);
 					}
@@ -4282,7 +4291,7 @@ if (!fileExists) {
 // forge lists models from active accounts
 
 echo(rohaTitle);
-echo("Running from "+rohaPath);
+echo("Te Hā Roha path:"+rohaPath+" project:"+roha.project);
 
 await flush();
 await readForge();
@@ -4404,10 +4413,10 @@ await flush();
 
 let rohaNic=roha.nic||"nic";
 const sharecount=roha.sharedFiles?.length||0;
-
+const project=roha.project;
 let termSize = Deno.consoleSize();
 echo("console:",termSize);
-echo("user:",{nic:rohaNic,user:rohaUser,sharecount,terminal:userterminal})
+echo("user:",{nic:rohaNic,user:rohaUser,project,sharecount,terminal:userterminal})
 echo("type /help for latest and exit to quit");
 
 const birds=padChars("𓅷𓅸𓅹𓅺𓅻𓅼𓅽",HairSpace);

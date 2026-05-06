@@ -16,7 +16,6 @@ async function dumpNitroRedis(){
 	}
 }
 
-console.log("sloppyredis 0.1");
+console.log("sloppyredis 0.2");
 
 await dumpNitroRedis();
-
