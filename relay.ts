@@ -942,7 +942,7 @@ async function flush() {
 //		console.log(send);
 		const packet=flattenTables(send.join("\n"));
 //		console.log(packet);	//simon was here
-		slopBroadcast(packet,"slop");
+		slopBroadcast("<2 >"+packet,"slop");
 	}
 
 	for (const output of statusBuffer) {
@@ -3881,7 +3881,7 @@ async function relay(depth:number,from:string) {
 			}
 			if(replies.length){
 				const content=flattenTables(replies.join("\n"));
-				slopBroadcast(emoji+" "+content,from);
+				slopBroadcast("<3 >"+emoji+" "+content,from);
 				rohaHistory.push({role:"assistant",mut,emoji,name:model,content,elapsed,price:spend});
 			}
 			return spend;
@@ -4061,8 +4061,8 @@ async function relay(depth:number,from:string) {
 		if(replies.length){
 			const content=flattenTables(replies.join("\n"));
 			rohaHistory.push({role:"assistant",mut,emoji,name:model,content,elapsed,price:spend});
-			const content2="\n### "+content;
-			slopBroadcast(content2,from);	// from was emoji
+			const content2="\n### "+content;			
+			slopBroadcast("<4 assistant>["+from+"]"+content2,from);	// from was emoji
 		}
 	} catch (error) {
 		const line=error.message || String(error);
@@ -4236,8 +4236,10 @@ async function chat() {
 				if(query.length){
 					const info=(grokModel in modelSpecs)?modelSpecs[grokModel]:null;
 					rohaHistory.push({ role: "user", name:rohaNic, content: query });
-					slopBroadcast("<"+rohaNic+"> "+query,rohaNic);
-					await relay(0,rohaNic);
+					// 
+					const from=rohaUser;
+					slopBroadcast("<5"+rohaNic+">["+from+"]"+query,from);
+					await relay(0,from);
 				}
 			}
 		}else{
@@ -4295,7 +4297,7 @@ async function enumerateModels(){
 		const endpoint=await connectAccount(account);
 		const elapsed=(performance.now()-t)/1000;
 		if(endpoint) {
-			const count=endpoint.modelList?.length||0;		//",endpoint.modelList
+			const count="#"+(endpoint.modelList?.length||0);		//",endpoint.modelList
 			echoInfo("[FORGE] Connected to",account,count,elapsed.toFixed(2)+"s");
 			rohaEndpoint[account]=endpoint;
 			specAccount(account);

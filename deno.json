@@ -10,6 +10,7 @@
 		"sloppyhost": "deno run --allow-run --allow-net --allow-env --allow-sys --allow-read sloppy/sloppyhost.ts",
 		"fountain":{"dependencies":["sloprelay"]},
 		"relay":{"dependencies":["sloprelay"]},
+		"bot":{"dependencies":["sloppybot"]},
 		"bots":{"dependencies":["foggybot","sloppybot","riffbot"]},
 		"sloppy":{"dependencies":["fountain","foggybot","sloppybot","riffbot"]}
 	},
