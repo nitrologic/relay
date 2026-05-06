@@ -1,0 +1,5 @@
+{
+	"tasks":{
+		"redis": "deno run --allow-net --allow-env sloppyredis.ts"
+    }
+}
