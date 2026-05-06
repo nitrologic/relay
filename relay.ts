@@ -2428,12 +2428,14 @@ async function writeForge(){
 	}
 }
 
-async function resetRoha(){
+async function resetRoha(all=false){
 	grokTemperature=ResetTemperature;
 	rohaShares=[];
 	roha.sharedFiles=[];
-	roha.keyedShares={};
-	roha.project="roha";
+	if(all){
+		roha.keyedShares={};
+		roha.project="roha";
+	}
 //	roha.tags={};
 	if(roha.config.resetcounters) {
 		roha.counters={};
