@@ -1,6 +1,6 @@
 import { connect } from "jsr:@db/redis";
 
-const password:string = getEnv(VALKEY_REDIS_KEY);
+const password:string = Deno.env.get("VALKEY_REDIS_KEY");
 const redis = await connect({ hostname: "127.0.0.1", port: 6379 , password});
 
 async function dumpNitroRedis(){
