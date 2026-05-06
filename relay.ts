@@ -26,7 +26,7 @@ const brandFountain="nitrologic Relay";
 const fountainVersion="1.8.2";
 const fountainName=brandFountain+" "+fountainVersion;
 
-const defaultModel="deepseek-v4-pro@deepseek";	// was -flash
+const defaultModel="deepseek-v4-flash@deepseek";
 
 const statusChar=" ꔀ "; //courtesy Vai Syllabary
 const activeChar="❃";
@@ -3472,7 +3472,7 @@ function plainHistory(history,model){
 				list.push({role:"system",content});
 				break;
 			case "assistant":{
-					if (roha.config.verbose) echo("[ASSISTANT]",item);
+					if (roha.config.debugging) echo("[ASSISTANT]",item);
 					let entry={role:"assistant",content};
 					if (item.tool_calls) entry.tool_calls = item.tool_calls;
 					if (item.reasoning_content) entry.reasoning_content = item.reasoning_content;
