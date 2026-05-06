@@ -1,6 +1,7 @@
 import { connect } from "jsr:@db/redis";
 
-const redis = await connect({ hostname: "127.0.0.1", port: 6379 });
+const password:string = getEnv(VALKEY_REDIS_KEY);
+const redis = await connect({ hostname: "127.0.0.1", port: 6379 , password});
 
 async function dumpNitroRedis(){
 	const keys = await redis.keys("*");
