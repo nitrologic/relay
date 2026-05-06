@@ -81,6 +81,9 @@ const username=getEnv("USERNAME");
 const userdomain=getEnv("USERDOMAIN").toLowerCase();
 const userregion = Intl.DateTimeFormat().resolvedOptions();
 
+const rohaUser=username+"@"+userdomain;
+
+
 const vscode_nonce=getEnv("VSCODE_NONCE")||getEnv("VSCODE_INJECTION");
 
 const userterminal=vscode_nonce?getEnv("TERM_PROGRAM"):(getEnv("SESSIONNAME")||getEnv("TERM")||"VOID");
@@ -139,8 +142,6 @@ function popHistory():Plop[]|false{
 }
 
 let rohaModel="mut";	//mut name excludes preview version details
-let rohaUser=username+"@"+userdomain;
-
 let grokModel="";
 let grokAccount=null;
 let grokFunctions=true;
@@ -4061,8 +4062,8 @@ async function relay(depth:number,from:string) {
 		if(replies.length){
 			const content=flattenTables(replies.join("\n"));
 			rohaHistory.push({role:"assistant",mut,emoji,name:model,content,elapsed,price:spend});
-			const content2="\n### "+content;			
-			slopBroadcast("<4 assistant>["+from+"]"+content2,from);	// from was emoji
+			const content2="\n### "+content;
+			slopBroadcast("<4assistant>["+from+"]"+content2,from);	// from was emoji
 		}
 	} catch (error) {
 		const line=error.message || String(error);
@@ -4316,7 +4317,7 @@ async function enumerateModels(){
 			}
 	//		echo("[FORGE] endpoint modelList",endpoint.modelList);
 		}else{
-			echoWarning("[FORGE] Endpoint failure for account",account);
+			if(roha.config.debugging) echoWarning("[FORGE] Endpoint failure for account",account);
 		}
 	}
 	await flush();
