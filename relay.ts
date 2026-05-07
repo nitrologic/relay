@@ -1920,7 +1920,7 @@ async function shareSlop(path:string,depth:number){
 		// attachMedia(words);
 		const size=stat.size;
 		const modified=stat.mtime.getTime();
-		echoInfo("Share file path:",path," size:",size," ");
+		echo("Share file path:",path," size:",size," ");
 		const hash=await hashFile(path);
 		echoInfo("hash:",hash);
 		await addShare({path,size,modified,hash,tag});
