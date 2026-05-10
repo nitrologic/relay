@@ -1,3 +1,20 @@
+## HOST: [RYZEN5] SESSION: [1de5eba8-1de5ece2]
+- previous: [1de5e2f7]
+- users: nitro, simonsta, guest_x
+- assistants: deepseek-v4, claude-3.5-sonnet
+
+```log
+1de5eba8 [remote] [RELAY] acceptConnections error: Listener has been closed
+1de5ece1 [roha] model: {"name":"deepseek-v4","brand":"🐋","rate":[0.14,0.028,0.28],"limit":0,"balance":"$-0.9844","modelname":"deepseek-v4-flash@deepseek"}
+1de5ece1 [remote] [STATUS] listening for bots on port 8081
+1de5ece1 [roha] console: {"columns":159,"rows":71}
+1de5ece1 [roha] user: {"nic":"simonsta","user":"nitro@ryzen5","project":"roha","sharecount":26,"terminal":"Console"}
+1de5ece1 [roha] type /help for latest and exit to quit
+1de5ece2 [roha] 𓅷 𓅸 𓅹 𓅺 𓅻 𓅼 𓅽
+```
+
+> users: nitro@ryzen5
+
 created 
 
 3 May 2026

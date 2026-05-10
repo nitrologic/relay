@@ -818,7 +818,7 @@ function echo_row2(...cells:any):void{
 function debugValue(title:string,value:unknown){
 	if(roha.config.debugging){
 		const json=JSON.stringify(value);
-		echo(title,json);
+		echo("[DEBUG]",title,json);
 	}
 }
 
@@ -1041,7 +1041,7 @@ async function geminiSay(content:string,voiceName="Kore"){
 						const audioData=part.inlineData.data;
 						const mimeType=part.inlineData.mimeType;
 						const audioBuffer=decodeBase64(audioData);
-						echo("[GEMINI] inlineData",mimeType,audioBuffer.length);
+						echo("[GEMINI]","inlineData",mimeType,audioBuffer.length);
 						const filename=await saveGeminiSpeech(audioBuffer,mimeType);
 						open(filename);
 					}
@@ -1089,7 +1089,7 @@ async function saveGeminiSpeech(audio: Uint8Array, mimeType:string, metaData:str
 		echo("[SAY]", line);
 		return filePath;
 	} catch (error) {
-		echo("[SAY] Speech save error", error.message);
+		echo("[SAY]","Speech save error", error.message);
 		throw error; // Re-throw to handle the error upstream
 	}
 }
@@ -1124,14 +1124,14 @@ function parseToolResponse(text: string): object {
 
 function prepareGeminiPrompt(payload){
 	const debugging=roha.config.debugging;
-	if(debugging) echo("[GEMINI] payload",payload);
+	if(debugging) echo("[GEMINI]","payload",payload);
 	const contents=[];
 	const sysparts=[];	// GenerateContentRequest systemInstruction content
 	let blob={};
 	for(const item of payload.messages){
-		if(debugging) echo("[GEMINI] item",item);
+		if(debugging) echo("[GEMINI]","item",item);
 		const text=item.content;
-		if(debugging) echo("[GEMINI] text",text);
+		if(debugging) echo("[GEMINI]","text",text);
 		switch(item.role){
 			case "system":
 				sysparts.push({text});
@@ -1151,7 +1151,7 @@ function prepareGeminiPrompt(payload){
 				}
 				break;
 			case "user":{
-					if(debugging) echo("[GEMINI] prepare",item);
+					if(debugging) echo("[GEMINI]","prepare",item);
 					if(item.name=="blob"){
 						blob=JSON.parse(text);
 						continue;
@@ -1160,7 +1160,7 @@ function prepareGeminiPrompt(payload){
 					if(item.name=="image"){
 						const mimeType=blob.type;
 						const data=text;
-						echo("[GEMINI] image",mimeType);
+						echo("[GEMINI]","image",mimeType);
 						contents.push({role:"user",parts:[{inlineData:{mimeType,data}}]});
 						continue;
 					}
@@ -1171,13 +1171,13 @@ function prepareGeminiPrompt(payload){
 				break;
 			case "tool":{
 					try{
-						echo("[GEMINI] item.name",item.name);
+						echo("[GEMINI]","item.name",item.name);
 						const response=parseToolResponse(text);
 						const functionResponse={name:item.name,response};
-						if (debugging) echo("[GEMINI] functionResponse",functionResponse);
+						if (debugging) echo("[GEMINI]","functionResponse",functionResponse);
 						contents.push({role:"function",parts:[{functionResponse}] });
 					}catch(e){
-						echo("[GEMINI] tool crash",e);
+						echo("[GEMINI]","tool crash",e);
 						console.log("text:",text)
 						console.log(e);
 						Deno.exit();
@@ -1204,7 +1204,7 @@ function prepareGeminiPrompt(payload){
 		tools
 	};
 
-	if(debugging) echo("[GEMINI] request",request);
+	if(debugging) echo("[GEMINI]","request",request);
 
 	return request;
 }
@@ -1217,14 +1217,14 @@ async function connectGoogleVoice(){
 //		geminiSpeechClient = new TextToSpeechClient({key:apiKey});
 		geminiSpeechClient = new TextToSpeechClient(apiKey);
 		if(geminiSpeechClient){
-			echo("[GCLOUD] speech client is up but not authenticated");
+			echo("[GCLOUD]","speech client is up but not authenticated");
 /*
 			const result=[];
 			const response=await geminiSpeechClient.listVoices();
 			for (const voice of response.voices) {
 				result.push(voice.name+" "+JSON.stringify(voice));
 			}
-			echo("[GOOGLE] voices\n\t",result.join("\n\t"));
+			echo("[GOOGLE]","voices\n\t",result.join("\n\t"));
 */
 		}
 	} catch (error) {
@@ -1273,7 +1273,7 @@ async function connectGoogle(account,config){
 		for(const model of models.models){
 			const name=model.name+"@"+account;
 			list.push(name);
-//			echo("[GOOOGLE] released",name);
+//			echo("[GOOOGLE]","released",name);
 			const spec={id:model.name,object:"model",owner:"owner"}
 			specModel(spec,account);
 		}
@@ -1294,16 +1294,16 @@ async function connectGoogle(account,config){
 						const model=genAI.getGenerativeModel({model:payload.model});
 						const request=prepareGeminiPrompt(payload);
 						// TODO: hook up ,signal SingleRequestOptions parameter
-						// if(roha.config.debugging) echo("[GEMINI] generateContent",request);
+						// if(roha.config.debugging) echo("[GEMINI]","generateContent",request);
 						const result=await model.generateContent(request);
 						const debugging=roha.config.debugging;
-						if(debugging) echo("[GEMINI] result",result);
+						if(debugging) echo("[GEMINI]","result",result);
 						// gemini was here
 						let text="";
 						try {
 							text=await result.response.text();
 						} catch (error) {
-							if(debugging) echo("[GEMINI] No text in response (likely function call only)");
+							if(debugging) echo("[GEMINI]","No text in response (likely function call only)");
 						}
 //						const text=await result.response.text();
 						const usage=result.response.usageMetadata||{};
@@ -1311,12 +1311,12 @@ async function connectGoogle(account,config){
 						choices.push({message:{content:text}});
 						const calls = result.response.functionCalls(); // Get Gemini's raw function calls
 						if(calls){
-							echo("[GEMINI] toolCall",calls);
+							echo("[GEMINI]","toolCall",calls);
 //							const toolCalls = calls.map((call,index)=>({id:"call_"+(geminiCallCount++),type:"function",function:{name:call.name,arguments:JSON.stringify(call.args)}}));
 							choices[0].message.tool_calls=geminiToolCalls(calls);
-//							echo("[GEMINI] toolCalls",toolCalls);
+//							echo("[GEMINI]","toolCalls",toolCalls);
 //							for(const call of toolCalls){
-//								echo("[GEMINI] toolCall",call);
+//								echo("[GEMINI]","toolCall",call);
 //								choices.push({tool_calls:call});
 //							}
 						}
@@ -1360,13 +1360,13 @@ function anthropicSystem(payload){
 const anthropicStore:Record<string, string>={};
 
 async function anthropicStatus(anthropic,flush=false){
-//	echo("[ANTRHOPIC] File shares");
+//	echo("[ANTRHOPIC]","File shares");
 	const files = await anthropic.beta.files.list({betas: ['files-api-2025-04-14']});
 	for (const file of files.data) {
 		const hash=file.filename;
 		if(flush){
 			await anthropic.beta.files.delete(file.id,{betas:['files-api-2025-04-14']});
-			echo("[CLAUDE] deleted ",file.id);
+			echo("[CLAUDE]","deleted ",file.id);
 		}else{
 			if(hash.length==64){
 				anthropicStore[hash]=file.id;
@@ -1392,7 +1392,7 @@ async function anthropicFile(anthropic,blob){
 	const file = await toFile(fileContent,name,{type:fileType});
 	const result = await anthropic.beta.files.upload({file,betas:['files-api-2025-04-14']});
 	anthropicStore[hash]=result.id;
-	// console.log("[ANTHROPIC] store",blob,result);
+	// console.log("[ANTHROPIC]","store",blob,result);
 	return result.id;
 }
 
@@ -1401,7 +1401,7 @@ async function anthropicMessages(anthropic,payload){
 	let blob={};
 	let blocks=0;
 	for(const item of payload.messages){
-//		console.log("[CLAUDE] item ",item);
+//		console.log("[CLAUDE]","item ",item);
 		switch(item.role){
 			case "user":{
 					const name=item.name;
@@ -1413,7 +1413,7 @@ async function anthropicMessages(anthropic,payload){
 						try{
 							const id=await anthropicFile(anthropic,blob);
 							if(id){
-//								echo("[ANTHROPIC] file ",blob.path,name,id,blocks);
+//								echo("[ANTHROPIC]","file ",blob.path,name,id,blocks);
 								const text="File shared path:"+blob.path+" type:"+blob.type;
 								const content=[
 									{type:"text",text},
@@ -1426,7 +1426,7 @@ async function anthropicMessages(anthropic,payload){
 								messages.push({role:"user",content});
 								blocks++;
 							}else{
-//								echo("[ANTHROPIC] ignoring unsupported file type",blob.path);
+//								echo("[ANTHROPIC]","ignoring unsupported file type",blob.path);
 							}
 						}catch( error){
 							echo("[ANTHROPIC]",error);
@@ -1451,7 +1451,7 @@ async function anthropicMessages(anthropic,payload){
 					}
 					content.push(...tool_use);
 					messages.push({role: "assistant", content});
-					echo("[ANTHROPIC] pushed fountain tool_calls", tool_use.length);
+					echo("[ANTHROPIC]","pushed fountain tool_calls", tool_use.length);
 				}else{
 //					messages.push({role:"assistant",name:item.name,content:item.content});
 					const content=item.name?item.name+": "+item.content:item.content;
@@ -1501,7 +1501,7 @@ async function connectAnthropic(account,config){
 				const spec={id:model.id,object:"model",created:t,owner:"owner"}
 				specModel(spec,account);
 			}else{
-				echo("[CLAUDE] unexpected model type",model);
+				echo("[CLAUDE]","unexpected model type",model);
 			}
 		}
 		modelList.push(...list);
@@ -1601,7 +1601,7 @@ async function connectAnthropic(account,config){
 						};
 
 						// Log for debugging (optional)
-						// echo('[CLAUDE] Response:', { model, choices, usage, finish_reason });
+						// echo('[CLAUDE]","Response:', { model, choices, usage, finish_reason });
 
 						return {
 							id: reply.id || `chatcmpl-${Date.now()}`, // Generate a unique ID if not provided
@@ -1660,7 +1660,7 @@ async function connectDeepSeek(account,config) {
 							body: JSON.stringify(payload),
 						});
 						if (!response.ok) {
-							console.log("[DeepSeek] not ok",response.status,response.statusText);
+							console.log("[DeepSeek]","not ok",response.status,response.statusText);
 							throw new Error("DeepSeek API error "+response.statusText);
 						}
 						return await response.json();
@@ -1689,7 +1689,7 @@ function onSpeak(endpoint, apiKey, config) {
 		};
 		const response = await fetch(url,options);
 		if(!response.ok){
-			echo("[SAY] response not ok",response.statusText);
+			echo("[SAY]","response not ok",response.statusText);
 			return null;
 		}
 		return new Uint8Array(await response.arrayBuffer());
@@ -1762,7 +1762,7 @@ function specAccount(account){
 	}
 	if(roha.config.debugging){
 		const lode=roha.lode[account];
-		echoInfo("[FOUNTAIN] specAccount",account,lode);
+		echoInfo("[FOUNTAIN]","specAccount",account,lode);
 	}
 }
 
@@ -2526,6 +2526,7 @@ async function shareDir(dir:string, tag:string, depth=1, maxDepth=5) {
 				}
 			}
 		}
+		let totalSize=0;
 		for (const path of paths) {
 			try {
 				echo("Sharing",path);
@@ -2534,12 +2535,14 @@ async function shareDir(dir:string, tag:string, depth=1, maxDepth=5) {
 				const modified=stat.mtime.getTime();
 				const hash=await hashFile(path);
 				await addShare({ path, size, modified, hash, tag });
+				totalSize+=size;
 			} catch (error) {
-				echo("[KOHA] shareDir error",path,error.message);
+				echo("[KOHA]","shareDir error",path,error.message);
 				continue;
 			}
 		}
-		echo("[KOHA] shared",paths.length,"files from",dir,"with tag",tag);
+		const total=unitString(totalSize,4,"B");
+		echo("[KOHA]","shared",paths.length,"files from",dir,"with tag",tag,total);
 	} catch (error) {
 		echo("shareDir error",String(error)); //.message
 		throw error;
@@ -2639,12 +2642,12 @@ async function commitShares(tag) {
 			const size=stat.size;
 			if (!stat.isFile) {
 				removedPaths.push(path);
-				echo("[KOHA] Removed invalid path",path);
+				echo("[KOHA]","Removed invalid path",path);
 				dirty=true;
 				continue;
 			}
 			if (size > MaxFileSize) {
-				echo("[KOHA] MaxFileSize breached",path);
+				echo("[KOHA]","MaxFileSize breached",path);
 				dirty=true;
 				continue;
 			}
@@ -2658,9 +2661,9 @@ async function commitShares(tag) {
 					dirty=true;
 					if (!rohaShares.includes(path)) {
 						rohaShares.push(path);
-						echoInfo("[KOHA] Shared path",path);
+						echoInfo("[KOHA]","Shared path",path);
 					}else{
-						echoInfo("[KOHA] Updated share path",path);
+						echoInfo("[KOHA]","Updated share path",path);
 					}
 				}
 			}
@@ -2670,20 +2673,20 @@ async function commitShares(tag) {
 				removedPaths.push(share.path);
 				dirty=true;
 			}
-			echo("[KOHA] commitShares path",share.path);
-			echo("[KOHA] commitShares error",error.message);
+			echo("[KOHA]","commitShares path",share.path);
+			echo("[KOHA]","commitShares error",error.message);
 		}
 	}
 	if (removedPaths.length) {
 		roha.sharedFiles=validShares;
 		await writeForge();
-		echoInfo("[KOHA] commitShares removed", removedPaths.join(" "));
+		echoInfo("[KOHA]","commitShares removed", removedPaths.join(" "));
 	}
 	if (dirty && tag) {
 		rohaHistory.push({ role: "system", title:"Fountain Tool Hint", content: "Feel free to call tag_slop to tag " + tag });
 	}
 	if (count) {
-		echoInfo("[KOHA] Updated files",count,"of",validShares.length);
+		echoInfo("[KOHA]","Updated files",count,"of",validShares.length);
 	}
 	return dirty;
 }
@@ -2924,7 +2927,7 @@ async function gptSay(text:string,voice=DefaultGPTVoice){
 	const provider=modelProvider[1];
 	const endpoint=rohaEndpoint[provider];
 	if(!endpoint.tts){
-		echo("[SAY] no tts on endpoint",provider);
+		echo("[SAY]","no tts on endpoint",provider);
 		return;
 	}
 	const packet={input:text,model:modelname,format:voice.format,voice:voice.name};
@@ -2935,7 +2938,7 @@ async function gptSay(text:string,voice=DefaultGPTVoice){
 		echo("[SAY]",audioPath);
 		open(audioPath);
 	}else{
-		echo("[SAY] endpoint tts speak failure",packet);
+		echo("[SAY]","endpoint tts speak failure",packet);
 	}
 }
 
@@ -2948,7 +2951,7 @@ async function auditionCommand(words){
 		await gptSay(text,{name:voice,format:"mp3",model:"gpt-audio@openai"});
 	}
 	return;
-	echo("[AUDITION] no voice groups in line, please modify and rebuild - async function auditionCommand" );
+	echo("[AUDITION]","no voice groups in line, please modify and rebuild - async function auditionCommand" );
 	return;
 	for(const voice of GeminiVoices){
 		const text="Hi, I am "+voice+" a Gemini voice."
@@ -2965,7 +2968,7 @@ async function auditionCommand(words){
 async function sayCommand(words){
 	const messages=rohaHistory;
 	const message=messages.at(-1);
-//	echo("[SAY] ",message);
+//	echo("[SAY]",message);
 //	await gptSay(message.content);
 	await geminiSay(message.content);
 }
@@ -3324,7 +3327,7 @@ async function callCommand(command:string) {
 				return false; // Command not recognized
 		}
 	} catch (error) {
-		echo("[FOUNTAIN] callCommand error",command,error.message,error.stack);
+		echo("[FOUNTAIN]","callCommand error",command,error.message,error.stack);
 	}
 	increment("calls");
 	return dirty;
@@ -3442,7 +3445,7 @@ async function processToolCalls(calls) {
 	for (const tool of calls) {
 		const id=tool.id || !tool.function?.name
 		const name=tool.function?.name || "unknown";
-		if(roha.config.debugging) echo("[RELAY] processToolCalls",id,tool);
+		if(roha.config.debugging) echo("[RELAY]","processToolCalls",id,tool);
 		if (!tool.id || !tool.function?.name) {
 			const id=tool.id || "unknown";
 			const result={tool_call_id: id, name, content: JSON.stringify({error: "Invalid tool call format"})};
@@ -3457,7 +3460,7 @@ async function processToolCalls(calls) {
 			rohaCallNames[id]=name;
 			results.push({tool_call_id:id, name, content:result});
 		} catch (e) {
-			echo("[RELAY] processToolCalls error",e);
+			echo("[RELAY]","processToolCalls error",e);
 		}
 	}
 	return results;
@@ -3720,12 +3723,12 @@ async function bumpModel(spent3,elapsed,account,useTools){
 		mutspec.completion_tokens=(mutspec.completion_tokens|0)+spent3[2];
 		// TODO: explain hasForge false condition
 		if(useTools && mutspec.hasForge!==true){
-			echo("[RELAY] enabling forge for",grokModel);
+			echo("[RELAY]","enabling forge for",grokModel);
 			mutspec.hasForge=true;
 			await writeForge();
 		}
 	}else{
-		echo("[RELAY] debugging spend 2");
+		echo("[RELAY]","debugging spend 2");
 	}
 	return spend;
 }
@@ -3758,19 +3761,19 @@ async function relay(depth:number,from:string) {
 	const size=measure(rohaHistory);
 
 
-//	if(verbose)echo("[RELAY] ",depth,mut);
+//	if(verbose)echo("[RELAY]","",depth,mut);
 	try {
 	// prepare payload
 		payload={model};
 		if(strictMode || responses){
-//			echo("[RELAY] strictMode");
+//			echo("[RELAY]","strictMode");
 			payload.messages=strictHistory(rohaHistory);
 		}else if(multiMode){
-//			echo("[RELAY] multiMode");
+//			echo("[RELAY]","multiMode");
 			// warning - not compatible with google generative ai api
 			payload.messages=multiHistory(rohaHistory)
 		}else{
-//			echo("[RELAY] plainMode");
+//			echo("[RELAY]","plainMode");
 			payload.messages=plainHistory(rohaHistory,model)
 		}
 		// if(config.hasCache) payload.cache_tokens=true;
@@ -3795,7 +3798,7 @@ async function relay(depth:number,from:string) {
 
 		if(debugging){
 			const dump=JSON.stringify(payload,null,"\t");
-			console.warn("[RELAY] payload",dump);
+			console.warn("[RELAY]","payload",dump);
 		}
 		//[RELAY] unhandled error 404 This is not a chat model and thus not supported in the v1/chat/completions endpoint. Did you mean to use v1/completions?
 		//[RELAY] Error: 404 This is not a chat model and thus not supported in the v1/chat/completions endpoint. Did you mean to use v1/completions?
@@ -3830,7 +3833,7 @@ async function relay(depth:number,from:string) {
 			}
 
 			if (response.model != model) {
-				echo("[RELAY] model reset",response.model||"???",model);
+				echo("[RELAY]","model reset",response.model||"???",model);
 				const name=response.model+"@"+account;
 				resetModel(name);
 			}
@@ -3905,7 +3908,7 @@ async function relay(depth:number,from:string) {
 
 		const chatendpoint=endpoint.chat;
 		if(!chatendpoint?.completions){
-			echo("[RELAY] model chat completions failure",model);
+			echo("[RELAY]","model chat completions failure",model);
 			return spend;
 		}
 
@@ -3915,7 +3918,7 @@ async function relay(depth:number,from:string) {
 
 		// TODO: detect -latest modelnames rerouting to real instances
 		if (completion.model != model) {
-			echo("[RELAY] model reset",completion.model||"???",model);
+			echo("[RELAY]","model reset",completion.model||"???",model);
 			const name=completion.model+"@"+account;
 			resetModel(name);
 		}
@@ -3929,7 +3932,7 @@ async function relay(depth:number,from:string) {
 		const spent=[usage.prompt_tokens | 0,usage.completion_tokens | 0];
 		grokUsage += spent[0]+spent[1];
 
-		// echo("[relay] debugging spend 0",grokModel,usage);
+		// echo("[RELAY]","debugging spend 0",grokModel,usage);
 		// todo: roha.mut[] -> roha.mutspec[]
 		// move to bumpModel
 		if(grokModel in roha.mut){
@@ -3972,12 +3975,12 @@ async function relay(depth:number,from:string) {
 			mutspec.completion_tokens=(mutspec.completion_tokens|0)+spent[1];
 			// TODO: explain hasForge false condition
 			if(useTools && mutspec.hasForge!==true){
-				echo("[RELAY] enabling forge for",mut);
+				echo("[RELAY]","enabling forge for",mut);
 				mutspec.hasForge=true;
 				await writeForge();
 			}
 		}else{
-			echo("[RELAY] debugging spend 2");
+			echo("[RELAY]","debugging spend 2");
 		}
 		let cost="("+usage.prompt_tokens+"+"+usage.completion_tokens+"["+grokUsage+"])";
 		if(spend) {
@@ -4007,7 +4010,7 @@ async function relay(depth:number,from:string) {
 			// choice has index message{role,content,refusal,annotations} finish_reason
 			if (calls) {
 				const count=increment("calls");
-				if(debugging) echo("[RELAY] calls in progress",depth,count)
+				if(debugging) echo("[RELAY]","calls in progress",depth,count)
 				// TODO: map toolcalls index
 				// TODO: validate tool.function.arguments
 				const toolCalls=calls.map((tool, index) => ({
@@ -4021,13 +4024,13 @@ async function relay(depth:number,from:string) {
 					try {
 						JSON.parse(JSON.stringify(call));
 					} catch (e) {
-						echo("[RELAY] toolcall failure:", call.function.arguments);
+						echo("[RELAY]","toolcall failure:", call.function.arguments);
 						validCallResult=false;
 					}
 				}
 				if(validCallResult){
-					if(debugging) echo("[RELAY] validCallResult",choice);
-//					echo("[RELAY] validCallResult",choice.message);
+					if(debugging) echo("[RELAY]","validCallResult",choice);
+//					echo("[RELAY]","validCallResult",choice.message);
 					let item={role:"assistant",name:payload.model,tool_calls:toolCalls}
 					if(choice.message.content) item.content=choice.message.content;
 					if(choice.message.reasoning_content) item.reasoning_content=choice.message.reasoning_content;
@@ -4040,11 +4043,11 @@ async function relay(depth:number,from:string) {
 						const name=rohaCallNames[id];
 						const content = result.content;
 						const item={role:"tool",title,name,tool_call_id:id,content};
-//						echo("[RELAY] pushing tool result",item);
+//						echo("[RELAY]","pushing tool result",item);
 						rohaHistory.push(item);
 					}
 				}else{
-					echo("[RELAY] validCallResult FALSE");
+					echo("[RELAY]","validCallResult FALSE");
 				}
 
 				const spent=await relay(depth+1,from); // Recursive call to process tool results
@@ -4092,17 +4095,17 @@ async function relay(depth:number,from:string) {
 		}
 		const HuggingFace402="You have exceeded your monthly included credits for Inference Providers. Subscribe to PRO to get 20x more monthly included credits."
 		if(line.includes(HuggingFace402)){
-			echoWarning("[RELAY] Hugging Face Error depth",depth,line);
+			echoWarning("[RELAY]","Hugging Face Error depth",depth,line);
 			return spend;
 		}
 		const KimiK2400="Your request exceeded model token limit";
 		if(line.includes(KimiK2400)){
-			echoWarning("[RELAY] Kimi K2 Error depth",depth,line);
+			echoWarning("[RELAY]","Kimi K2 Error depth",depth,line);
 			return spend;
 		}
 		const KimiK2429="Your account"; //Error: 429 .... is suspended, please check your plan and billing details
 		if(line.includes(KimiK2429)){
-			echoWarning("[RELAY] Kimi K2 Account Error depth",depth,line);
+			echoWarning("[RELAY]","Kimi K2 Account Error depth",depth,line);
 			return spend;
 		}
 		// error:{"type":"error","error":{"type":"rate_limit_error",
@@ -4114,7 +4117,7 @@ async function relay(depth:number,from:string) {
 
 		const GenAIError="[GoogleGenerativeAI Error]";
 		if(line.includes(GenAIError)){
-			echo("[GEMINI] unhandled error",error.message);
+			echo("[GEMINI]","unhandled error",error.message);
 			echo(error.stack);
 			return spend;
 		}
@@ -4140,11 +4143,11 @@ async function relay(depth:number,from:string) {
 
 		//		echo("unhandled error line",line);
 
-		echo("[RELAY] unhandled error",error.message);
+		echo("[RELAY]","unhandled error",error.message);
 		echo("[RELAY]",error.stack);
 		if(debugging){
 			const dump=JSON.stringify(payload,null,"\t");
-			echo("[RELAY] dump payload",dump);
+			echo("[RELAY]","dump payload",dump);
 		}
 	}
 	return spend;
