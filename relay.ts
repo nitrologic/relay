@@ -77,8 +77,8 @@ function getEnv(key:string):string{
 	return Deno.env.get(key)||"";
 }
 
-const username=getEnv("USERNAME");
-const userdomain=getEnv("USERDOMAIN").toLowerCase();
+const username=getEnv("USERNAME")||getEnv("USER");
+const userdomain=(getEnv("USERDOMAIN")||Deno.hostname()).toLowerCase();
 const userregion = Intl.DateTimeFormat().resolvedOptions();
 
 const rohaUser=username+"@"+userdomain;
@@ -1920,7 +1920,7 @@ async function shareSlop(path:string,depth:number){
 		// attachMedia(words);
 		const size=stat.size;
 		const modified=stat.mtime.getTime();
-		echo("Share file path:",path," size:",size," ");
+		echo("[KOHA] Share file path:",path," size:",size," ");
 		const hash=await hashFile(path);
 		echoInfo("hash:",hash);
 		await addShare({path,size,modified,hash,tag});
@@ -2401,6 +2401,7 @@ async function readForge(){
 		if(!roha.forge) roha.forge=[];
 		if(!roha.lode) roha.lode={};
 		if(!roha.nic) roha.nic=sanitizeNic(username);
+		if(!roha.keyedShares) roha.keyedShares={};
 	} catch (error) {
 		console.error("Error reading or parsing",rohaPath,error);
 		roha=emptyRoha;
@@ -2504,7 +2505,7 @@ async function addShare(share){
 		await setTag(share.tag,share.id);
 	}
 	// new keyedShares per project sharedFiles
-	const key=roha.project;
+	const key=roha.project||"roha";
 	roha.keyedShares[key]=roha.sharedFiles;
 }
 
@@ -2529,7 +2530,7 @@ async function shareDir(dir:string, tag:string, depth=1, maxDepth=5) {
 		let totalSize=0;
 		for (const path of paths) {
 			try {
-				echo("Sharing",path);
+				echo("[KOHA] Sharing",path);
 				const stat=await Deno.stat(path);
 				const size=stat.size||0;
 				const modified=stat.mtime.getTime();
@@ -3277,7 +3278,8 @@ async function callCommand(command:string) {
 				}
 				break;
 			case "reset":
-				await resetRoha();
+				const all=true;
+				await resetRoha(all);
 				break;
 			case "cd":
 				if(words.length>1){
