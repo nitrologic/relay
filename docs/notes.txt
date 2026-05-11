@@ -1,3 +1,19 @@
+[root@ali grid600]# du -sh topogrid/
+77G	topogrid/
+[root@ali grid600]# du -sh roagrid/
+36G	roagrid/
+[root@ali grid600]# du -sh aerialgrid/
+131G	aerialgrid/
+[root@ali grid600]# 
+
+[skid@archlinux grid]$ du -sh aerialgrid/
+131G	aerialgrid/
+[skid@archlinux grid]$ du -sh roagrid/
+36G	roagrid/
+[skid@archlinux grid]$ du -sh topogrid/
+77G	topogrid/
+
+
 ## HOST: [RYZEN5] SESSION: [1de5eba8-1de5ece2]
 - previous: [1de5e2f7]
 - users: nitro, simonsta, guest_x
