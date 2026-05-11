@@ -8,6 +8,82 @@ A research tool for advanced model manipulation.
 
 Timestamps in logging files use slopmarks, a hexadecimal encoding of sixteenths of a second since 2025.4.12.
 
+## roadmap
+
+### web search
+
+To consider: 
+
+* config search on
+* implementation per API with account hints and tool billing
+
+
+> openai
+
+```
+import OpenAI from 'openai';
+
+const client = new OpenAI({
+	apiKey: process.env.OPENAI_API_KEY
+});
+
+const response = await client.responses.create({
+	model: 'gpt-5.5',
+	tools: [
+		{ type: 'web_search' }
+	],
+	input: 'What are the latest RP2350 announcements?'
+});
+
+console.log(response.output_text);
+```
+
+> anthropic webSearch
+
+```
+
+import Anthropic from '@anthropic-ai/sdk';
+
+const anthropic = new Anthropic({
+	apiKey: process.env.ANTHROPIC_API_KEY
+});
+
+const response = await anthropic.messages.create({
+	model: 'claude-sonnet-4-20250514',
+	max_tokens: 512,
+	tools: [
+		{
+			type: 'web_search_20250305',
+			name: 'web_search'
+		}
+	],
+	messages: [
+		{
+			role: 'user',
+			content: 'What are the latest RP2350 announcements?'
+		}
+	]
+});
+
+console.log(response);
+```
+
+> xai tools webSearch 
+
+```
+import { xai } from '@ai-sdk/xai';
+import { generateText } from 'ai';
+const { text, sources } = await generateText({
+  model: xai.responses('grok-4.3'),
+  prompt: 'What is xAI?',
+  tools: {
+    web_search: xai.tools.webSearch(),
+  },
+});
+console.log(text);
+console.log('Citations:', sources);
+```
+
 ## documentation
 
 CLI Reference Manual - forge user documentation [forge.md](forge.md)

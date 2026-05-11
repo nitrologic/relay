@@ -50,6 +50,7 @@
 		"docs": "https://docs.x.ai/docs/overview",
 		"platform":"https://console.x.ai",
 		"api": "OpenAI",
+		"search": "XAI",
 		"locale": "en-US"
 	},
 	"gemini": {
