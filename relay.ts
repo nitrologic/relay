@@ -4298,7 +4298,7 @@ if (!fileExists) {
 // forge lists models from active accounts
 
 echo(rohaTitle);
-echo("Te Hā Roha path:"+rohaPath+" project:"+roha.project);
+echo("path:\""+rohaPath+"\" project:"+roha.project);
 
 await flush();
 await readForge();
