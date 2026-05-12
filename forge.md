@@ -1,4 +1,4 @@
-# nitrologic-forge CLI Reference Manual
+# nitrologic Forge Relay CLI Reference Manual
 
 The forge text interfaces is designed for research tools such as Slop Relay⛲ to chat and share files with models under test.
 
@@ -13,19 +13,20 @@ Default values are typically:
 * 0 squash : squash message sequences in output : false
 * 1 reasonoutloud : echo chain of thought : false
 * 2 tools : enable model tool interface : false
-* 3 commitonstart : commit shared files on start : true
-* 4 saveonexit :  save conversation history on exit : false
-* 5 ansi : markdown ANSI rendering : true
-* 6 verbose : emit debug information : false
-* 7 broken : ansi background blocks : false
-* 8 logging : log all output to file : true
-* 9 debugging : emit diagnostics : false
-* 10 pushonshare : emit a /push after any /share : false
-* 11 rawprompt : experimental rawmode stdin - broken paste : true
-* 12 resetcounters : factory reset when reset : false
-* 13 returntopush : hit return to /push - under test : false
-* 14 slow : experimental output at reading speed : false
-* 15 slops : console worker scripts : false
+* 3 search : enable model websearch tool interface : false
+* 4 commitonstart : commit shared files on start : true
+* 5 saveonexit :  save conversation history on exit : false
+* 6 ansi : markdown ANSI rendering : true
+* 7 verbose : emit debug information : false
+* 8 broken : ansi background blocks : false
+* 9 logging : log all output to file : true
+* 10 debugging : emit diagnostics : false
+* 11 pushonshare : emit a /push after any /share : false
+* 12 rawprompt : experimental rawmode stdin - broken paste : true
+* 13 resetcounters : factory reset when reset : false
+* 14 returntopush : hit return to /push - under test : false
+* 15 slow : experimental output at reading speed : false
+* 16 slops : console worker scripts : false
 
 ### /temp
 

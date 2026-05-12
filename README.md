@@ -10,6 +10,18 @@ Timestamps in logging files use slopmarks, a hexadecimal encoding of sixteenths 
 
 ## roadmap
 
+## project support
+
+* ~/history.log
+* ~/relay.md
+
+when project active history.log shares from forge.log
+
+shares are keyed per project 
+
+> roha.keyedShares[key]=roha.sharedFiles;
+
+
 ### web search
 
 To consider: 

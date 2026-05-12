@@ -18,7 +18,9 @@ import { TextToSpeechClient } from "npm:@google-cloud/text-to-speech";
 
 import { decodeBase64, encodeBase64 } from "https://deno.land/std/encoding/base64.ts";
 import { expandGlob } from "https://deno.land/std/fs/mod.ts";
-import { resolve } from "https://deno.land/std/path/mod.ts";
+import { resolve,basename } from "https://deno.land/std/path/mod.ts";
+import { dirname } from "node:path";
+import { exists } from "https://deno.land/std@0.224.0/fs/exists.ts";
 
 // Testing with Deno 2.7.14, V8  14.7.173.20-rusty, TypeScript 5.9.2
 
@@ -327,6 +329,7 @@ const flagNames={
 	squash : "squash message sequences in output",
 	reasonoutloud : "echo chain of thought",
 	tools : "enable model tool interface",
+	search : "enable search tool interface",
 	commitonstart : "commit shared files on start",
 	saveonexit : " save conversation history on exit",
 	ansi : "markdown ANSI rendering",
@@ -375,6 +378,7 @@ const emptyRoha={
 	tags:{},
 	sharedFiles:[],
 	keyedShares:{},
+	keyedProjects:{},
 	attachedFiles:[],
 	saves:[],
 	counters:{},
@@ -2402,6 +2406,7 @@ async function readForge(){
 		if(!roha.lode) roha.lode={};
 		if(!roha.nic) roha.nic=sanitizeNic(username);
 		if(!roha.keyedShares) roha.keyedShares={};
+		if(!roha.keyedProjects) roha.keyedProjects={};
 	} catch (error) {
 		console.error("Error reading or parsing",rohaPath,error);
 		roha=emptyRoha;
@@ -2435,6 +2440,7 @@ async function resetRoha(all=false){
 	roha.sharedFiles=[];
 	if(all){
 		roha.keyedShares={};
+		roha.keyedProjects={};
 		roha.project="roha";
 	}
 //	roha.tags={};
@@ -2500,6 +2506,13 @@ async function addShare(share){
 			roha.sharedFiles.splice(index,1);
 		}
 		roha.sharedFiles.push(share);
+		const name=basename(share.path);
+		const dirpath=dirname(share.path);
+		const dir=basename(dirpath);
+		echo("[SHARE]",share.path,name,dir,dirpath);
+		if(name=="relay.md"){
+			await setProject(dir,dirpath);
+		}
 	}
 	if(share.tag) {
 		await setTag(share.tag,share.id);
@@ -2690,6 +2703,47 @@ async function commitShares(tag) {
 		echoInfo("[KOHA]","Updated files",count,"of",validShares.length);
 	}
 	return dirty;
+}
+
+function listProjects(projects){
+	for(const key of Object.keys(projects)){
+		const star=(key==roha.project)?"*":""; 
+		echo("[KEY] project:",key+star)
+	}
+}
+
+function projectCommand(words){
+	if (words.length==1){
+		listProjects(roha.keyedProjects);
+	}else{
+		const name=words.slice(1).join(" ");
+		if(Object.hasOwn(roha.keyedProjects,name)){
+			echo("[PROJECT] project key found for name:",name)
+		}
+		if(Object.hasOwn(roha.keyedShares,name)){
+			echo("[PROJECT] shares key found for name:",name)
+//			setProject(name,path);
+		}
+	}
+}
+
+async function setProject(name,path){
+	echo("[PROJECT]",name,path);
+	const key=name;
+	if(Object.hasOwn(roha.keyedProjects,key)){
+		echo("[PROJECT] project exists",key);	
+	}else{
+		roha.keyedProjects[key]={key,path,name};
+	}
+	roha.project=key;
+
+//	roha.keyedShares[key];
+//	logpath=path
+	const history=path+"/history.log";
+	const exists=await pathExists(history);
+	if(exists){
+		echo("[PROJECT] history",history);	
+	}
 }
 
 async function setTag(name,note){
@@ -3195,6 +3249,10 @@ async function callCommand(command:string) {
 				break;
 			case "time":
 				echo("Local time:", new Date().toString());
+				break;
+			case "project":
+				await projectCommand(words);
+				echo("=)");
 				break;
 			case "say":
 				await sayCommand(words);
@@ -4298,7 +4356,9 @@ if (!fileExists) {
 // forge lists models from active accounts
 
 echo(rohaTitle);
-echo("path:\""+rohaPath+"\" project:"+roha.project);
+
+echo("path: \""+rohaPath+"\"");
+echo("project: \""+roha.project+"\"");
 
 await flush();
 await readForge();
