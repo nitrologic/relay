@@ -30,7 +30,7 @@ import { describe } from "node:test";
 // Testing with Deno 2.7.14, V8  14.7.173.20-rusty, TypeScript 5.9.2
 
 const brandFountain="nitrologic Relay";
-const fountainVersion="1.8.4";
+const fountainVersion="1.8.5";
 const fountainName=brandFountain+" "+fountainVersion;
 
 const defaultModel="deepseek-v4-flash@deepseek";
@@ -2518,12 +2518,12 @@ async function addShare(share){
 			roha.sharedFiles.splice(index,1);
 		}
 		// new format needs context
-		echo("[ADDSHARE]",share);
+		// echo("[ADDSHARE]",share);
 		roha.sharedFiles.push(share);
 		const name=basename(share.path);
 		const dirpath=dirname(share.path);
 		const dir=basename(dirpath);
-		echo("[SHARE]",share.path,name,dir,dirpath);
+		// echo("[SHARE]",share.path,name,dir,dirpath);
 		if(name=="relay.md"){
 			await setProject(dir,dirpath);
 		}
@@ -2732,6 +2732,7 @@ function listProjects(projects,shares){
 }
 
 async function setProject(name,path){
+	dropShares();
 	echo("[KEY] setProject",name,path);
 	const key=name;
 	// TODO: set current roha.project in keyedProjects?
