@@ -843,7 +843,7 @@ async function logForge(lines:string,id:string){
 		let path=resolve(forgePath,"forge.log");
 		await Deno.writeTextFile(path,block,{append:true});
 		if(projectHistory){
-			if(id!="roha") {
+			if(id!="roha" && id!="remote") {
 				await Deno.writeTextFile(projectHistory,block,{append:true});
 			}
 		}
