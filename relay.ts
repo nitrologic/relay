@@ -1,10 +1,14 @@
-// sloprelay.ts - a research tool for dunking large language models
+// relay.ts - a nitrologic research tool for dunking large language models
 // Copyright (c) 2026 Simon Armstrong
 // Licensed under the MIT License
 
 // packed tab code style - unsafe typescript formatted with tabs and minimal white space
 // relay(depth,from)
 
+// todo: command handlers use namecommand() entry points
+// historyCommand session count per day and model traffic
+// shareCommand - uses Deno.cwd
+// dir cd - navigate application cwd
 
 // ⛲🪣🐸🪠🐋🜁🐉🏛️❁𝕏🌟💫🌏📆💰👀🤖🫦💻👄🔧🧊❃🎙️🔉📷🖼️🗣️📡👁🧮📠⣯⛅⚙️🗜️🧰 🌕🌙✿
 
@@ -21,11 +25,12 @@ import { expandGlob } from "https://deno.land/std/fs/mod.ts";
 import { resolve,basename } from "https://deno.land/std/path/mod.ts";
 import { dirname } from "node:path";
 import { exists } from "https://deno.land/std@0.224.0/fs/exists.ts";
+import { describe } from "node:test";
 
 // Testing with Deno 2.7.14, V8  14.7.173.20-rusty, TypeScript 5.9.2
 
 const brandFountain="nitrologic Relay";
-const fountainVersion="1.8.2";
+const fountainVersion="1.8.4";
 const fountainName=brandFountain+" "+fountainVersion;
 
 const defaultModel="deepseek-v4-flash@deepseek";
@@ -54,26 +59,20 @@ const rohaGuide=[
 // startup config
 
 const welcome=await Deno.readTextFile("welcome.txt");
-
 const mutsInclude="models under test include "
 const cleanupRequired="Switch model, drop shares or reset history to continue.";
 const warnDirty="Files shared. Feel free to comment if content is new or different.";
 const exitMessage="Ending session.";
 const rule500= "━".repeat(500);
 const pageBreak=rule500;
-
 const boxChars=["╭╮╰╯─┬┴│┤├┼","┌┐└┘─┬┴│┤├┼","╔╗╚╝═╦╩║╣╠╬","┏┓┗┛━┳┻┃┫┣╋"];
-
 const TextVariant="\uFE0E";
 const ZeroWidthJoiner="\uFE0F";
 const NonBreakingSpace="\u00a0";
-
 const EnSpace="\u2002";
 const EmSpace="\u2003";
-
 const ThinSpace="\u2009";	//" "
 const HairSpace="\u200A";
-
 
 function getEnv(key:string):string{
 	return Deno.env.get(key)||"";
@@ -82,14 +81,9 @@ function getEnv(key:string):string{
 const username=getEnv("USERNAME")||getEnv("USER");
 const userdomain=(getEnv("USERDOMAIN")||Deno.hostname()).toLowerCase();
 const userregion = Intl.DateTimeFormat().resolvedOptions();
-
 const rohaUser=username+"@"+userdomain;
-
-
 const vscode_nonce=getEnv("VSCODE_NONCE")||getEnv("VSCODE_INJECTION");
-
 const userterminal=vscode_nonce?getEnv("TERM_PROGRAM"):(getEnv("SESSIONNAME")||getEnv("TERM")||"VOID");
-
 const Pail=vscode_nonce?"🪣 ":"🪣";
 
 type ConfigFlags = {
@@ -113,6 +107,7 @@ type ConfigFlags = {
 	budget: false;
 	syncRelay: boolean;
 	listen: boolean;
+	project: boolean;
 	thinking: boolean;
 };
 
@@ -130,6 +125,7 @@ class Plop {
 
 let rohaHistory:Plop[]=[];
 let rohaCallNames={};
+let projectHistory="";
 
 const sessionStack:Plop[][]=[];
 
@@ -346,7 +342,8 @@ const flagNames={
 	budget : "cheap models for the win",
 	syncRelay : "one thing at a time mode",
 	listen : "listen for remote connections on port 8081",
-	thinking : "enable thinking mode with dual prupose models"
+	project : "load current project on start",
+	thinking : "enable thinking mode with dual purpose models"
 };
 
 const emptyConfig:ConfigFlags={
@@ -373,10 +370,16 @@ const emptyConfig:ConfigFlags={
 	thinking:true
 };
 
+interface Share{
+	id:string,
+	path:string,
+	name:string
+};
+
 const emptyRoha={
 	config:emptyConfig,
 	tags:{},
-	sharedFiles:[],
+	sharedFiles:Array<Share>,//[],
 	keyedShares:{},
 	keyedProjects:{},
 	attachedFiles:[],
@@ -451,24 +454,25 @@ function increment(key){
 // all models are here - with and without spec
 
 let modelList=[];
-let lodeList=[];
-
-// never read - work in progress
-
-let tagList=[];
-let shareList=[];
-let memberList=[];
+let accountList=[];
 
 const emptyMUT={notes:[],errors:[],relays:0,cost:0,elapsed:0,created:0}
-const emptyModel={name:"empty",account:"",hidden:false,prompts:0,completion:0}
-const emptyTag={}
 
+// deprecated 2026.5.14
+// never read - work in progress
+// let tagList=[];
+// let shareList=[];
+// let memberList=[];
+// const emptyModel={name:"empty",account:"",hidden:false,prompts:0,completion:0}
+// const emptyTag={}
 // const emptyShare={path,size,modified,hash,tag,id}
 
+
+
 let roha=emptyRoha;
+let rohaSharePaths=[];
 let listCommand="";
 let creditCommand="";
-let rohaShares=[];
 let currentDir=Deno.cwd();
 
 function resetHistory(){
@@ -835,8 +839,14 @@ async function logForge(lines:string,id:string){
 			line=time+" ["+id+"] "+line+"\n";
 			list.push(line);
 		}
+		const block=list.join("\n");
 		let path=resolve(forgePath,"forge.log");
-		await Deno.writeTextFile(path,list.join("\n"),{append:true});
+		await Deno.writeTextFile(path,block,{append:true});
+		if(projectHistory){
+			if(id!="roha") {
+				await Deno.writeTextFile(projectHistory,block,{append:true});
+			}
+		}
 	}
 }
 
@@ -1905,8 +1915,8 @@ function dropShares(){
 		}
 	}
 	if(dirty)echo("content removed from history");
-	if(rohaShares.length){
-		rohaShares=[];
+	if(rohaSharePaths.length){
+		rohaSharePaths=[];
 		echo("all shares dropped");
 	}
 	if(roha.config.commitShares) echo("With commitShares enabled consider /reset.")
@@ -2074,12 +2084,12 @@ async function shareCommand(words:string[]){
 
 async function listShare(){
 	const project=roha.project;
-	const list=[];
+//	const list=[];
 	let count=0;
 	const sorted=roha.sharedFiles.slice();
 	sorted.sort((a, b) => b.size - a.size);
 	for (const share of sorted) {
-		const shared=(rohaShares.includes(share.path))?"🔗":"";
+		const shared=(rohaSharePaths.includes(share.path))?"🔗":"";
 		const tags="[ "+share.tag+" "+rohaUser+" "+project+" ]";	//+rohaTitle
 		const detail=(share.description)?share.description:"";
 		let size=share.size;
@@ -2093,10 +2103,10 @@ async function listShare(){
 		if(size){
 			const hash="";//share.hash;
 			echo((count++),share.path,unitString(size),shared,tags,detail,hash);
-			list.push(share.id);
+//			list.push(share.id);
 		}
 	}
-	shareList=list;
+//	shareList=list;
 }
 
 async function listSaves(){
@@ -2434,14 +2444,16 @@ async function writeForge(){
 	}
 }
 
-async function resetRoha(all=false){
+async function resetCommand(all=false){
 	grokTemperature=ResetTemperature;
-	rohaShares=[];
+	rohaSharePaths=[];
 	roha.sharedFiles=[];
+	roha.project="roha";
 	if(all){
 		roha.keyedShares={};
 		roha.keyedProjects={};
-		roha.project="roha";
+//		currentDir=Deno.cwd();
+//		Deno.chdir(currentDir);
 	}
 //	roha.tags={};
 	if(roha.config.resetcounters) {
@@ -2454,7 +2466,7 @@ async function resetRoha(all=false){
 	increment("resets");
 	await writeForge();
 	resetHistory();
-	echo("resetRoha","All shares and history reset. Resetting model.");
+	echo("[KOHA]","resetCommand All shares and history reset. Resetting model.");
 	await resetModel(roha.model||defaultModel);
 	// log still fill
 }
@@ -2505,6 +2517,8 @@ async function addShare(share){
 		if (index!==-1) {
 			roha.sharedFiles.splice(index,1);
 		}
+		// new format needs context
+		echo("[ADDSHARE]",share);
 		roha.sharedFiles.push(share);
 		const name=basename(share.path);
 		const dirpath=dirname(share.path);
@@ -2646,6 +2660,7 @@ async function commitShares(tag) {
 	const validShares=[];
 	const removedPaths=[];
 	for (const share of roha.sharedFiles) {
+		if(roha.config.verbose) echo("[SHARE] commitShares",share);
 		if (tag && share.tag !== tag) {
 			validShares.push(share);
 			continue;
@@ -2666,15 +2681,15 @@ async function commitShares(tag) {
 				continue;
 			}
 			const modified=share.modified !== stat.mtime.getTime();
-			const isShared=rohaShares.includes(path);
+			const isShared=rohaSharePaths.includes(path);
 			if (modified || !isShared) {
 				let ok=await shareBlob(path,size,tag);
 				if(ok){
 					count++;
 					share.modified=stat.mtime.getTime();
 					dirty=true;
-					if (!rohaShares.includes(path)) {
-						rohaShares.push(path);
+					if (!rohaSharePaths.includes(path)) {
+						rohaSharePaths.push(path);
 						echoInfo("[KOHA]","Shared path",path);
 					}else{
 						echoInfo("[KOHA]","Updated share path",path);
@@ -2687,7 +2702,7 @@ async function commitShares(tag) {
 				removedPaths.push(share.path);
 				dirty=true;
 			}
-			echo("[KOHA]","commitShares path",share.path);
+			echo("[KOHA]","commitShares error path",share.path);
 			echo("[KOHA]","commitShares error",error.message);
 		}
 	}
@@ -2705,44 +2720,75 @@ async function commitShares(tag) {
 	return dirty;
 }
 
-function listProjects(projects){
+function listProjects(projects,shares){
 	for(const key of Object.keys(projects)){
+		const git=(Object.hasOwn(projects,".gitignore"))?"G":"";
 		const star=(key==roha.project)?"*":""; 
-		echo("[KEY] project:",key+star)
+		const hasShares=Object.hasOwn(shares,key);
+		const share=hasShares?shares[key]:{};
+		const project=projects[key];
+		echo("[KEY] listProject",key,star,git,share?.length,project)
+	}
+}
+
+async function setProject(name,path){
+	echo("[KEY] setProject",name,path);
+	const key=name;
+	// TODO: set current roha.project in keyedProjects?
+	// TODO: set current rohaSharePaths in keyedShares?
+	if(!Object.hasOwn(roha.keyedProjects,key)){
+		roha.keyedProjects[key]={key,path,name};
+		echo("[KEY] new project created",{key,path,name});	
+	}
+	roha.project=key;
+	rohaSharePaths=[];
+	if(Object.hasOwn(roha.keyedShares,key)){
+		const shares=roha.keyedShares[key];
+		if(roha.config.verbose){
+			echo("[KEY] sharing",shares.length);	
+			echo("[KEY] sharenames",shares);
+		}
+		roha.sharedFiles=shares;
+	}
+//	roha.keyedShares[key];
+//	logpath=path
+	const history=path+"/relay.log";
+	const exists=await pathExists(history);
+	if(exists){
+		echo("[KEY] history",history);	
+		projectHistory=history;
+	}else{
+		projectHistory="";
+	}
+//	echo("[KEY] deno chdir",path);	
+	Deno.chdir(path);
+	currentDir=Deno.cwd();
+}
+
+function loadProject(name){
+	const verbose=roha.config.verbose;
+	echo("[KEY] loadProject",name);
+	const hasProject=Object.hasOwn(roha.keyedProjects,name);
+	if(hasProject){
+		if(verbose) echo("[KEY] project key found for name:",name)
+	}
+	const hasShares=Object.hasOwn(roha.keyedShares,name)
+	if(hasShares){
+		if(verbose) echo("[KEY] shares key found for name:",name)
+	}
+	if(hasProject&&hasShares){
+		const project=roha.keyedProjects[name];
+		const path=project.path;
+		setProject(name,path);
 	}
 }
 
 function projectCommand(words){
 	if (words.length==1){
-		listProjects(roha.keyedProjects);
+		listProjects(roha.keyedProjects,roha.keyedShares);
 	}else{
 		const name=words.slice(1).join(" ");
-		if(Object.hasOwn(roha.keyedProjects,name)){
-			echo("[PROJECT] project key found for name:",name)
-		}
-		if(Object.hasOwn(roha.keyedShares,name)){
-			echo("[PROJECT] shares key found for name:",name)
-//			setProject(name,path);
-		}
-	}
-}
-
-async function setProject(name,path){
-	echo("[PROJECT]",name,path);
-	const key=name;
-	if(Object.hasOwn(roha.keyedProjects,key)){
-		echo("[PROJECT] project exists",key);	
-	}else{
-		roha.keyedProjects[key]={key,path,name};
-	}
-	roha.project=key;
-
-//	roha.keyedShares[key];
-//	logpath=path
-	const history=path+"/history.log";
-	const exists=await pathExists(history);
-	if(exists){
-		echo("[PROJECT] history",history);	
+		loadProject(name);
 	}
 }
 
@@ -2781,7 +2827,7 @@ function listTags(){
 		if(info) echo("",info);
 		list.push(name);
 	}
-	tagList=list;
+//	tagList=list;
 }
 async function clipText(text: string): Promise<void> {
 	if (typeof text !== "string") {
@@ -2885,7 +2931,7 @@ async function onAccount(args){
 	if(args.length>1){
 		let name=args.slice(1).join(" ");
 		if(name.length && !isNaN(name)) {
-			name=lodeList[name|0];
+			name=accountList[name|0];
 		}
 		specAccount(name);
 		const lode=roha.lode[name];
@@ -2915,7 +2961,7 @@ async function onAccount(args){
 // inactive so hidden
 //				echo_row(i,key);
 			}
-			lodeList=list;
+			accountList=list;
 			listCommand="credit";
 		}
 	}
@@ -2956,18 +3002,18 @@ function readable(content:any):string{
 }
 
 function listShares(shares){
-	const list=[];
+//	const list=[];
 	let count=0;
 	let sorted=shares.slice();
 	sorted.sort((a, b) => b.size - a.size);
 	for (const share of sorted) {
-		let shared=(rohaShares.includes(share.path))?"*":"";
+		let shared=(rohaSharePaths.includes(share.path))?"*":"";
 		let tags="["+rohaTitle+" "+share.tag+"]";
 		let info=(share.description)?share.description:"";
 		echo((count++),share.path,share.size,shared,tags,info);
-		list.push(share.id);
+//		list.push(share.id);
 	}
-	shareList=list;
+//	shareList=list;
 }
 
 // OpenAI voice support
@@ -3336,8 +3382,8 @@ async function callCommand(command:string) {
 				}
 				break;
 			case "reset":
-				const all=true;
-				await resetRoha(all);
+				const all=false;//true;
+				await resetCommand(all);
 				break;
 			case "cd":
 				if(words.length>1){
@@ -3379,6 +3425,7 @@ async function callCommand(command:string) {
 					if(words.length>1){
 						tag=words[1];
 					}
+					debugValue("roha.sharedFiles",roha.sharedFiles);
 					dirty=await commitShares(tag);
 				}
 				break;
@@ -4357,9 +4404,6 @@ if (!fileExists) {
 
 echo(rohaTitle);
 
-echo("path: \""+rohaPath+"\"");
-echo("project: \""+roha.project+"\"");
-
 await flush();
 await readForge();
 await refreshSaves();
@@ -4484,6 +4528,8 @@ const project=roha.project;
 let termSize = Deno.consoleSize();
 echo("console:",termSize);
 echo("user:",{nic:rohaNic,user:rohaUser,project,sharecount,terminal:userterminal})
+echo("forge:","\""+rohaPath+"\"");
+
 echo("type /help for latest and exit to quit");
 
 const birds=padChars("𓅷𓅸𓅹𓅺𓅻𓅼𓅽",HairSpace);
@@ -4493,6 +4539,12 @@ if(roha.config.listen){
 	listenService();
 }
 await flush();
+
+
+if(roha.config.project){
+	echo("project:",roha.project);
+	loadProject(roha.project);
+}
 
 if (roha.config.debugging) console.dir(roha.config);
 

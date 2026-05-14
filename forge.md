@@ -4,6 +4,13 @@ The forge text interfaces is designed for research tools such as Slop Relay⛲ t
 
 It is designed to be human usable adopting traditional platforms where appropriate. Commands with no arguments may often prompt for a # index from the items displayed.
 
+### /files
+
+Certain files when shared 
+
+* relay.md - active workspace for project storage
+* history.log - per project relay logging 
+
 ### /config
 
 Toggle configuration flags.
@@ -27,6 +34,27 @@ Default values are typically:
 * 14 returntopush : hit return to /push - under test : false
 * 15 slow : experimental output at reading speed : false
 * 16 slops : console worker scripts : false
+* 17 budget : cheap models for the win : false
+* 18 syncRelay : one thing at a time mode : true
+* 19 listen : listen for remote connections on port 8081 : true
+* 20 project : load current project on start : true
+* 21 thinking : enable thinking mode with dual purpose models : true
+
+### /listen
+
+Starts the TCP listener on port 8081 for remote bots. 
+
+Config option available.
+
+### /project [key]
+
+List keyed projects or load active project by key.
+
+### /think
+
+Set or show the persona settings thinking budget.
+
+Current limit is 0–8192 tokens.
 
 ### /temp
 
@@ -43,6 +71,8 @@ Files are added to the share list used by the /push /commit command.
 A 🔗 signifies file share is included in current context.
 
 Valid extensions for image files are .jpg and .png.
+
+> See forge files section for treatment of "agents.md", "history.log" and "relay.md" files when shared.
 
 ### /drop
 
@@ -61,6 +91,8 @@ Posts new versions of file content if modified.
 ### /reset
 
 Clear all shared files and conversation history.
+
+Defaults current project to empty "roha".
 
 If config resetcounters true then clear all counters too.
 
@@ -164,13 +196,15 @@ Load a saved conversation history snapshot.
 
 User can specify a save index or file name to restore previous chats.
 
-
 ### /time
 
 Display the current system time. 
 
 To invoke a tool_call response prompt model for current time.
 
+### /nic
+
+Set user identity nic name.
 
 ### /help
 
@@ -191,3 +225,4 @@ The token cost summary when model has no rate defined includes:
 * promptTokens used in the context - drop files to reduce
 * replyTokens used for completions - typically cost more
 * totalTokens a running total of tokens used
+

@@ -2,13 +2,17 @@
 [![Deno](https://img.shields.io/badge/deno-2.4.2-black?logo=deno)](https://deno.land/)
 [![Discord](https://img.shields.io/discord/GUILD_ID?label=discord&logo=discord)](https://discord.gg/xkSVNT2xYR)
 
-# nitrologic slop relay
+# nitrologic Relay 1.8.2 ⛲
 
 A research tool for advanced model manipulation.
 
 Timestamps in logging files use slopmarks, a hexadecimal encoding of sixteenths of a second since 2025.4.12.
 
 ## roadmap
+
+* relay.ts project support
+* relay.ts sloppybots testing on discord
+* consider agents.md additions to system prompt
 
 ## project support
 

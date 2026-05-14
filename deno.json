@@ -1,7 +1,7 @@
 {
 	"tasks":{
 		"ditto": "deno run --allow-net --allow-env --allow-write=./forge slopsearch.ts",
-		"sloprelay": "deno run --allow-sys --allow-run --allow-net --allow-env --allow-read --allow-write=./forge relay.ts",
+		"sloprelay": "deno run --allow-write --allow-sys --allow-run --allow-net --allow-env --allow-read relay.ts",
 		"sloppybot": "deno run --allow-net --allow-env slopbot.ts DISCORD_BOT sloppy 8081",
 		"riffbot": "deno run --allow-net --allow-env slopbot.ts DISCORD_BOT2 riff 8081",
 		"foggybot": "deno run --allow-net --allow-env slopbot.ts DISCORD_BOT3 foggy 8081",

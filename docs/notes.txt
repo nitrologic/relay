@@ -1,3 +1,17 @@
+		"sloprelay": "deno run --allow-sys --allow-run --allow-net --allow-env --allow-read --allow-write=./forge relay.ts",
+
+// projectCommand
+// config.keyedProjects
+// config.currentDir - 
+
+
+//					if(roha.config.debugging) echo("[COMMIT] sharedFiles",roha.sharedFiles);
+
+
+//echo("path: \""+rohaPath+"\"");
+//echo("project: \""+roha.project+"\"");
+
+
 [root@ali grid600]# du -sh topogrid/
 77G	topogrid/
 [root@ali grid600]# du -sh roagrid/
