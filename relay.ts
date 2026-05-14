@@ -2721,13 +2721,14 @@ async function commitShares(tag) {
 }
 
 function listProjects(projects,shares){
+	let index=0;
 	for(const key of Object.keys(projects)){
 		const git=(Object.hasOwn(projects,".gitignore"))?"G":"";
 		const star=(key==roha.project)?"*":""; 
 		const hasShares=Object.hasOwn(shares,key);
 		const share=hasShares?shares[key]:{};
 		const project=projects[key];
-		echo("[KEY] listProject",key,star,git,share?.length,project)
+		echo((index++),key,star,git,share?.length,project)
 	}
 }
 
@@ -2787,8 +2788,14 @@ function loadProject(name){
 function projectCommand(words){
 	if (words.length==1){
 		listProjects(roha.keyedProjects,roha.keyedShares);
+		listCommand="project";
 	}else{
-		const name=words.slice(1).join(" ");
+		let name=words.slice(1).join(" ");
+		if(isFinite(name)){
+			const index=name|0;
+			const keys=Object.keys(roha.keyedProjects);
+			name=keys[index];
+		}
 		loadProject(name);
 	}
 }
@@ -3297,10 +3304,6 @@ async function callCommand(command:string) {
 			case "time":
 				echo("Local time:", new Date().toString());
 				break;
-			case "project":
-				await projectCommand(words);
-				echo("=)");
-				break;
 			case "say":
 				await sayCommand(words);
 				echo(":)");
@@ -3368,6 +3371,9 @@ async function callCommand(command:string) {
 						echo(".");
 					}
 				}
+				break;
+			case "project":
+				await projectCommand(words);
 				break;
 			case "model":
 				await modelCommand(words);
