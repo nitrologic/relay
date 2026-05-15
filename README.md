@@ -8,11 +8,38 @@ A research tool for advanced model manipulation.
 
 ## documentation
 
-CLI Reference Manual - forge user documentation [forge.md](forge.md)
+* Relay Reference Manual - forge user documentation [forge.md](forge.md)
+* Summary Notes - machine generated summary blocks [notes.md](notes.md)
 
 ## logging
 
 Timestamps in logging files use slopmarks, a hexadecimal encoding of sixteenths of a second since 2025.4.12.
+
+## setup
+
+Requires an api environment variable, see accounts.json for latest
+
+* DEEPSEEK_API_KEY
+* XAI_API_KEY 
+* OPENAI_API_KEY
+* GEMINI_API_KEY
+* MISTRAL_API_KEY
+* ALIBABA_API_KEY
+* ANTHROPIC_API_KEY
+* COHERE_API_KEY
+* MOONSHOT_API_KEY
+* HUGGINGFACE_API_KEY
+
+# supported
+
+The following native API are used by Slop Relay:
+
+```
+		"api": "OpenAI",
+		"api": "DeepSeek",
+		"api": "Google",
+		"api": "Anthropic",
+```
 
 ## roadmap
 
@@ -109,32 +136,6 @@ const { text, sources } = await generateText({
 });
 console.log(text);
 console.log('Citations:', sources);
-```
-
-## setup
-
-Requires an api environment variable, see accounts.json for latest
-
-* DEEPSEEK_API_KEY
-* XAI_API_KEY 
-* OPENAI_API_KEY
-* GEMINI_API_KEY
-* MISTRAL_API_KEY
-* ALIBABA_API_KEY
-* ANTHROPIC_API_KEY
-* COHERE_API_KEY
-* MOONSHOT_API_KEY
-* HUGGINGFACE_API_KEY
-
-# supported
-
-The following native API are used by Slop Relay:
-
-```
-		"api": "OpenAI",
-		"api": "DeepSeek",
-		"api": "Google",
-		"api": "Anthropic",
 ```
 
 # deprecated
