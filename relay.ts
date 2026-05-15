@@ -30,8 +30,8 @@ import { describe } from "node:test";
 // Testing with Deno 2.7.14, V8  14.7.173.20-rusty, TypeScript 5.9.2
 
 const brandFountain="nitrologic Relay";
-const fountainVersion="1.8.5";
-const fountainName=brandFountain+" "+fountainVersion;
+const relayVersion="1.8.6";
+const fountainName=brandFountain+" "+relayVersion;
 
 const defaultModel="deepseek-v4-flash@deepseek";
 
@@ -1543,6 +1543,7 @@ async function connectAnthropic(account,config){
 						const name=model+"@anthropic";
 						const info=name in modelSpecs?modelSpecs[name]:{};
 						const cold=info?.cold;
+						const lizard=info?.lizard;
 						if(!cold){
 							request.temperature=grokTemperature;
 						}							
@@ -1550,7 +1551,8 @@ async function connectAnthropic(account,config){
 						if (payload.tools) {
 							request.tools = anthropicTools(payload); // Ensure this maps tools to Anthropic format
 						}
-						if(roha.config.thinking) {
+
+						if(roha.config.thinking&&!lizard) {
 							request.thinking={type:"adaptive"};
 							request.output_config={effort:"high"};
 						}

@@ -101,9 +101,10 @@
 	"claude-haiku-4-5-20251001@anthropic":{
 		"active": true,
 		"cold":true,
+		"lizard":true,
 		"pricing":[0.80,4.0],
-		"purpose":"under evaluation",
-		"reality":"I am new."
+		"purpose":"no thinking no temperature evaluation paused",
+		"reality":"I am nute."
 	},
 	"claude-opus-4-1-20250805@anthropic":{
 		"deprecated":true,

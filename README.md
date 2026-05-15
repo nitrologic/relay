@@ -2,9 +2,15 @@
 [![Deno](https://img.shields.io/badge/deno-2.4.2-black?logo=deno)](https://deno.land/)
 [![Discord](https://img.shields.io/discord/GUILD_ID?label=discord&logo=discord)](https://discord.gg/xkSVNT2xYR)
 
-# nitrologic Relay 1.8.5 ⛲
+# nitrologic Relay 1.8.6 ⛲
 
 A research tool for advanced model manipulation.
+
+## documentation
+
+CLI Reference Manual - forge user documentation [forge.md](forge.md)
+
+## logging
 
 Timestamps in logging files use slopmarks, a hexadecimal encoding of sixteenths of a second since 2025.4.12.
 
@@ -16,27 +22,28 @@ Timestamps in logging files use slopmarks, a hexadecimal encoding of sixteenths 
 
 ## project support
 
+On /share of a relay.md file a Relay project is keyed to that folder name.
+
 * ~/relay.log
 * ~/relay.md
-
-On /share of a relay.md file a Relay project is keyed to that folder name.
 
 Shares and home path are keyed per project.
 
 When project activated with /project command:
 
 * current path and shares restored
-* any existing project/ relay.log is appended with forge.log history
+* any writable %project/relay.log is appended with forge.log history
 
 > roha.keyedShares[key]=roha.sharedFiles;
 
-### web search
+### web search planning notes
 
 To consider: 
 
 * config search on
 * implementation per API with account hints and tool billing
 
+## various providers and syntax
 
 > openai
 
@@ -103,10 +110,6 @@ const { text, sources } = await generateText({
 console.log(text);
 console.log('Citations:', sources);
 ```
-
-## documentation
-
-CLI Reference Manual - forge user documentation [forge.md](forge.md)
 
 ## setup
 
