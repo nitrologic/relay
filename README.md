@@ -2,7 +2,7 @@
 [![Deno](https://img.shields.io/badge/deno-2.4.2-black?logo=deno)](https://deno.land/)
 [![Discord](https://img.shields.io/discord/GUILD_ID?label=discord&logo=discord)](https://discord.gg/xkSVNT2xYR)
 
-# nitrologic Relay 1.8.2 ⛲
+# nitrologic Relay 1.8.5 ⛲
 
 A research tool for advanced model manipulation.
 
@@ -16,15 +16,19 @@ Timestamps in logging files use slopmarks, a hexadecimal encoding of sixteenths 
 
 ## project support
 
-* ~/history.log
+* ~/relay.log
 * ~/relay.md
 
-when project active history.log shares from forge.log
+On /share of a relay.md file a Relay project is keyed to that folder name.
 
-shares are keyed per project 
+Shares and home path are keyed per project.
+
+When project activated with /project command:
+
+* current path and shares restored
+* any existing project/ relay.log is appended with forge.log history
 
 > roha.keyedShares[key]=roha.sharedFiles;
-
 
 ### web search
 
