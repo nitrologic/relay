@@ -2527,7 +2527,7 @@ async function addShare(share){
 		const dir=basename(dirpath);
 		// echo("[SHARE]",share.path,name,dir,dirpath);
 		if(name=="relay.md"){
-			await setProject(dir,dirpath);
+			const success=await setProject(dir,dirpath);
 		}
 	}
 	if(share.tag) {
@@ -2734,7 +2734,9 @@ function listProjects(projects,shares){
 	}
 }
 
-async function setProject(name,path){
+// can fail when folder not found and chdir fails
+
+async function setProject(name,path):boolean{
 	dropShares();
 	echo("[KEY] setProject",name,path);
 	const key=name;
@@ -2765,11 +2767,16 @@ async function setProject(name,path){
 		projectHistory="";
 	}
 //	echo("[KEY] deno chdir",path);	
-	Deno.chdir(path);
-	currentDir=Deno.cwd();
+	try{
+		Deno.chdir(path);
+		currentDir=Deno.cwd();
+	}catch(err){
+		return false;
+	}
+	return true;
 }
 
-function loadProject(name){
+async function loadProject(name){
 	const verbose=roha.config.verbose;
 	echo("[KEY] loadProject",name);
 	const hasProject=Object.hasOwn(roha.keyedProjects,name);
@@ -2783,11 +2790,17 @@ function loadProject(name){
 	if(hasProject&&hasShares){
 		const project=roha.keyedProjects[name];
 		const path=project.path;
-		setProject(name,path);
+		const loaded=await setProject(name,path);
+		if(loaded){
+			echo("project loaded",roha.project);
+		}else{
+			echo("project error",roha.project);
+			resetCommand(false);
+		}
 	}
 }
 
-function projectCommand(words){
+async function projectCommand(words){
 	if (words.length==1){
 		listProjects(roha.keyedProjects,roha.keyedShares);
 		listCommand="project";
@@ -2798,7 +2811,7 @@ function projectCommand(words){
 			const keys=Object.keys(roha.keyedProjects);
 			name=keys[index];
 		}
-		loadProject(name);
+		await loadProject(name);
 	}
 }
 
@@ -4551,8 +4564,7 @@ await flush();
 
 
 if(roha.config.project){
-	echo("project:",roha.project);
-	loadProject(roha.project);
+	await loadProject(roha.project);
 }
 
 if (roha.config.debugging) console.dir(roha.config);
