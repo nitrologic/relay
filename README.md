@@ -63,14 +63,14 @@ When project activated with /project command:
 
 > roha.keyedShares[key]=roha.sharedFiles;
 
-### web search planning notes
+### websearch planning notes
 
 To consider: 
 
 * config search on
 * implementation per API with account hints and tool billing
 
-## various providers and syntax
+## websearch providers and syntax
 
 > openai
 
