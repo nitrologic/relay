@@ -30,7 +30,7 @@ import { describe } from "node:test";
 // Testing with Deno 2.7.14, V8  14.7.173.20-rusty, TypeScript 5.9.2
 
 const brandFountain="nitrologic Relay";
-const relayVersion="1.8.6";
+const relayVersion="1.8.7";
 const fountainName=brandFountain+" "+relayVersion;
 
 const defaultModel="deepseek-v4-flash@deepseek";
@@ -109,6 +109,7 @@ type ConfigFlags = {
 	listen: boolean;
 	project: boolean;
 	thinking: boolean;
+	underline: boolean;
 };
 
 // a shared context state
@@ -343,7 +344,8 @@ const flagNames={
 	syncRelay : "one thing at a time mode",
 	listen : "listen for remote connections on port 8081",
 	project : "load current project on start",
-	thinking : "enable thinking mode with dual purpose models"
+	thinking : "enable thinking mode with dual purpose models",
+	"underline" : "enable _ underline _ markdown support"
 };
 
 const emptyConfig:ConfigFlags={
@@ -367,7 +369,8 @@ const emptyConfig:ConfigFlags={
 	budget:false,
 	syncRelay:true,
 	listen:false,
-	thinking:true
+	thinking:true,
+	underline:false
 };
 
 interface Share{
@@ -2373,7 +2376,10 @@ function mdToAnsi(md) {
 				}
 				// italic
 				line=line.replace(/\*(.*?)\*/g, "\x1b[3m$1\x1b[0m");
-				line=line.replace(/_(.*?)_/g, "\x1b[3m$1\x1b[0m");
+				// underline
+				if(roha.config.underline){
+					line=line.replace(/_(.*?)_/g, "\x1b[3m$1\x1b[0m");
+				}
 				line=replaceLatex(line);
 				// wordwrap
 				line=wordWrap(line,terminalColumns);
@@ -4041,7 +4047,14 @@ async function relay(depth:number,from:string) {
 			return spend;
 		}
 
-		const completion=await endpoint.chat.completions.create(payload);
+		let completion=null;
+		try{
+			completion=await endpoint.chat.completions.create(payload);
+		}catch(error){
+			echo("[RELAY completions choked");
+//			echo(payload);
+			throw(error);
+		}
 
 		elapsed=(performance.now()-now)/1000;
 
