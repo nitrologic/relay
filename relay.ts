@@ -2716,6 +2716,10 @@ async function commitShares(tag) {
 	}
 	if (removedPaths.length) {
 		roha.sharedFiles=validShares;
+
+		const key=roha.project||"roha";
+		roha.keyedShares[key]=roha.sharedFiles;
+
 		await writeForge();
 		echoInfo("[KOHA]","commitShares removed", removedPaths.join(" "));
 	}
