@@ -86,6 +86,13 @@
 		"pricing":[0.32,1.28],
 		"purpose":"vision heavy-hitter, ocr + chart + meme understanding"
 	},	
+	"claude-opus-4-8@anthropic":{
+		"pricing":[5.0,25.0],
+		"cold":true,
+		"limit":[20000],
+		"purpose":"frontier model for coding, agentic search, and creative writing",
+		"reality":"rate limited 20,000 input tokens per minute"
+	},
 	"claude-opus-4-7@anthropic":{
 		"pricing":[5.0,25.0],
 		"cold":true,
@@ -163,6 +170,8 @@
 		"purpose":"speech-to-speech voice agents",
 		"endpoints":["wss://api.openai.com/v1/realtime"]
 	},
+	"models/gemini-3-pro-image@gemini":{},
+	"models/gemini-3.1-flash-image@gemini":{},
 	"models/gemini-robotics-er-1.6-preview@gemini":{
 		"deprecated":true,
 		"pricing":[1.00,5.00],
