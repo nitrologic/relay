@@ -384,7 +384,7 @@ interface Share{
 const emptyRoha={
 	config:emptyConfig,
 	tags:{},
-	sharedFiles:Array<Share>,//[],
+	sharedFiles:[],	//Array<Share>,//[],
 	keyedShares:{},
 	keyedProjects:{},
 	attachedFiles:[],
@@ -2428,6 +2428,7 @@ async function readForge(){
 		if(!roha.nic) roha.nic=sanitizeNic(username);
 		if(!roha.keyedShares) roha.keyedShares={};
 		if(!roha.keyedProjects) roha.keyedProjects={};
+		if(!roha.sharedFiles) roha.sharedFiles=[];
 	} catch (error) {
 		console.error("Error reading or parsing",rohaPath,error);
 		roha=emptyRoha;
@@ -2720,10 +2721,8 @@ async function commitShares(tag) {
 	}
 	if (removedPaths.length) {
 		roha.sharedFiles=validShares;
-
 		const key=roha.project||"roha";
 		roha.keyedShares[key]=roha.sharedFiles;
-
 		await writeForge();
 		echoInfo("[KOHA]","commitShares removed", removedPaths.join(" "));
 	}
