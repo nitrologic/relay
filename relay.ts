@@ -46,7 +46,7 @@ const clipLog=1800;
 
 const rohaTitle=fountainName+" ⛲ ";
 
-const rohaMihi="Welcome to Slop Relay a many:many user model research project.";
+const rohaMihi="Welcome to the nitrologic model research institute.";
 
 const rohaGuide=[
 	"As a guest assistant language model please be mindful of others, courteous and professional.",
@@ -110,6 +110,7 @@ type ConfigFlags = {
 	project: boolean;
 	thinking: boolean;
 	underline: boolean;
+	persona: boolean;
 };
 
 // a shared context state
@@ -345,7 +346,8 @@ const flagNames={
 	listen : "listen for remote connections on port 8081",
 	project : "load current project on start",
 	thinking : "enable thinking mode with dual purpose models",
-	"underline" : "enable _ underline _ markdown support"
+	"underline" : "enable _ underline _ markdown support",
+	"persona" : "extend system prompt"
 };
 
 const emptyConfig:ConfigFlags={
@@ -392,7 +394,8 @@ const emptyRoha={
 	lode:{},
 	forge:[],
 	project:"roha",
-	nic:"friend"
+	nic:"friend",
+	persona:"sloppy"
 };
 
 let slopPid=null;
@@ -2457,6 +2460,7 @@ async function resetCommand(all=false){
 	rohaSharePaths=[];
 	roha.sharedFiles=[];
 	roha.project="roha";
+//	roha.persona="sloppy";
 	if(all){
 		roha.keyedShares={};
 		roha.keyedProjects={};
