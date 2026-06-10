@@ -1,3 +1,6 @@
+
+[FORGE] added grok-imagine-video-1.5-preview@xai
+
 * projects with similar names should detect non common relay.md
 
 >  ꔀ nitrologic Relay 1.8.6 ⛲  claude-haiku-4-5 A\ 🪠 🧊 $0.015 211.0KB 17.53s
