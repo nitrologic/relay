@@ -53,6 +53,12 @@
 		"purpose": "V3.2 Advanced reasoning and problem-solving",
 		"press": "High-performance model for complex math, coding, and logical tasks."
 	},
+	"kimi-k2.7-code@moonshot":{
+		"cold":true,
+		"released": "2026-06-13",
+		"pricing": [0.95,0.19,4.0],
+		"purpose": "intelligent Coding model"
+	},
 	"kimi-k2.6@moonshot": {
 		"active": true,
 		"cold":true,
