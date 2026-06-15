@@ -1861,7 +1861,7 @@ function mutName(modelname:string):string{
 	name=name.replace("-preview","");
 	name=name.replace("-next","");
 // qwen3 trims
-	name=name.replace("-flash","");
+//	name=name.replace("-flash","");
 //	name=name.replace("-realtime","");
 // grok 4 trims
 	name=name.replace("-fast","");
