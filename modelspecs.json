@@ -196,6 +196,10 @@
 		"pricing":[0.25,0.05,1.50],
 		"released":"2026-03-3"
 	},
+	"models/gemini-3.5-flash@gemini":{
+		"pricing":[1.50,0.15,9.00],
+		"released":"2026-05-19"
+	},
 	"grok-4.3@xai":{
 		"pricing": [1.25, 0.20, 2.5],
 		"released": "2026-05-1",

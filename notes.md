@@ -1,3 +1,4 @@
+defaults write com.google.Chrome AppleEnableSwipeNavigateWithScrolls -bool FALSE
 
 [FORGE] added grok-imagine-video-1.5-preview@xai
 
