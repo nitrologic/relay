@@ -1922,7 +1922,9 @@ function stripShare(share){
 	let dirty=false;
 	for(const item of rohaHistory){
 		if(item.role==="user" && (item.name==="content" || item.name==="image")){
-			echo("[FORGE] stripShare",share.id,item);
+			echo("[FORGE] stripShare dropped ",share.id,item.name);
+			item.name="fountain";
+			item.content="dropped share";
 		}
 	}
 }
