@@ -9,7 +9,6 @@
 
 // todo: 
 // persona - named system prompt mods
-// starcommand - config.starshare makes starless excluded from payload
 
 // ⛲🪣🐸🪠🐋🜁🐉🏛️❁𝕏🌟💫🌏📆💰👀🤖🫦💻👄🔧🧊❃🎙️🔉📷🖼️🗣️📡👁🧮📠⣯⛅⚙️🗜️🧰 🌕🌙✿
 
@@ -28,10 +27,10 @@ import { dirname } from "node:path";
 import { exists } from "https://deno.land/std@0.224.0/fs/exists.ts";
 import { describe } from "node:test";
 
-// Testing with Deno 2.7.14, V8  14.7.173.20-rusty, TypeScript 5.9.2
+// Testing with Deno 2.8.3 V8  14.9.207.2-rusty, TypeScript 6.0.3
 
 const brandFountain="nitrologic Relay";
-const relayVersion="1.8.8";
+const relayVersion="1.9.0";
 const fountainName=brandFountain+" "+relayVersion;
 
 const defaultModel="deepseek-v4-flash@deepseek";
