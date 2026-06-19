@@ -1922,7 +1922,7 @@ function stripShare(share){
 	let dirty=false;
 	for(const item of rohaHistory){
 		if(item.role==="user" && (item.name==="content" || item.name==="image")){
-			echo("[FORGE] stripShare",share,item);
+			echo("[FORGE] stripShare",share.id,item);
 		}
 	}
 }
@@ -2722,31 +2722,32 @@ async function shareBlob(path,size,tag){
 	return true;
 }
 
+// TODO: tag undefined if from config commitonstart
+
 async function commitShares(tag) {
 	let count=0;
 	let dirty=false;
 	let validShares=[];
 	const removedPaths=[];
+
 	let starCount=0;
-	echo("[RELAY] commitShares starCount");
 	for (const share of roha.sharedFiles) {
-		starCount+=share.stars?.length;
+		starCount+=share.stars?.length||0;
 	}
 	const starMode=roha.config.starshare&&(starCount>0);
 	echo("[RELAY] commitShares starCount",starCount);
+
 	//filter previously shared starless from sharedFiles
 	if(starMode&&starCount){
 		echo("[RELAY] commitShares stripping validShares");
-		validShares=[];
 		for (const share of roha.sharedFiles) {
 			if(!(share.stars?.length)){
 				stripShare(share);
 			}else{
-				validShares.push(share);
+//				validShares.push(share);
 			}
 		}
 		echo("[RELAY] roha.sharedFiles update with",validShares.length)
-		roha.sharedFiles=validShares;
 	}
 	for (const share of roha.sharedFiles) {
 		const stars=share.stars||"";
@@ -3114,6 +3115,8 @@ function readable(content:any):string{
 	const text:string=textify(content);
 	return text.replace(/\s+/g, " ");
 }
+
+// typically used with roha.attachedFiles
 
 function listShares(shares){
 //	const list=[];
@@ -4403,7 +4406,7 @@ async function chat() {
 						echo("[FORGE] callcommand",listCommand,line);
 						await callCommand(listCommand+" "+line);
 					}else{
-						echo("[FORGE] callcommand isFinite failure in line",line)
+						echo("[FORGE] callcommand isFinite failure for arg",line)
 					}
 					listCommand="";
 					continue;

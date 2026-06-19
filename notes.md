@@ -1,3 +1,5 @@
+> --inspect-brk 
+
 no idea
 
 > //	if(roha.config.commitShares) echo("[relay] With commitShares enabled consider /reset.")
