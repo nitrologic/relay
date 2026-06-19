@@ -1918,6 +1918,15 @@ async function resetModel(modelname:string){
 	await aboutModel(modelname);
 }
 
+function stripShare(share){
+	let dirty=false;
+	for(const item of rohaHistory){
+		if(item.role==="user" && (item.name==="content" || item.name==="image")){
+			echo("[FORGE] stripShare",share,item);
+		}
+	}
+}
+
 function dropShares(){
 	let dirty=false;
 	for(const item of rohaHistory){
@@ -2132,6 +2141,16 @@ async function starCommand(words:string[]){
 		listCommand="star";
 	}else{
 		let name=words[1];//.slice(1).join(" ");
+		if(name=="clear"){
+			for(const share of roha.sharedFiles){
+//				echo("[FORGE] clearing stars from keyedShares",share.id);
+				if(share.stars?.length){
+					share.stars="";
+					echo("[FORGE] cleared stars from share",share.id);
+				}
+			}
+
+		}
 		let share=null;
 		if(isFinite(name) && shareList?.length){
 			const index=name|0;
@@ -2143,10 +2162,10 @@ async function starCommand(words:string[]){
 			if(addStars && stars.length){
 				share.stars=stars;
 				await writeForge();
-				echo("[FORGE] added stars to share",share.id,stars)
+				echo("[FORGE] added stars to share",share.id,stars);
 			}else{
 				share.stars="";
-				echo("[FORGE] removed stars from share",share.title)
+				echo("[FORGE] removed stars from share",share.id);
 			}
 		}
 	}
@@ -2706,11 +2725,32 @@ async function shareBlob(path,size,tag){
 async function commitShares(tag) {
 	let count=0;
 	let dirty=false;
-	const validShares=[];
+	let validShares=[];
 	const removedPaths=[];
+	let starCount=0;
+	echo("[RELAY] commitShares starCount");
+	for (const share of roha.sharedFiles) {
+		starCount+=share.stars?.length;
+	}
+	const starMode=roha.config.starshare&&(starCount>0);
+	echo("[RELAY] commitShares starCount",starCount);
+	//filter previously shared starless from sharedFiles
+	if(starMode&&starCount){
+		echo("[RELAY] commitShares stripping validShares");
+		validShares=[];
+		for (const share of roha.sharedFiles) {
+			if(!(share.stars?.length)){
+				stripShare(share);
+			}else{
+				validShares.push(share);
+			}
+		}
+		echo("[RELAY] roha.sharedFiles update with",validShares.length)
+		roha.sharedFiles=validShares;
+	}
 	for (const share of roha.sharedFiles) {
 		const stars=share.stars||"";
-		if(roha.config.starshare && (stars.length==0)) continue;
+		if(starMode && (stars.length==0)) continue;
 		if(roha.config.verbose) echo("[SHARE] commitShares",share,stars);
 		if (tag && share.tag !== tag) {
 			validShares.push(share);

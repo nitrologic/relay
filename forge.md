@@ -29,7 +29,7 @@ Default values are typically:
 * 9 logging : log all output to file : true
 * 10 debugging : emit diagnostics : false
 * 11 pushonshare : emit a /push after any /share : false
-* 12 rawprompt : experimental rawmode stdin - broken paste : true
+* 12 slopprompt : rawmode stdin with shortcode support : true
 * 13 resetcounters : factory reset when reset : false
 * 14 returntopush : hit return to /push - under test : false
 * 15 slow : experimental output at reading speed : false
@@ -39,6 +39,9 @@ Default values are typically:
 * 19 listen : listen for remote connections on port 8081 : true
 * 20 project : load current project on start : true
 * 21 thinking : enable thinking mode with dual purpose models : true
+* 22 underline : enable underline markdown support : false
+* 23 persona : extend system prompt : false
+* 24 starshare : conserve file share by star : true
 
 ### /listen
 
@@ -79,6 +82,18 @@ Valid extensions for image files are .jpg and .png.
 Drop all files currently shared, reduce the context and save tokens.
 
 Work in progress, see /reset for a simple alternative.
+
+### /star
+
+Append a star or clear a shared file's stars. 
+
+Convention for plain console usage is the asterisk char.
+
+Usage:
+
+* `/star` — List all shares with their current star status (sorted by size)
+* `/star <index>` — Add one star to the share at that index
+* `/star clear` — Remove all stars from the current project's shares
 
 ### /push /commit
 
