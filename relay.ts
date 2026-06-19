@@ -2869,6 +2869,13 @@ async function setProject(name,path):boolean{
 	return true;
 }
 
+async function dropProject(name){
+	const hasProject=Object.hasOwn(roha.keyedProjects,name);
+	if(hasProject){
+		delete roha.keyedProjects[name];
+	}
+}
+
 async function loadProject(name){
 	const verbose=roha.config.verbose;
 	echo("[KEY] loadProject",name);
@@ -2898,13 +2905,22 @@ async function projectCommand(words){
 		listProjects(roha.keyedProjects,roha.keyedShares);
 		listCommand="project";
 	}else{
-		let name=words.slice(1).join(" ");
+		let drop=false;
+		let name=words[1];
+		if(name=="drop"){
+			drop=true;
+			name=words[2];
+		}
 		if(isFinite(name)){
 			const index=name|0;
 			const keys=Object.keys(roha.keyedProjects);
 			name=keys[index];
 		}
-		await loadProject(name);
+		if(drop){
+			dropProject(name);
+		}else{
+			await loadProject(name);
+		}
 	}
 }
 
@@ -4654,8 +4670,8 @@ await flush();
 let rohaNic=roha.nic||"nic";
 const sharecount=roha.sharedFiles?.length||0;
 const project=roha.project;
-let termSize = Deno.consoleSize();
-echo("console:",termSize);
+//let termSize = Deno.consoleSize();
+//echo("console:",termSize);
 echo("user:",{nic:rohaNic,user:rohaUser,project,sharecount,terminal:userterminal})
 echo("forge:","\""+rohaPath+"\"");
 
