@@ -2,13 +2,14 @@
 // Copyright (c) 2026 Simon Armstrong
 // Licensed under the MIT License
 
-// packed tab code style - unsafe typescript formatted with tabs and minimal white space
+// note:
+// packed tab code style
+// unsafe typescript formatted with tabs and minimal white space
 // relay(depth,from)
 
-// todo: command handlers use namecommand() entry points
-// historyCommand session count per day and model traffic
-// shareCommand - uses Deno.cwd
-// dir cd - navigate application cwd
+// todo: 
+// persona - named system prompt mods
+// starcommand - config.starshare makes starless excluded from payload
 
 // ⛲🪣🐸🪠🐋🜁🐉🏛️❁𝕏🌟💫🌏📆💰👀🤖🫦💻👄🔧🧊❃🎙️🔉📷🖼️🗣️📡👁🧮📠⣯⛅⚙️🗜️🧰 🌕🌙✿
 
@@ -110,7 +111,8 @@ type ConfigFlags = {
 	project: boolean;
 	thinking: boolean;
 	underline: boolean;
-	persona: boolean;
+	persona: string;
+	starshare: boolean;
 };
 
 // a shared context state
@@ -346,8 +348,9 @@ const flagNames={
 	listen : "listen for remote connections on port 8081",
 	project : "load current project on start",
 	thinking : "enable thinking mode with dual purpose models",
-	"underline" : "enable _ underline _ markdown support",
-	"persona" : "extend system prompt"
+	underline : "enable underline markdown support",
+	persona : "extend system prompt",
+	starshare : "conserve file share by star"
 };
 
 const emptyConfig:ConfigFlags={
@@ -372,13 +375,15 @@ const emptyConfig:ConfigFlags={
 	syncRelay:true,
 	listen:false,
 	thinking:true,
-	underline:false
+	underline:false,
+	starshare:false
 };
 
 interface Share{
 	id:string,
 	path:string,
-	name:string
+	name:string,
+	stars:string
 };
 
 const emptyRoha={
@@ -467,7 +472,7 @@ const emptyMUT={notes:[],errors:[],relays:0,cost:0,elapsed:0,created:0}
 // deprecated 2026.5.14
 // never read - work in progress
 // let tagList=[];
-// let shareList=[];
+let shareList=[]; // sorted version for listshares sort command index
 // let memberList=[];
 // const emptyModel={name:"empty",account:"",hidden:false,prompts:0,completion:0}
 // const emptyTag={}
@@ -1922,12 +1927,11 @@ function dropShares(){
 			dirty=true;
 		}
 	}
-	if(dirty)echo("content removed from history");
+	if(dirty)echo("[relay] content dropped from history");
 	if(rohaSharePaths.length){
 		rohaSharePaths=[];
-		echo("all shares dropped");
+		echo("[relay] all shares dropped");
 	}
-	if(roha.config.commitShares) echo("With commitShares enabled consider /reset.")
 }
 
 async function shareSlop(path:string,depth:number){
@@ -2090,12 +2094,16 @@ async function shareCommand(words:string[]){
 	await writeForge();
 }
 
-async function listShare(){
+// updates global shareList array
+
+async function listShare(sortSize:boolean){
 	const project=roha.project;
 //	const list=[];
 	let count=0;
 	const sorted=roha.sharedFiles.slice();
-	sorted.sort((a, b) => b.size - a.size);
+	if(sortSize){
+		sorted.sort((a, b) => b.size - a.size);
+	}
 	for (const share of sorted) {
 		const shared=(rohaSharePaths.includes(share.path))?"🔗":"";
 		const tags="[ "+share.tag+" "+rohaUser+" "+project+" ]";	//+rohaTitle
@@ -2110,12 +2118,40 @@ async function listShare(){
 //		echo((count++),share.path,share.size,shared,tags,detail);
 		if(size){
 			const hash="";//share.hash;
-			echo((count++),share.path,unitString(size),shared,tags,detail,hash);
+			const stars=share.stars||"-";
+			echo((count++),share.path,unitString(size),shared,stars,tags,detail,hash);
 //			list.push(share.id);
 		}
 	}
-//	shareList=list;
+	shareList=sorted;
 }
+
+async function starCommand(words:string[]){
+	if (words.length==1){
+		await listShare(true);
+		listCommand="star";
+	}else{
+		let name=words[1];//.slice(1).join(" ");
+		let share=null;
+		if(isFinite(name) && shareList?.length){
+			const index=name|0;
+			share=shareList[index];
+		}
+		if(share){
+			let addStars=words[2];
+			let stars=(share.stars||"")+(addStars||"");
+			if(addStars && stars.length){
+				share.stars=stars;
+				await writeForge();
+				echo("[FORGE] added stars to share",share.id,stars)
+			}else{
+				share.stars="";
+				echo("[FORGE] removed stars from share",share.title)
+			}
+		}
+	}
+}
+
 
 async function listSaves(){
 	const saves=roha.saves||[];
@@ -2157,7 +2193,7 @@ async function saveHistory(name) {
 		roha.saves.push(filename);
 		await writeForge();
 	} catch (error) {
-		echo("[FORGE] History save error",error.message);
+		echo("[FORGE] saveHistory error",error.message);
 	}
 }
 
@@ -2673,7 +2709,9 @@ async function commitShares(tag) {
 	const validShares=[];
 	const removedPaths=[];
 	for (const share of roha.sharedFiles) {
-		if(roha.config.verbose) echo("[SHARE] commitShares",share);
+		const stars=share.stars||"";
+		if(roha.config.starshare && (stars.length==0)) continue;
+		if(roha.config.verbose) echo("[SHARE] commitShares",share,stars);
 		if (tag && share.tag !== tag) {
 			validShares.push(share);
 			continue;
@@ -2694,7 +2732,7 @@ async function commitShares(tag) {
 				continue;
 			}
 			const modified=share.modified !== stat.mtime.getTime();
-			const isShared=rohaSharePaths.includes(path);
+			let isShared=rohaSharePaths.includes(path);
 			if (modified || !isShared) {
 				let ok=await shareBlob(path,size,tag);
 				if(ok){
@@ -3445,10 +3483,13 @@ async function callCommand(command:string) {
 				dropShares();
 				await writeForge();
 				break;
+			case "star":
+				await starCommand(words);
+				break;
 			case "attach":
 			case "share":
 				if (words.length==1){
-					await listShare();
+					await listShare(true);
 				}else{
 					await shareCommand(words);
 					await writeForge();
@@ -4315,12 +4356,14 @@ async function chat() {
 			await flush();
 			let line="";
 			if(listCommand){
-				line=await promptForge(listCommand+" #");
+				line=await promptForge(listCommand+" #");			
 				if(line && (!line.startsWith("//")||!line.startsWith("/"))){
-					if(line.length&&isFinite(line)){
-						let index=line|0;
-						echo("callcommand",listCommand,index);
-						await callCommand(listCommand+" "+index);
+					const arg0=line[0]||"";
+					if(arg0.length&&isFinite(arg0)){
+						echo("[FORGE] callcommand",listCommand,line);
+						await callCommand(listCommand+" "+line);
+					}else{
+						echo("[FORGE] callcommand isFinite failure in line",line)
 					}
 					listCommand="";
 					continue;
@@ -4472,14 +4515,14 @@ async function enumerateModels(){
 				if(original){
 					const items=newItems(lode.modelList,endpoint.modelList);
 					for(const item of items){
-						echo("[FORGE] added ",item);
+						echo("[FORGE] added model ",item);
 					}
 				}
 				lode.modelList=endpoint.modelList;
 			}
 	//		echo("[FORGE] endpoint modelList",endpoint.modelList);
 		}else{
-			if(roha.config.debugging) echoWarning("[FORGE] Endpoint failure for account",account);
+			if(roha.config.debugging) echoWarning("[FORGE] enumerateModels endpoint failure for account",account);
 		}
 	}
 	await flush();

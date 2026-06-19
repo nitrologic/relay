@@ -1,3 +1,7 @@
+no idea
+
+> //	if(roha.config.commitShares) echo("[relay] With commitShares enabled consider /reset.")
+
 defaults write com.google.Chrome AppleEnableSwipeNavigateWithScrolls -bool FALSE
 
 [FORGE] added grok-imagine-video-1.5-preview@xai
