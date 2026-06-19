@@ -2,15 +2,27 @@
 // Copyright (c) 2026 Simon Armstrong
 // Licensed under the MIT License
 
-// note:
-// packed tab code style
-// unsafe typescript formatted with tabs and minimal white space
-// relay(depth,from)
+// ⛯⛲🪣🐸🪠🐋🜁🐉🏛️❁𝕏🌟💫🌏📆💰👀🤖🫦💻👄🔧🧊❃🎙️🔉📷🖼️🗣️📡👁🧮📠⣯⛅⚙️🗜️🧰 🌕🌙✿
 
-// todo: 
-// persona - named system prompt mods
+// Testing with Deno 2.8.3 V8  14.9.207.2-rusty, TypeScript 6.0.3
 
-// ⛲🪣🐸🪠🐋🜁🐉🏛️❁𝕏🌟💫🌏📆💰👀🤖🫦💻👄🔧🧊❃🎙️🔉📷🖼️🗣️📡👁🧮📠⣯⛅⚙️🗜️🧰 🌕🌙✿
+const brandFountain="Relay";
+const relayVersion="1.9.1";
+const fountainName=brandFountain+" "+relayVersion;
+
+// system prompt
+
+const rohaTitle=fountainName;
+const rohaStatus="🟢";
+
+const rohaMihi="Welcome to the nitrologic model research institute.";
+
+const rohaGuide=[
+	"As a guest assistant language model please be mindful of others, courteous and professional.",
+	"Only post code on request and do not patronise.",
+	"Use tabs when indenting source files.",
+	"Prefer named reusable functions over inlining code with arrow and map style suggestions."
+]
 
 import { replaceShortCodes, safeString, discordStringWidth, stringWidth, announceCommand, listenService, dropConnections, slopPrompt, slopBroadcast } from "./slopprompt.ts";
 
@@ -27,12 +39,6 @@ import { dirname } from "node:path";
 import { exists } from "https://deno.land/std@0.224.0/fs/exists.ts";
 import { describe } from "node:test";
 
-// Testing with Deno 2.8.3 V8  14.9.207.2-rusty, TypeScript 6.0.3
-
-const brandFountain="nitrologic Relay";
-const relayVersion="1.9.0";
-const fountainName=brandFountain+" "+relayVersion;
-
 const defaultModel="deepseek-v4-flash@deepseek";
 
 const statusChar=" ꔀ "; //courtesy Vai Syllabary
@@ -41,20 +47,6 @@ const activeChar="❃";
 const terminalColumns=100;	// default value for wordWrap()
 const statsColumn=50;
 const clipLog=1800;
-
-// system prompt
-
-const rohaTitle=fountainName+" ⛲ ";
-
-const rohaMihi="Welcome to the nitrologic model research institute.";
-
-const rohaGuide=[
-	"As a guest assistant language model please be mindful of others, courteous and professional.",
-//	"Keep response short, only post code on request and do not patronise.",
-	"Only post code on request and do not patronise.",
-	"Use tabs when indenting source files.",
-	"Prefer named reusable functions over inlining code with arrow and map style suggestions."
-]
 
 // startup config
 
@@ -1917,15 +1909,19 @@ async function resetModel(modelname:string){
 	await aboutModel(modelname);
 }
 
-function stripShare(share){
+// TODO: remove from sharedFiles
+
+function stripShare(share):boolean{
 	let dirty=false;
 	for(const item of rohaHistory){
 		if(item.role==="user" && (item.name==="content" || item.name==="image")){
-			echo("[FORGE] stripShare dropped ",share.id,item.name);
+			if(roha.config.verbose) echo("[FORGE] stripShare dropped ",share.id,item.name);
 			item.name="fountain";
 			item.content="dropped share";
+			dirty=true;
 		}
 	}
+	return dirty;
 }
 
 function dropShares(){
@@ -2116,7 +2112,7 @@ async function listShare(sortSize:boolean){
 	}
 	for (const share of sorted) {
 		const shared=(rohaSharePaths.includes(share.path))?"🔗":"";
-		const tags="[ "+share.tag+" "+rohaUser+" "+project+" ]";	//+rohaTitle
+		const tags="[ "+share.tag+" "+rohaUser+" "+project+" ]";
 		const detail=(share.description)?share.description:"";
 		let size=share.size;
 		try{
@@ -2736,19 +2732,16 @@ async function commitShares(tag) {
 		starCount+=share.stars?.length||0;
 	}
 	const starMode=roha.config.starshare&&(starCount>0);
-	echo("[RELAY] commitShares starCount",starCount);
+	if(roha.config.verbose) echo("[RELAY] commitShares starCount",starCount);
 
-	//filter previously shared starless from sharedFiles
+	//filter previously shared starless from history, considering sharedFiles
 	if(starMode&&starCount){
-		echo("[RELAY] commitShares stripping validShares");
 		for (const share of roha.sharedFiles) {
 			if(!(share.stars?.length)){
-				stripShare(share);
-			}else{
-//				validShares.push(share);
+				let durty=stripShare(share);
+				if(durty) echo("[RELAY] commitShares strip share:",share.id);
 			}
 		}
-		echo("[RELAY] roha.sharedFiles update with",validShares.length)
 	}
 	for (const share of roha.sharedFiles) {
 		const stars=share.stars||"";
@@ -4547,7 +4540,7 @@ if (!fileExists) {
 
 // forge lists models from active accounts
 
-echo(rohaTitle);
+echo(rohaStatus,rohaTitle);
 
 await flush();
 await readForge();

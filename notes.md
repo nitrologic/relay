@@ -1,3 +1,13 @@
+// note:
+// packed tab code style
+// unsafe typescript formatted with tabs and minimal white space
+// relay(depth,from)
+
+// todo: 
+// persona - named system prompt mods
+// ⛯ ⛯ - adopt the japanese lighthouse 26EF
+
+
 > --inspect-brk 
 
 no idea
