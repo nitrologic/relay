@@ -4419,7 +4419,7 @@ async function chat() {
 				line=await promptForge(listCommand+" #");			
 				if(line && (!line.startsWith("//")||!line.startsWith("/"))){
 					const arg0=line[0]||"";
-					if(arg0.length&&isFinite(arg0)){
+					if(arg0.length){
 						echo("[FORGE] callcommand",listCommand,line);
 						await callCommand(listCommand+" "+line);
 					}else{

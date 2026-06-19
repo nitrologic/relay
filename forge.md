@@ -49,9 +49,9 @@ Starts the TCP listener on port 8081 for remote bots.
 
 Config option available.
 
-### /project [key]
+### /project [drop] [key]
 
-List keyed projects or load active project by key.
+List keyed projects or load active project by key or drop project by key.
 
 ### /think
 
