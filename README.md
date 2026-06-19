@@ -1,14 +1,14 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) 
 [![Deno](https://img.shields.io/badge/deno-2.4.2-black?logo=deno)](https://deno.land/)
-[![Discord](https://img.shields.io/discord/GUILD_ID?label=discord&logo=discord)](https://discord.gg/xkSVNT2xYR)
+[![Discord](https://shields.io)](https://discord.gg/KVmR6DjpPB)
 
-# nitrologic Relay 1.8.6 ⛲
+# nitrologic Relay 1.9.1
 
 A research tool for advanced model manipulation.
 
 ## documentation
 
-* Relay Reference Manual - forge user documentation [forge.md](forge.md)
+* Relay Forge Reference Manual - forge user documentation [forge.md](forge.md)
 * Summary Notes - machine generated summary blocks [notes.md](notes.md)
 
 ## logging
