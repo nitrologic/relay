@@ -1,6 +1,6 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) 
 [![Deno](https://img.shields.io/badge/deno-2.4.2-black?logo=deno)](https://deno.land/)
-[![Discord](https://img.shields.io/discord/1235838347717378118?label=discord&logo=discord)](https://discord.gg/KVmR6DjpPB)
+[![Discord](https://img.shields.io/discord/1235838347717378118)](https://discord.gg/KVmR6DjpPB)
 
 # nitrologic Relay 1.9.1
 

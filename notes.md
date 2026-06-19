@@ -1,3 +1,5 @@
+https://discord.com/api/guilds/1235838347717378118/widget.json
+
 // note:
 // packed tab code style
 // unsafe typescript formatted with tabs and minimal white space
