@@ -2,7 +2,7 @@
 [![Deno](https://img.shields.io/badge/deno-2.4.2-black?logo=deno)](https://deno.land/)
 [![Discord](https://img.shields.io/discord/1235838347717378118)](https://discord.gg/KVmR6DjpPB)
 
-# nitrologic Relay 1.9.1
+# nitrologic Relay 1.9.3
 
 A research tool for advanced model manipulation.
 
@@ -10,6 +10,16 @@ A research tool for advanced model manipulation.
 
 * Relay Forge Reference Manual - forge user documentation [forge.md](forge.md)
 * Summary Notes - machine generated summary blocks [notes.md](notes.md)
+
+## typical invoke script
+
+```
+setlocal enabledelayedexpansion
+set "snapshot=!cd!"
+pushd C:\nitrologic\relay\
+deno task relay "%snapshot%" %*
+popd
+```
 
 ## logging
 

@@ -7,7 +7,7 @@
 // Testing with Deno 2.8.3 V8  14.9.207.2-rusty, TypeScript 6.0.3
 
 const brandFountain="Relay";
-const relayVersion="1.9.1";
+const relayVersion="1.9.3";
 const fountainName=brandFountain+" "+relayVersion;
 
 // system prompt
@@ -38,6 +38,8 @@ import { resolve,basename } from "https://deno.land/std/path/mod.ts";
 import { dirname } from "node:path";
 import { exists } from "https://deno.land/std@0.224.0/fs/exists.ts";
 import { describe } from "node:test";
+
+const appDir=Deno.cwd();
 
 const defaultModel="deepseek-v4-flash@deepseek";
 
@@ -203,7 +205,6 @@ function quoteString(line:string):string{
 const slowMillis=25;
 const MaxFileSize=512*1024*16;
 
-const appDir=Deno.cwd();
 const accountsPath=resolve(appDir,"accounts.json");
 const specsPath=resolve(appDir,"modelspecs.json");
 const unicodePath=resolve(appDir,"slopspec.json");
@@ -2079,6 +2080,19 @@ async function stripLog(path:string,counts){
 	const minDate=slopDate(min);
 	const maxDate=slopDate(max);
 	echo("[STRIP]",path,count,minDate,maxDate);
+}
+
+async function shareGlob(pattern:string){
+	const depth=false;
+	for await (const entry of expandGlob(pattern)) {
+		if (entry.isFile) {
+			await shareSlop(entry.path,depth);
+		}
+		if(entry.isDirectory){
+			console.log("### sharing",entry.path);
+			await shareDir(entry.path,tag,1,depth);
+		}
+	}
 }
 
 async function shareCommand(words:string[]){
@@ -4538,14 +4552,6 @@ if (!fileExists) {
 	echo("Created forge",rohaPath);
 }
 
-// forge lists models from active accounts
-
-echo(rohaStatus,rohaTitle);
-
-await flush();
-await readForge();
-await refreshSaves();
-
 // endpoints are used by models and in general to reset file API and the like
 
 const rohaEndpoint={};
@@ -4580,6 +4586,12 @@ async function enumerateModels(){
 	}
 	await flush();
 }
+
+echo(rohaStatus,rohaTitle);
+
+await flush();
+await readForge();
+await refreshSaves();
 
 // forge starts here, grok started this thing, blame grok
 
@@ -4678,9 +4690,22 @@ if(roha.config.listen){
 }
 await flush();
 
+// forge lists models from active accounts
 
-if(roha.config.project){
-	await loadProject(roha.project);
+if(Deno.args){
+	echo("args:",Deno.args);
+	let seg0=Deno.args[0];
+	if(Deno.args.length>1){
+		let seg1=Deno.args[1];
+		const path=resolve(seg0,seg1);
+		echo("resolve path:",path);
+		await shareGlob(path);
+		await writeForge();
+	}
+}else{
+	if(roha.config.project){
+		await loadProject(roha.project);
+	}
 }
 
 if (roha.config.debugging) console.dir(roha.config);
