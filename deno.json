@@ -2,15 +2,15 @@
 	"tasks":{
 		"relay": "deno run --allow-write --allow-sys --allow-run --allow-net --allow-env --allow-read relay.ts",
 		"ditto": "deno run --allow-net --allow-env --allow-write=./forge slopsearch.ts",
-		"sloppybot": "deno run --allow-net --allow-env slopbot.ts DISCORD_BOT sloppy 8081",
-		"riffbot": "deno run --allow-net --allow-env slopbot.ts DISCORD_BOT2 riff 8081",
-		"foggybot": "deno run --allow-net --allow-env slopbot.ts DISCORD_BOT3 foggy 8081",
+		"sloppy🤖": "deno run --allow-net --allow-env relaybot.ts DISCORD_BOT sloppy 8081",
+		"riff🤖": "deno run --allow-net --allow-env relaybot.ts DISCORD_BOT2 riff 8081",
+		"foggy🤖": "deno run --allow-net --allow-env relaybot.ts DISCORD_BOT3 foggy 8081",
 		"sloppylisten": "deno run --allow-run --allow-net --allow-env --allow-sys --allow-read sloppy/sloppylisten.ts",
 		"sloppynet": "deno run --allow-run --allow-net --allow-env --allow-sys --allow-read sloppy/sloppynet.ts",
 		"sloppyhost": "deno run --allow-run --allow-net --allow-env --allow-sys --allow-read sloppy/sloppyhost.ts",
-		"bot":{"dependencies":["sloppybot"]},
-		"bots":{"dependencies":["foggybot","sloppybot","riffbot"]},
-		"discord":{"dependencies":["relay","foggybot","sloppybot","riffbot"]}
+		"bot":{"dependencies":["sloppy🤖"]},
+		"bots":{"dependencies":["foggy🤖","sloppy🤖","riff🤖"]},
+		"discord":{"dependencies":["relay","foggy🤖","sloppy🤖","riff🤖"]}
 	},
 	"imports": {
 		"@openai/openai": "jsr:@openai/openai@^5.23.0"

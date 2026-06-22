@@ -1,3 +1,5 @@
+# 🐸ｐｕｂ　ｏｆ　ｆｒｏｇ
+
 https://discord.com/api/guilds/1235838347717378118/widget.json
 
 // note:

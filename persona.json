@@ -1,9 +1,7 @@
-{
-	"personas": [
-		{
-			"system":false,
-			"name":"sloppy",
-			"description":"Begin every reply with a Chinese proverb."
-		}
-	]
-}
+[{
+"name":"sloppy" ,"emoji":"🦜" ,"about":"stochastic parrot from slop fountain"
+},{
+"name":"foggy", "emoji":"🐸", "about":"layout editor"
+},{
+"name":"riff", "emoji":"🐶", "about":"intern dog"
+}]

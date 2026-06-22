@@ -7,7 +7,7 @@
 // Testing with Deno 2.8.3 V8  14.9.207.2-rusty, TypeScript 6.0.3
 
 const brandFountain="Relay";
-const relayVersion="1.9.3";
+const relayVersion="1.9.4";
 const fountainName=brandFountain+" "+relayVersion;
 
 // system prompt
@@ -207,6 +207,7 @@ const MaxFileSize=512*1024*16;
 
 const accountsPath=resolve(appDir,"accounts.json");
 const specsPath=resolve(appDir,"modelspecs.json");
+const personaPath=resolve(appDir,"persona.json");
 const unicodePath=resolve(appDir,"slopspec.json");
 
 const slopPath=resolve(appDir,"../slop");
@@ -216,6 +217,7 @@ const rohaPath=resolve(forgePath,"forge.json");
 
 const modelAccounts=JSON.parse(await Deno.readTextFile(accountsPath));
 const modelSpecs=JSON.parse(await Deno.readTextFile(specsPath));
+const relayPersona=JSON.parse(await Deno.readTextFile(personaPath));
 const unicodeSpec=JSON.parse(await Deno.readTextFile(unicodePath));
 
 const emojiIndex = {};
@@ -473,6 +475,7 @@ let shareList=[]; // sorted version for listshares sort command index
 
 
 let roha=emptyRoha;
+let activePersona=null;
 let rohaSharePaths=[];
 let listCommand="";
 let creditCommand="";
@@ -2834,6 +2837,49 @@ function listProjects(projects,shares){
 	}
 }
 
+// new work in progress - relay bot persona system
+
+async function personaCommand(words){
+	if (words.length==1){
+		listPersona();
+		listCommand="persona";
+	}else{
+		let name=words[1];
+		if(isFinite(name)){
+			let index=name|0;
+			let p=relayPersona[index];
+			name=p.name;
+		}
+		await setPersona(name);
+	}
+}
+
+function listPersona(){
+	const count=relayPersona.length;
+	for(let index=0;index<count;index++){
+		let p=relayPersona[index];
+		echo(index,p.name,p.emoji,p.about);
+	}
+}
+async function setPersona(name:string):boolean{
+	let p=null;
+	const count=relayPersona.length;
+	for(let index=0;index<count;index++){
+		p=relayPersona[index];
+		if(name==p.name){
+			echo("matched",index,p.name,p.emoji,p.about);
+			break;
+		}
+	}
+	if(p){
+		roha.persona=name;
+		activePersona=p;
+		echo("[KEY] setPersona name",name,"was",roha.persona,name);
+		return true;
+	}
+	return false;
+}
+
 // can fail when folder not found and chdir fails
 
 async function setProject(name,path):boolean{
@@ -3505,6 +3551,9 @@ async function callCommand(command:string) {
 					}
 				}
 				break;
+			case "persona":
+				await personaCommand(words);
+				break;
 			case "project":
 				await projectCommand(words);
 				break;
@@ -4068,7 +4117,12 @@ async function relay(depth:number,from:string) {
 		// [RELAY] responses endpoint using input
 
 		if(responses){
-			const instructions=rohaGuide.join(" ");
+			let instructions=rohaGuide.join(" ");
+			// introduce persona 
+			if(roha.config.persona && activePersona){
+				let intro=". You are "+activePersona.name+" "+activePersona.emoji+" "+activePersona.about;
+				instructions+=intro;
+			}
 
 			// todo support payload.tools
 
@@ -4701,6 +4755,8 @@ if(Deno.args){
 		echo("resolve path:",path);
 		await shareGlob(path);
 		await writeForge();
+		Deno.chdir(seg0);
+		currentDir=Deno.cwd();
 	}
 }else{
 	if(roha.config.project){

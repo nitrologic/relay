@@ -1,4 +1,4 @@
-// slopbot.ts 
+// relaybot.ts 
 // per process discord bots and users
 // Copyright (c) 2026 Simon Armstrong
 // Licensed under the MIT License
