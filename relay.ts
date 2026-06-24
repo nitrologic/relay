@@ -466,12 +466,13 @@ const emptyMUT={notes:[],errors:[],relays:0,cost:0,elapsed:0,created:0}
 // deprecated 2026.5.14
 // never read - work in progress
 // let tagList=[];
-let shareList=[]; // sorted version for listshares sort command index
+// let shareList=[]; // sorted version for listshares sort command index
 // let memberList=[];
 // const emptyModel={name:"empty",account:"",hidden:false,prompts:0,completion:0}
 // const emptyTag={}
 // const emptyShare={path,size,modified,hash,tag,id}
 
+let sortedShares=[]; // sorted version for listshares sort command index
 
 
 let roha=emptyRoha;
@@ -1937,10 +1938,37 @@ function dropShares(){
 			dirty=true;
 		}
 	}
-	if(dirty)echo("[relay] content dropped from history");
 	if(rohaSharePaths.length){
 		rohaSharePaths=[];
 		echo("[relay] all shares dropped");
+	}
+}
+
+async function dropCommand(words:string[]){
+	if(words.length==1){
+		listShares(roha.sharedFiles);
+		listCommand="drop";
+	}else{
+		let dirty=false;
+		let name=words[1];
+		let share=null;
+		if(isFinite(name) && sortedShares?.length){
+			const index=name|0;
+			share=sortedShares[index];
+			echo("[DROP] share:",share);
+		}
+		for(const item of rohaHistory){
+			if(item.role==="user" && (item.name==="content" || item.name==="image")){
+				echo("[DROP] item:",item);
+//				item.name="fountain";
+//				item.content="dropped share";
+//				dirty=true;
+			}
+		}
+		if(dirty){
+			echo("[relay] content dropped from history");
+			await writeForge();
+		}
 	}
 }
 
@@ -2146,7 +2174,7 @@ async function listShare(sortSize:boolean){
 //			list.push(share.id);
 		}
 	}
-	shareList=sorted;
+	sortedShares=sorted;
 }
 
 async function starCommand(words:string[]){
@@ -2926,6 +2954,9 @@ async function dropProject(name){
 	const hasProject=Object.hasOwn(roha.keyedProjects,name);
 	if(hasProject){
 		delete roha.keyedProjects[name];
+		echo("[DROP] deleted keyedProjects name:",name);
+	}else{
+		echo("[DROP] hasProject:",hasProject);
 	}
 }
 
@@ -3189,7 +3220,7 @@ function readable(content:any):string{
 // typically used with roha.attachedFiles
 
 function listShares(shares){
-//	const list=[];
+	const list=[];
 	let count=0;
 	let sorted=shares.slice();
 	sorted.sort((a, b) => b.size - a.size);
@@ -3198,9 +3229,9 @@ function listShares(shares){
 		let tags="["+rohaTitle+" "+share.tag+"]";
 		let info=(share.description)?share.description:"";
 		echo((count++),share.path,share.size,shared,tags,info);
-//		list.push(share.id);
+		list.push(share.id);
 	}
-//	shareList=list;
+	sortedShares=list;
 }
 
 // OpenAI voice support
@@ -3596,8 +3627,7 @@ async function callCommand(command:string) {
 				}
 				break;
 			case "drop":
-				dropShares();
-				await writeForge();
+				await dropCommand(words);
 				break;
 			case "star":
 				await starCommand(words);

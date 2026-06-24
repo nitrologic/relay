@@ -116,7 +116,7 @@ export function listenService() {
 	} catch (e) {
 		console.error("[PROMPT] listen failed:", e);
 	}
-	echo("[STATUS] listening for bots on port 8081");
+	echo("[STATUS] listening - accepting connections from traffic bots on port 8081");
 }
 
 export async function announceCommand(words:string[]){
