@@ -4744,20 +4744,21 @@ if(roha.config.listen){
 }
 await flush();
 
+
 // forge lists models from active accounts
 
-if(Deno.args){
+// todo: use relayPath instead of {HOME$, PATH$}
+
+if(Deno.args && Deno.args.length>1){
 	echo("args:",Deno.args);
 	let seg0=Deno.args[0];
-	if(Deno.args.length>1){
-		let seg1=Deno.args[1];
-		const path=resolve(seg0,seg1);
-		echo("resolve path:",path);
-		await shareGlob(path);
-		await writeForge();
-		Deno.chdir(seg0);
-		currentDir=Deno.cwd();
-	}
+	let seg1=Deno.args[1];
+	const path=resolve(seg0,seg1);
+	echo("resolve path:",path);
+	await shareGlob(path);
+	await writeForge();
+	Deno.chdir(seg0);
+	currentDir=Deno.cwd();
 }else{
 	if(roha.config.project){
 		await loadProject(roha.project);
