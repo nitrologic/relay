@@ -1,3 +1,28 @@
+dropping of individual shares failure:
+
+[FORGE] callcommand project 2
+[KEY] loadProject elfutil
+[KEY] setProject elfutil C:\nitrologic\vidbit\elfutil
+project loaded elfutil
+>/share
+0 C:\nitrologic\vidbit\elfutil\elf32.h 2.3K  - [  nitro@ryzen5 elfutil ]
+1 C:\nitrologic\vidbit\elfutil\elfutil.cpp 5.6K  - [  nitro@ryzen5 elfutil ]
+2 C:\nitrologic\relay\welcome.txt 104  - [  nitro@ryzen5 elfutil ]
+3 C:\nitrologic\vidbit\elfutil\relay.md 11  - [  nitro@ryzen5 elfutil ]
+>/drop
+0 C:\nitrologic\vidbit\elfutil\elf32.h 437  [Relay 1.9.4 ]
+1 C:\nitrologic\vidbit\elfutil\elfutil.cpp 166  [Relay 1.9.4 ]
+2 C:\nitrologic\relay\welcome.txt 104  [Relay 1.9.4 ]
+3 C:\nitrologic\vidbit\elfutil\relay.md 11  [Relay 1.9.4 ]
+drop #2
+[FORGE] callcommand drop 2
+[DROP] share: share776
+>/share
+0 C:\nitrologic\vidbit\elfutil\elf32.h 2.3K  - [  nitro@ryzen5 elfutil ]
+1 C:\nitrologic\vidbit\elfutil\elfutil.cpp 5.6K  - [  nitro@ryzen5 elfutil ]
+2 C:\nitrologic\relay\welcome.txt 104  - [  nitro@ryzen5 elfutil ]
+3 C:\nitrologic\vidbit\elfutil\relay.md 11  - [  nitro@ryzen5 elfutil ]
+
 # 🐸ｐｕｂ　ｏｆ　ｆｒｏｇ
 
 https://discord.com/api/guilds/1235838347717378118/widget.json
