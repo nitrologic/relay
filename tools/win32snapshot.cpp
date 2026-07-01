@@ -3,11 +3,13 @@
 #include <windows.h>
 #include <stdio.h>
 
-const char *dest = "desktop.bmp";
+#include "win32base64.h"
 
 extern "C" bool writeBMP(const char* filename, const void* pPixels, int width, int height);
 
-int main() {
+int main(int argc, char* argv[]) {
+	const char* dest = (argc > 1) ? argv[1] : "desktop.bmp";
+
 	int width = GetSystemMetrics(SM_CXSCREEN);
 	int height = GetSystemMetrics(SM_CYSCREEN);
 

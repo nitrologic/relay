@@ -1,0 +1,17 @@
+[
+	{
+		"type": "function",
+		"function":{
+			"name": "snapshot_desktop",
+			"description": "Saves a computer desktop image file",
+			"binary": "bin/desktop.exe",
+			"parameters": {
+				"type": "object",
+				"properties": {
+					"savepath":{"type":"string"}
+				},
+				"required": ["contentType","content"]
+			}
+		}
+	}
+]

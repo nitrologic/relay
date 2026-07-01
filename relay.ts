@@ -1939,13 +1939,6 @@ function clearShares(){
 	}
 }
 
-// empties the global rohaSharePaths
-function dropShare(share){
-	delete sortedShares[index];
-	delete roha.sharedFiles[index];
-	echo("[DROP] share:",share);
-}
-
 function dropShares(){
 	let dirty=false;
 	for(const item of rohaHistory){
@@ -1968,7 +1961,10 @@ async function dropCommand(words:string[]){
 		if(isFinite(name) && sortedShares?.length){
 			const index=name|0;
 			share=sortedShares[index];
-			dropShare(share);
+			delete sortedShares[index];
+			let id=share.id;
+			delete roha.sharedFiles[id];
+			echo("[DROP] share:",id);
 			dirty=true;
 		}
 		for(const item of rohaHistory){
@@ -2569,12 +2565,13 @@ async function writeForge(){
 
 async function resetCommand(all=false){
 	grokTemperature=ResetTemperature;
+	roha.keyedShares={};
 	rohaSharePaths=[];
 	roha.sharedFiles=[];
 	roha.project="roha";
 //	roha.persona="sloppy";
 	if(all){
-		roha.keyedShares={};
+//		roha.keyedShares={};
 		roha.keyedProjects={};
 //		currentDir=Deno.cwd();
 //		Deno.chdir(currentDir);
@@ -2854,7 +2851,7 @@ async function commitShares(tag) {
 	if (removedPaths.length) {
 		roha.sharedFiles=validShares;
 		const key=roha.project||"roha";
-		roha.keyedShares[key]=roha.sharedFiles;
+//		roha.keyedShares[key]=roha.sharedFiles;
 		await writeForge();
 		echoInfo("[KOHA]","commitShares removed", removedPaths.join(" "));
 	}
@@ -2936,6 +2933,7 @@ async function setProject(name,path):boolean{
 	}
 	roha.project=key;
 	rohaSharePaths=[];
+
 	if(Object.hasOwn(roha.keyedShares,key)){
 		const shares=roha.keyedShares[key];
 		if(roha.config.verbose){

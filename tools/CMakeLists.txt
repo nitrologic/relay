@@ -17,6 +17,6 @@ add_executable(snapshot
 )
 target_compile_definitions(snapshot PRIVATE UNICODE _UNICODE)
 target_include_directories(snapshot PRIVATE .)
-target_link_libraries(snapshot PRIVATE setupapi ole32)
+target_link_libraries(snapshot PRIVATE crypt32 setupapi ole32)
 
 endif()

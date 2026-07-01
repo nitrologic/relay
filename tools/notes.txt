@@ -1,3 +1,60 @@
+const rohaTools=[{
+	type: "function",
+	function:{
+		name: "read_time",
+		description: "Returns current local time",
+		parameters: {
+			type: "object",
+			properties: {},
+			required: []
+		}
+	}
+},{
+	type: "function",
+	function:{
+		name: "submit_file",
+		description: "Submit a file for review",
+		parameters: {
+			type: "object",
+			properties: {
+				contentType:{type:"string"},
+				content:{type:"string"}
+			},
+			required: ["contentType","content"]
+		}
+	}
+},{
+	type: "function",
+	function:{
+		name: "fetch_file",
+		description: "Request a file for analysis",
+		parameters: {
+			type: "object",
+			properties: {
+				fileName:{type:"string"}
+			},
+			required: ["fileName"]
+		}
+	}
+},{
+	type: "function",
+	function: {
+		name: "tag_slop",
+		description: "Attach description to code tag and share Fountain objects",
+		parameters: {
+			type: "object",
+			properties: {
+				name: { type: "string" },
+				type: { type:"string" , description:"forge category", enum:["code","session","share","lode"]},
+				description: { type: "string" }
+			},
+			required: ["name","type","description"]
+		}
+	}
+}];
+
+
+
 const char *dest = "desktop.raw";
 
 /*
