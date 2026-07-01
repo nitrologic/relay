@@ -4759,8 +4759,10 @@ await flush();
 let rohaNic=roha.nic||"nic";
 const sharecount=roha.sharedFiles?.length||0;
 const project=roha.project;
+
 //let termSize = Deno.consoleSize();
 //echo("console:",termSize);
+
 echo("user:",{nic:rohaNic,user:rohaUser,project,sharecount,terminal:userterminal})
 echo("forge:","\""+rohaPath+"\"");
 
@@ -4774,9 +4776,7 @@ if(roha.config.listen){
 }
 await flush();
 
-
 // forge lists models from active accounts
-
 // todo: use relayPath instead of {HOME$, PATH$}
 
 if(Deno.args && Deno.args.length>1){
