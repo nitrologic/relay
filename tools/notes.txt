@@ -1,0 +1,22 @@
+const char *dest = "desktop.raw";
+
+/*
+// snapshot desktop tool
+const char *dest="desktop.raw";
+getdc(0)
+createdibsection 
+bitblt 
+fwrite
+*/
+
+	FILE *f = fopen(dest, "wb");
+	if (f) {
+		size_t count = (size_t)(width * height * 4);
+		fwrite(pPixels, 1, count, f);
+		fclose(f);
+		printf("Saved %zux%zu raw pixels to %s successfully.\n", (size_t)width, (size_t)height, dest);
+	} else {
+		printf("Failed to open file for writing.\n");
+	}
+
+	// 9. Cleanup GDI resources to prevent massive memory leaks

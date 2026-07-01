@@ -1929,6 +1929,23 @@ function stripShare(share):boolean{
 	return dirty;
 }
 
+function clearShares(){
+	dropShares();
+	roha.sharedFiles=[];
+	roha.attachedFiles=[];
+	if(rohaSharePaths.length){
+		rohaSharePaths=[];
+		echo("[SHARES] clearShares rohaSharePaths cleared");
+	}
+}
+
+// empties the global rohaSharePaths
+function dropShare(share){
+	delete sortedShares[index];
+	delete roha.sharedFiles[index];
+	echo("[DROP] share:",share);
+}
+
 function dropShares(){
 	let dirty=false;
 	for(const item of rohaHistory){
@@ -1937,10 +1954,6 @@ function dropShares(){
 			item.content="dropped share";
 			dirty=true;
 		}
-	}
-	if(rohaSharePaths.length){
-		rohaSharePaths=[];
-		echo("[relay] all shares dropped");
 	}
 }
 
@@ -1955,7 +1968,8 @@ async function dropCommand(words:string[]){
 		if(isFinite(name) && sortedShares?.length){
 			const index=name|0;
 			share=sortedShares[index];
-			echo("[DROP] share:",share);
+			dropShare(share);
+			dirty=true;
 		}
 		for(const item of rohaHistory){
 			if(item.role==="user" && (item.name==="content" || item.name==="image")){
@@ -2911,7 +2925,7 @@ async function setPersona(name:string):boolean{
 // can fail when folder not found and chdir fails
 
 async function setProject(name,path):boolean{
-	dropShares();
+	clearShares();
 	echo("[KEY] setProject",name,path);
 	const key=name;
 	// TODO: set current roha.project in keyedProjects?
@@ -2953,7 +2967,7 @@ async function setProject(name,path):boolean{
 async function dropProject(name){
 	const hasProject=Object.hasOwn(roha.keyedProjects,name);
 	if(hasProject){
-		delete roha.keyedProjects[name];
+		delete roha.keyedProjects[name];		
 		echo("[DROP] deleted keyedProjects name:",name);
 	}else{
 		echo("[DROP] hasProject:",hasProject);
@@ -3002,6 +3016,10 @@ async function projectCommand(words){
 		}
 		if(drop){
 			dropProject(name);
+			if(roha.project==name){
+				clearShares();
+				roha.project="roha";
+			}
 		}else{
 			await loadProject(name);
 		}
