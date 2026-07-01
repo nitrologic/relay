@@ -2,8 +2,9 @@
 
 #include <windows.h>
 #include <stdio.h>
+#include <iostream>
 
-#include "win32base64.h"
+#include "base64.h"
 
 extern "C" bool writeBMP(const char* filename, const void* pPixels, int width, int height);
 
@@ -35,7 +36,13 @@ int main(int argc, char* argv[]) {
 	HGDIOBJ hOldBitmap = SelectObject(hdcMem, hBitmap);
 	BitBlt(hdcMem, 0, 0, width, height, hdcScreen, 0, 0, SRCCOPY);
 
+// write bmp file
 	writeBMP(dest,pPixels,width,height);
+	std::cout << "snapshot saved bmp file to " << dest << ": [" << width << "," << height << "]" <<  std::endl;
+
+// dump base 64 in stdout
+//	std::string base64=encodeBase64((uint8_t*)pPixels,width*height*4);
+//	std::cout << base64 << std::endl;
 
 	SelectObject(hdcMem, hOldBitmap);
 	DeleteObject(hBitmap);

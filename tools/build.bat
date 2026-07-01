@@ -5,7 +5,7 @@ rem copy ..\..\entheogen\vidbit\bin\vidbot2.elf .
 mkdir bin
 pushd bin
 cmake -G Ninja ..
-ninja 
+ninja -k 1
 popd
 
 if %errorlevel% neq 0 (
