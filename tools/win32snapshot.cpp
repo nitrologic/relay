@@ -1,13 +1,15 @@
 // win32snapshot.cpp
 
+// SetICMMode(hdcScreen, ICM_OFF);
+
 #include <windows.h>
 #include <stdio.h>
 #include <iostream>
 
 #include "base64.h"
 
+extern "C" bool writeJPG(const char* filename, const void* pPixels, int width, int height, int quality);
 extern "C" bool writePNG(const char* filename, const void* pPixels, int width, int height);
-
 extern "C" bool writeBMP(const char* filename, const void* pPixels, int width, int height);
 
 int main(int argc, char* argv[]) {
@@ -15,6 +17,7 @@ int main(int argc, char* argv[]) {
 
 	const char* dest = (argc > 1) ? argv[1] : "desktop.png";
 	const char* bmp_dest = "desktop.bmp";
+	const char* jpg_dest = "desktop.jpg";
 
 	int width = GetSystemMetrics(SM_CXSCREEN);
 	int height = GetSystemMetrics(SM_CYSCREEN);
@@ -43,8 +46,18 @@ int main(int argc, char* argv[]) {
 
 // write bmp file
 	writeBMP(bmp_dest,pPixels,width,height);
-	std::cout << "snapshot saved bmp file to " << bmp_dest << ": [" << width << "," << height << "]" <<  std::endl;
-// write png file
+	std::cout << "snapshot saved bmp " << bmp_dest << ": [" << width << "," << height << "]" <<  std::endl;
+
+// write jpg file
+	bool ok1=writeJPG(jpg_dest,pPixels,width,height,72);
+	if(ok1){
+		std::cout << "snapshot saved jpg " << jpg_dest << ": [" << width << "," << height << "]" <<  std::endl;
+	}else{
+		std::cout << "snapshot failed to save jpg " << jpg_dest << ": [" << width << "," << height << "]" <<  std::endl;
+	}
+
+
+	// write png file
 	bool ok=writePNG(dest,pPixels,width,height);
 	if(ok){
 		std::cout << "snapshot saved bmp file to " << dest << ": [" << width << "," << height << "]" <<  std::endl;
