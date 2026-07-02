@@ -1,79 +1,20 @@
-const rohaTools=[{
-	type: "function",
-	function:{
-		name: "read_time",
-		description: "Returns current local time",
-		parameters: {
-			type: "object",
-			properties: {},
-			required: []
-		}
-	}
-},{
-	type: "function",
-	function:{
-		name: "submit_file",
-		description: "Submit a file for review",
-		parameters: {
-			type: "object",
-			properties: {
-				contentType:{type:"string"},
-				content:{type:"string"}
-			},
-			required: ["contentType","content"]
-		}
-	}
-},{
-	type: "function",
-	function:{
-		name: "fetch_file",
-		description: "Request a file for analysis",
-		parameters: {
-			type: "object",
-			properties: {
-				fileName:{type:"string"}
-			},
-			required: ["fileName"]
-		}
-	}
-},{
-	type: "function",
-	function: {
-		name: "tag_slop",
-		description: "Attach description to code tag and share Fountain objects",
-		parameters: {
-			type: "object",
-			properties: {
-				name: { type: "string" },
-				type: { type:"string" , description:"forge category", enum:["code","session","share","lode"]},
-				description: { type: "string" }
-			},
-			required: ["name","type","description"]
-		}
-	}
-}];
-
-
-
-const char *dest = "desktop.raw";
-
-/*
-// snapshot desktop tool
-const char *dest="desktop.raw";
-getdc(0)
-createdibsection 
-bitblt 
-fwrite
-*/
-
-	FILE *f = fopen(dest, "wb");
-	if (f) {
-		size_t count = (size_t)(width * height * 4);
-		fwrite(pPixels, 1, count, f);
-		fclose(f);
-		printf("Saved %zux%zu raw pixels to %s successfully.\n", (size_t)width, (size_t)height, dest);
-	} else {
-		printf("Failed to open file for writing.\n");
-	}
-
-	// 9. Cleanup GDI resources to prevent massive memory leaks
+C:\nitrologic\relay\tools\bin>ninja -k 1 
+[14/16] Building C object CMakeFiles/snapshot.dir/libpng/pngrutil.c.obj
+FAILED: [code=1] CMakeFiles/snapshot.dir/libpng/pngrutil.c.obj 
+C:\toolchains\mingw64\bin\gcc.exe -DFT2_BUILD_LIBRARY -DNO_PLATFORM -DPNG_STATIC -DUNICODE -DZLIB_CONST -DZ_SOLO -D_UNICODE -D_WIN32_WINNT=0x0500 -IC:/nitrologic/relay/tools/zlib -IC:/nitrologic/relay/tools/.  -MD -MT CMakeFiles/snapshot.dir/libpng/pngrutil.c.obj -MF CMakeFiles\snapshot.dir\libpng\pngrutil.c.obj.d -o CMakeFiles/snapshot.dir/libpng/pngrutil.c.obj -c C:/nitrologic/relay/tools/libpng/pngrutil.c
+C:/nitrologic/relay/tools/libpng/pngrutil.c: In function 'png_read_start_row':
+C:/nitrologic/relay/tools/libpng/pngrutil.c:4421:49: error: 'png_pass_yinc' undeclared (first use in this function)
+ 4421 |          png_ptr->num_rows = (png_ptr->height + png_pass_yinc[0] - 1 -
+      |                                                 ^~~~~~~~~~~~~
+C:/nitrologic/relay/tools/libpng/pngrutil.c:4421:49: note: each undeclared identifier is reported only once for each function it appears in
+C:/nitrologic/relay/tools/libpng/pngrutil.c:4422:14: error: 'png_pass_ystart' undeclared (first use in this function)
+ 4422 |              png_pass_ystart[0]) / png_pass_yinc[0];
+      |              ^~~~~~~~~~~~~~~
+C:/nitrologic/relay/tools/libpng/pngrutil.c:4428:11: error: 'png_pass_inc' undeclared (first use in this function)
+ 4428 |           png_pass_inc[png_ptr->pass] - 1 -
+      |           ^~~~~~~~~~~~
+C:/nitrologic/relay/tools/libpng/pngrutil.c:4429:11: error: 'png_pass_start' undeclared (first use in this function)
+ 4429 |           png_pass_start[png_ptr->pass]) /
+      |           ^~~~~~~~~~~~~~
+[15/16] Building C object CMakeFiles/snapshot.dir/libpng/pngwutil.c.obj
+ninja: build stopped: subcommand failed.

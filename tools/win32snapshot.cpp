@@ -6,10 +6,15 @@
 
 #include "base64.h"
 
+extern "C" bool writePNG(const char* filename, const void* pPixels, int width, int height);
+
 extern "C" bool writeBMP(const char* filename, const void* pPixels, int width, int height);
 
 int main(int argc, char* argv[]) {
-	const char* dest = (argc > 1) ? argv[1] : "desktop.bmp";
+	SetProcessDPIAware();
+
+	const char* dest = (argc > 1) ? argv[1] : "desktop.png";
+	const char* bmp_dest = "desktop.bmp";
 
 	int width = GetSystemMetrics(SM_CXSCREEN);
 	int height = GetSystemMetrics(SM_CYSCREEN);
@@ -37,8 +42,15 @@ int main(int argc, char* argv[]) {
 	BitBlt(hdcMem, 0, 0, width, height, hdcScreen, 0, 0, SRCCOPY);
 
 // write bmp file
-	writeBMP(dest,pPixels,width,height);
-	std::cout << "snapshot saved bmp file to " << dest << ": [" << width << "," << height << "]" <<  std::endl;
+	writeBMP(bmp_dest,pPixels,width,height);
+	std::cout << "snapshot saved bmp file to " << bmp_dest << ": [" << width << "," << height << "]" <<  std::endl;
+// write png file
+	bool ok=writePNG(dest,pPixels,width,height);
+	if(ok){
+		std::cout << "snapshot saved bmp file to " << dest << ": [" << width << "," << height << "]" <<  std::endl;
+	}else{
+		std::cout << "writePNG failed save to " << dest << ": [" << width << "," << height << "]" <<  std::endl;
+	}
 
 // dump base 64 in stdout
 //	std::string base64=encodeBase64((uint8_t*)pPixels,width*height*4);

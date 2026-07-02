@@ -61,17 +61,18 @@ set(png_src
 
 if(WIN32)
 
-add_definitions( -D_WIN32_WINNT=0x0500)
+add_definitions( -D_WIN32_WINNT=0x0600)
 add_definitions( -D_UNICODE )
 
 add_executable(snapshot
 	${zlib_src}
-# ${png_src}
+  ${png_src}
 	win32writebmp.cpp
 	win32snapshot.cpp
+  writepng.cpp
 )
-target_compile_definitions(snapshot PRIVATE UNICODE _UNICODE PNG_STATIC PNG_LINKAGE_API=int PNG_EXPORTA=)
-target_include_directories(snapshot PRIVATE .)
+target_compile_definitions(snapshot PRIVATE UNICODE _UNICODE PNG_STATIC)
+target_include_directories(snapshot PRIVATE . libpng zlib)
 target_link_libraries(snapshot PRIVATE crypt32 setupapi ole32)
 
 endif()
