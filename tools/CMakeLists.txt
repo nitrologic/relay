@@ -4,6 +4,7 @@ add_definitions( -DNO_PLATFORM )
 add_definitions( -DZLIB_CONST )
 add_definitions( -DZ_SOLO )
 add_definitions( -DFT2_BUILD_LIBRARY  )
+add_definitions( -DAGG2D_USE_FREETYPE )
 
 if(UNIX AND NOT APPLE)
 		set(LINUX TRUE)
@@ -186,6 +187,7 @@ add_executable(snapshot
   ${jpeg_src}
 	${zlib_src}
   ${png_src}
+  agglite/agg.cpp
 	win32writebmp.cpp
 	win32snapshot.cpp
   writepng.cpp
@@ -194,7 +196,15 @@ add_executable(snapshot
 )
 target_compile_definitions(snapshot PRIVATE UNICODE _UNICODE PNG_STATIC)
 
-target_include_directories(snapshot PRIVATE . libpng zlib jpeg freetype/include freetype/include/freetype)
+target_include_directories(snapshot PRIVATE . 
+  libpng 
+  zlib 
+  jpeg 
+  freetype/include 
+  freetype/include/freetype
+  agg/include
+  agg/font_freetype
+)
 
 target_link_libraries(snapshot PRIVATE crypt32 setupapi ole32)
 
