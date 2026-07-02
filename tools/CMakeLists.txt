@@ -16,6 +16,71 @@ include_directories(${CMAKE_SOURCE_DIR}/zlib)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(freetype_src
+  freetype/src/autofit/autofit.c
+# freetype/src/base/ftapi.c
+  freetype/src/base/ftbase.c
+  freetype/src/base/ftinit.c
+  freetype/src/base/ftmm.c
+  freetype/src/base/ftsystem.c
+  freetype/src/base/ftbitmap.c
+  freetype/src/truetype/truetype.c
+  freetype/src/sfnt/sfnt.c
+  freetype/src/gzip/ftgzip.c
+)
+
+set(freetype_h
+  freetype/include/ft2build.h
+  freetype/include/freetype.h
+  freetype/include/ftadvanc.h
+  freetype/include/ftautoh.h
+  freetype/include/ftbbox.h
+  freetype/include/ftbdf.h
+  freetype/include/ftbitmap.h
+  freetype/include/ftbzip2.h
+  freetype/include/ftcache.h
+  freetype/include/ftchapters.h
+  freetype/include/ftcid.h
+  freetype/include/fterrdef.h
+  freetype/include/fterrors.h
+  freetype/include/ftgasp.h
+  freetype/include/ftglyph.h
+  freetype/include/ftgxval.h
+  freetype/include/ftgzip.h
+  freetype/include/ftimage.h
+  freetype/include/ftincrem.h
+  freetype/include/ftlcdfil.h
+  freetype/include/ftlist.h
+  freetype/include/ftlzw.h
+  freetype/include/ftmac.h
+  freetype/include/ftmm.h
+  freetype/include/ftmodapi.h
+  freetype/include/ftmoderr.h
+  freetype/include/ftotval.h
+  freetype/include/ftoutln.h
+  freetype/include/ftpfr.h
+  freetype/include/ftrender.h
+  freetype/include/ftsizes.h
+  freetype/include/ftsnames.h
+  freetype/include/ftstroke.h
+  freetype/include/ftsynth.h
+  freetype/include/ftsystem.h
+  freetype/include/fttrigon.h
+  freetype/include/fttypes.h
+  freetype/include/ftwinfnt.h
+  freetype/include/ftxf86.h
+  freetype/include/t1tables.h
+  freetype/include/ttnameid.h
+  freetype/include/tttables.h
+  freetype/include/tttags.h
+  freetype/include/ttunpat.h
+  freetype/include/config/ftconfig.h
+  freetype/include/config/ftheader.h
+  freetype/include/config/ftmodule.h
+  freetype/include/config/ftoption.h
+  freetype/include/config/ftstdlib.h
+)
+
 set(jpeg_src
   jpeg/jaricom.c
   jpeg/jcapimin.c
@@ -117,6 +182,7 @@ add_definitions( -D_WIN32_WINNT=0x0600)
 add_definitions( -D_UNICODE )
 
 add_executable(snapshot
+  ${freetype_src}
   ${jpeg_src}
 	${zlib_src}
   ${png_src}
@@ -124,9 +190,12 @@ add_executable(snapshot
 	win32snapshot.cpp
   writepng.cpp
   writejpg.cpp
+  freetype.cpp
 )
 target_compile_definitions(snapshot PRIVATE UNICODE _UNICODE PNG_STATIC)
-target_include_directories(snapshot PRIVATE . libpng zlib jpeg)
+
+target_include_directories(snapshot PRIVATE . libpng zlib jpeg freetype/include freetype/include/freetype)
+
 target_link_libraries(snapshot PRIVATE crypt32 setupapi ole32)
 
 endif()

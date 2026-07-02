@@ -1,20 +1,9 @@
-C:\nitrologic\relay\tools\bin>ninja -k 1 
-[14/16] Building C object CMakeFiles/snapshot.dir/libpng/pngrutil.c.obj
-FAILED: [code=1] CMakeFiles/snapshot.dir/libpng/pngrutil.c.obj 
-C:\toolchains\mingw64\bin\gcc.exe -DFT2_BUILD_LIBRARY -DNO_PLATFORM -DPNG_STATIC -DUNICODE -DZLIB_CONST -DZ_SOLO -D_UNICODE -D_WIN32_WINNT=0x0500 -IC:/nitrologic/relay/tools/zlib -IC:/nitrologic/relay/tools/.  -MD -MT CMakeFiles/snapshot.dir/libpng/pngrutil.c.obj -MF CMakeFiles\snapshot.dir\libpng\pngrutil.c.obj.d -o CMakeFiles/snapshot.dir/libpng/pngrutil.c.obj -c C:/nitrologic/relay/tools/libpng/pngrutil.c
-C:/nitrologic/relay/tools/libpng/pngrutil.c: In function 'png_read_start_row':
-C:/nitrologic/relay/tools/libpng/pngrutil.c:4421:49: error: 'png_pass_yinc' undeclared (first use in this function)
- 4421 |          png_ptr->num_rows = (png_ptr->height + png_pass_yinc[0] - 1 -
-      |                                                 ^~~~~~~~~~~~~
-C:/nitrologic/relay/tools/libpng/pngrutil.c:4421:49: note: each undeclared identifier is reported only once for each function it appears in
-C:/nitrologic/relay/tools/libpng/pngrutil.c:4422:14: error: 'png_pass_ystart' undeclared (first use in this function)
- 4422 |              png_pass_ystart[0]) / png_pass_yinc[0];
-      |              ^~~~~~~~~~~~~~~
-C:/nitrologic/relay/tools/libpng/pngrutil.c:4428:11: error: 'png_pass_inc' undeclared (first use in this function)
- 4428 |           png_pass_inc[png_ptr->pass] - 1 -
-      |           ^~~~~~~~~~~~
-C:/nitrologic/relay/tools/libpng/pngrutil.c:4429:11: error: 'png_pass_start' undeclared (first use in this function)
- 4429 |           png_pass_start[png_ptr->pass]) /
-      |           ^~~~~~~~~~~~~~
-[15/16] Building C object CMakeFiles/snapshot.dir/libpng/pngwutil.c.obj
-ninja: build stopped: subcommand failed.
+C:\nitrologic\relay\tools>if 0 NEQ 0 (
+echo cmake ninja failure errorlevel:0  
+ exit /b 0 
+) 
+
+C:\nitrologic\relay\tools>bin\snapshot
+snapshot saved bmp desktop.bmp: [3043,2064]
+snapshot saved jpg desktop.jpg: [3043,2064]
+snapshot saved bmp file to desktop.png: [3043,2064]

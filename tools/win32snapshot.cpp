@@ -8,6 +8,7 @@
 
 #include "base64.h"
 
+extern "C" bool initFreetype(const char *filepath,int size);
 extern "C" bool writeJPG(const char* filename, const void* pPixels, int width, int height, int quality);
 extern "C" bool writePNG(const char* filename, const void* pPixels, int width, int height, unsigned char *buffer);
 extern "C" bool writeBMP(const char* filename, const void* pPixels, int width, int height);
@@ -61,6 +62,8 @@ bool writeImage(HDC hdcMem, HDC hdcSrc, const char *dest,int sx,int sy,int width
 }
 
 int main(int argc, char* argv[]) {
+	bool ok=initFreetype("verdanab.ttf",72);
+	std::cout << "initFreetype " << (ok?"OK":"FAIL") << std::endl;
 	SetProcessDPIAware();
 	bool desktop = (argc > 2) && (strcmp(argv[2],"--desktop")==0);
 	const char* dest = (argc > 1) ? argv[1] : "desktop.png";
