@@ -39,6 +39,12 @@ import { dirname } from "node:path";
 import { exists } from "https://deno.land/std@0.224.0/fs/exists.ts";
 import { describe } from "node:test";
 
+function shareName(path) {
+	const parent = dirname(path);
+	const dir = basename(path);
+	return basename(parent)+"_"+dir;
+}
+
 const appDir=Deno.cwd();
 
 const defaultModel="deepseek-v4-flash@deepseek";
@@ -2641,12 +2647,11 @@ async function addShare(share){
 		// new format needs context
 		// echo("[ADDSHARE]",share);
 		roha.sharedFiles.push(share);
-		const name=basename(share.path);
-		const dirpath=dirname(share.path);
-		const dir=basename(dirpath);
-		// echo("[SHARE]",share.path,name,dir,dirpath);
-		if(name=="relay.md"){
-			const success=await setProject(dir,dirpath);
+		const filename=basename(share.path);
+		if(filename=="relay.md"){
+			const name=shareName(share.path);
+			const dirpath=dirname(share.path);
+			const success=await setProject(name,dirpath);
 		}
 	}
 	if(share.tag) {
@@ -4688,6 +4693,9 @@ async function enumerateModels(){
 }
 
 echo(rohaStatus,rohaTitle);
+
+echo("shareName:",shareName(currentDir));
+
 
 await flush();
 await readForge();

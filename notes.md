@@ -1,3 +1,6 @@
+await addShare({ path, size, modified, hash, tag });
+
+
 The vendor balances are a nice touch too. Anthropic being the only positive one while xAI is
 deepest in the red is a fun snapshot of where the usage is landing.
 

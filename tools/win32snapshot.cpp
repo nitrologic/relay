@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <iostream>
 
+#include "geoshape.h"
 #include "base64.h"
 
 extern "C" bool initFreetype(const char *filepath,int size);
