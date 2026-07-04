@@ -1,3 +1,15 @@
+[RELAY completions choked
+[RELAY] unhandled error 400 Invalid request: the message at position 5 with role 'user' must not be empty
+[RELAY] Error: 400 Invalid request: the message at position 5 with role 'user' must not be empty
+    at APIError.generate (https://jsr.io/@openai/openai/5.23.0/core/error.ts:72:14)
+    at OpenAI.makeStatusError (https://jsr.io/@openai/openai/5.23.0/client.ts:463:28)
+    at OpenAI.makeRequest (https://jsr.io/@openai/openai/5.23.0/client.ts:713:24)
+    at async relay (file:///C:/nitrologic/relay/relay.ts:4272:15)
+    at async chat (file:///C:/nitrologic/relay/relay.ts:4621:6)
+    at async file:///C:/nitrologic/relay/relay.ts:4827:2
+>/model 0
+model: {"name":"deepseek-v4-flash","brand":"🐋","rate":[0.14,0.028,0.28],"limit":0,"balance":"$-3.8667","modelname":"deepseek-v4-flash@deepseek"}
+
 await addShare({ path, size, modified, hash, tag });
 
 

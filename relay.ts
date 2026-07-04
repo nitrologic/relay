@@ -40,9 +40,10 @@ import { exists } from "https://deno.land/std@0.224.0/fs/exists.ts";
 import { describe } from "node:test";
 
 function shareName(path) {
-	const parent = dirname(path);
-	const dir = basename(path);
-	return basename(parent)+"_"+dir;
+	console.log("shareName:",path);
+	const dir = dirname(path);
+	const parent = basename(dir);
+	return parent+"_"+basename(path);
 }
 
 const appDir=Deno.cwd();
@@ -2649,8 +2650,8 @@ async function addShare(share){
 		roha.sharedFiles.push(share);
 		const filename=basename(share.path);
 		if(filename=="relay.md"){
-			const name=shareName(share.path);
 			const dirpath=dirname(share.path);
+			const name=shareName(dirpath);
 			const success=await setProject(name,dirpath);
 		}
 	}
@@ -4272,7 +4273,8 @@ async function relay(depth:number,from:string) {
 			completion=await endpoint.chat.completions.create(payload);
 		}catch(error){
 			echo("[RELAY completions choked");
-//			echo(payload);
+			// simon was here - message at position 5 with role 'user' must not be empty
+			echo(payload);
 			throw(error);
 		}
 
