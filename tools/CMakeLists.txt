@@ -177,6 +177,34 @@ set(png_src
 	libpng/pngwutil.c
 )
 
+if(APPLE)
+add_executable(snapshot
+  ${freetype_src}
+  ${jpeg_src}
+	${zlib_src}
+  ${png_src}
+  agglite/agg.cpp
+#	win32writebmp.cpp
+#	win32snapshot.cpp
+  writepng.cpp
+  writejpg.cpp
+  freetype.cpp
+	macossnapshot.cpp
+)
+
+target_include_directories(snapshot PRIVATE . 
+  libpng 
+  zlib 
+  jpeg 
+  freetype/include 
+  freetype/include/freetype
+  agg/include
+  agg/font_freetype
+)
+
+endif()
+
+
 if(WIN32)
 
 add_definitions( -D_WIN32_WINNT=0x0600)

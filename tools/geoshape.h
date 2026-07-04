@@ -62,7 +62,7 @@ struct XYZDAB {
 
 typedef std::vector<XYZDAB> Outline; // clockwise order closed
 
-
+#ifdef USE_AGG
 namespace agg {
 
 	class canvas {
@@ -199,7 +199,7 @@ namespace agg {
 	};
 
 };
-
+#endif
 
 enum Medium { _POINT, _OUTLINE, _CLOSED };
 
