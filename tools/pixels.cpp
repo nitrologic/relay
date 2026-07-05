@@ -1,5 +1,6 @@
 #include <iostream>
 #include "intpixels.h"
+#include "readgltf.h"
 
 extern "C" bool initFreetype(const char *filepath,int size);
 
@@ -21,5 +22,10 @@ int main(int argc, char* argv[]) {
 	std::cout << "initFreetype " << (ok?"OK":"FAIL") << std::endl;
 	int result=testImage("desktop.png");
 	std::cout << "testImage " << (result) << std::endl;
+
+	nitro::Asset *assets;
+
+	int result2=nitro::readGLTF("test.gltf",&assets);
+
     return 0;
 }

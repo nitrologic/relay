@@ -226,6 +226,7 @@ add_executable(snapshot
   intpixels.cpp
 #	win32snapshot.cpp
   pixels.cpp
+  readgltf.cpp
 )
 target_compile_definitions(snapshot PRIVATE UNICODE _UNICODE PNG_STATIC)
 
