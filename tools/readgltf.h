@@ -221,7 +221,7 @@ struct Asset {
 	std::vector<Material*> materials;
 	std::vector<BufferView*> bufferViews;
 	std::vector<Buffer*> buffers;
-	fs::path path;
+	std::string path;
 };
 
 int parseGLTF(Chunk &json, Chunk &bin, Asset **result, const char *path);

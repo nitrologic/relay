@@ -22,10 +22,8 @@ int main(int argc, char* argv[]) {
 	std::cout << "initFreetype " << (ok?"OK":"FAIL") << std::endl;
 	int result=testImage("desktop.png");
 	std::cout << "testImage " << (result) << std::endl;
-
 	nitro::Asset *assets;
-
-	int result2=nitro::readGLTF("test.gltf",&assets);
-
+	int result2=nitro::readGLTF("cube.gltf",&assets);
+	std::cout << "readGLTF cube.gltf " << (result2) << std::endl;
     return 0;
 }

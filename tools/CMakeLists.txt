@@ -193,6 +193,7 @@ add_executable(snapshot
 #	macossnapshot.cpp
   intpixels.cpp
   pixels.cpp
+  readgltf.cpp
 )
 
 target_include_directories(snapshot PRIVATE . 

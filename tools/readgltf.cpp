@@ -10,7 +10,18 @@ typedef unsigned int uint;
 const uint JSON_CHUNK = 0x4E4F534A;
 const uint BIN_CHUNK = 0x004E4942;
 
-int nitro::parseGLTF(Chunk &json, Chunk &bin, nitro::Asset **result, const char *path){
+JSONParser parser;
+
+int nitroparseGLTF2(Chunk &json, Chunk &bin, nitro::Asset **model, const char *path){
+	std::string js(json.begin(), json.end());
+	JSValue *result;
+	int fail=parser.parseJSON(js,&result);
+	JSObject *meta=result->objectMember("asset");
+	nitro::Asset *asset = new nitro::Asset();
+	asset->path = path;
+	asset->generator = meta->stringMember("generator");
+	asset->version = meta->stringMember("version");
+	*model=asset;
 	return 0;
 }
 
@@ -98,6 +109,311 @@ int nitro::readGLTF(const char *path, nitro::Asset **result) {
 
 	return parseGLTF(json, empty, result, path);
 }
+
+
+#ifndef USE_RAPID_JSON
+
+int nitro::parseGLTF(Chunk &json, Chunk &bin, nitro::Asset **result, const char *path) {
+
+    std::string js(json.begin(), json.end());
+    JSValue *root = nullptr;
+    int fail = parser.parseJSON(js, &root);
+    if (fail != 0 || !root || root->type != Object) {
+        std::cout << "json.h parseGLTF: failed to parse JSON" << std::endl;
+        return -2;
+    }
+
+    JSObject *doc = root->object;
+    if (!doc) return -3;
+
+    nitro::Asset *asset = new nitro::Asset();
+    asset->path = path;
+
+    // === Asset ===
+    if (JSObject *meta = doc->objectMember("asset")) {
+        asset->generator = meta->stringMember("generator");
+        asset->version   = meta->stringMember("version");
+    }
+
+    // === Buffers ===
+    if (JSArray *buffers = doc->arrayMember("buffers")) {
+        for (JSValue *bufVal : buffers->values) {
+            if (!bufVal || bufVal->type != Object) continue;
+            JSObject *b = bufVal->object;
+
+            size_t byteLength = (size_t)b->integerMember("byteLength");
+            std::string uri = b->stringMember("uri");
+
+            if (bin.size()) {
+                asset->buffers.push_back(new Buffer({ byteLength, "", bin }));
+            } else {
+                Chunk empty;
+                asset->buffers.push_back(new Buffer({ byteLength, uri, empty }));
+            }
+        }
+    }
+
+    // === BufferViews ===
+    if (JSArray *bufferViews = doc->arrayMember("bufferViews")) {
+        for (JSValue *bvVal : bufferViews->values) {
+            if (!bvVal || bvVal->type != Object) continue;
+            JSObject *bv = bvVal->object;
+
+            int bufferIndex = (int)bv->integerMember("buffer");
+            if (bufferIndex < 0 || bufferIndex >= (int)asset->buffers.size()) continue;
+
+            Buffer *buffer = asset->buffers[bufferIndex];
+            size_t byteOffset = (size_t)bv->integerMember("byteOffset");
+            if (byteOffset == (size_t)NotAnInt) byteOffset = 0;
+
+            size_t byteLength = (size_t)bv->integerMember("byteLength");
+            int target = (int)bv->integerMember("target");
+            if (target == (int)NotAnInt) target = -1;
+
+            asset->bufferViews.push_back(new BufferView{ buffer, byteOffset, byteLength, target });
+        }
+    }
+
+    // === Textures ===
+    if (JSArray *textures = doc->arrayMember("textures")) {
+        for (JSValue *texVal : textures->values) {
+            if (!texVal || texVal->type != Object) continue;
+            JSObject *t = texVal->object;
+
+            int sampler = (int)t->integerMember("sampler");
+            if (sampler == (int)NotAnInt) sampler = -1;
+            int source  = (int)t->integerMember("source");
+
+            asset->textures.push_back(new Texture{ sampler, source });
+        }
+    }
+
+    // === Images ===
+    if (JSArray *images = doc->arrayMember("images")) {
+        for (JSValue *imgVal : images->values) {
+            if (!imgVal || imgVal->type != Object) continue;
+            JSObject *img = imgVal->object;
+
+            std::string uri = img->stringMember("uri");
+            int bufferView = (int)img->integerMember("bufferView");
+            if (bufferView == (int)NotAnInt) bufferView = 0;
+            std::string mimeType = img->stringMember("mimeType");
+
+            asset->images.push_back(new TextureImage{ uri, bufferView, mimeType });
+        }
+    }
+
+    // === Samplers ===
+    if (JSArray *samplers = doc->arrayMember("samplers")) {
+        for (JSValue *samVal : samplers->values) {
+            if (!samVal || samVal->type != Object) continue;
+            JSObject *s = samVal->object;
+
+            int magFilter = (int)s->integerMember("magFilter");
+            int minFilter = (int)s->integerMember("minFilter");
+            int wrapS = (int)s->integerMember("wrapS");
+            int wrapT = (int)s->integerMember("wrapT");
+
+            if (wrapS == (int)NotAnInt) wrapS = Sampler::REPEAT;
+            if (wrapT == (int)NotAnInt) wrapT = Sampler::REPEAT;
+
+            asset->samplers.push_back(new Sampler{ magFilter, minFilter, wrapS, wrapT, "", "", "" });
+        }
+    }
+
+    // === Materials ===
+    if (JSArray *materials = doc->arrayMember("materials")) {
+        for (JSValue *matVal : materials->values) {
+            if (!matVal || matVal->type != Object) continue;
+            JSObject *m = matVal->object;
+
+            Material *mat = new Material();
+            mat->name = m->stringMember("name");
+
+            mat->alphaMode = m->stringMember("alphaMode");
+            if (mat->alphaMode.empty()) mat->alphaMode = "OPAQUE";
+
+            mat->alphaCutoff = m->numberMember("alphaCutoff");
+            if (std::isnan(mat->alphaCutoff)) mat->alphaCutoff = 0.5;
+
+            mat->doubleSided = (m->integerMember("doubleSided") == 1);
+
+            // pbrMetallicRoughness
+            if (JSObject *pbr = m->objectMember("pbrMetallicRoughness")) {
+                pbrMetallicRoughness *rough = new pbrMetallicRoughness();
+
+                // baseColorFactor
+                if (JSArray *color = pbr->arrayMember("baseColorFactor")) {
+                    for (int i = 0; i < 4 && i < (int)color->values.size(); ++i) {
+                        rough->baseColorFactor[i] = color->values[i]->number;
+                    }
+                } else {
+                    rough->baseColorFactor[0] = 1.0;
+                    rough->baseColorFactor[1] = 1.0;
+                    rough->baseColorFactor[2] = 1.0;
+                    rough->baseColorFactor[3] = 1.0;
+                }
+
+                rough->metallicFactor = pbr->numberMember("metallicFactor");
+                if (std::isnan(rough->metallicFactor)) rough->metallicFactor = 1.0;
+
+                // baseColorTexture
+                rough->baseColorTexture_Index = -1;
+                if (JSObject *baseTex = pbr->objectMember("baseColorTexture")) {
+                    int idx = (int)baseTex->integerMember("index");
+                    if (idx != (int)NotAnInt) rough->baseColorTexture_Index = idx;
+                }
+
+                mat->rough = rough;
+            }
+
+            asset->materials.push_back(mat);
+        }
+    }
+
+    // === Accessors ===
+    if (JSArray *accessors = doc->arrayMember("accessors")) {
+        for (JSValue *accVal : accessors->values) {
+            if (!accVal || accVal->type != Object) continue;
+            JSObject *a = accVal->object;
+
+            int viewIndex = (int)a->integerMember("bufferView");
+            if (viewIndex < 0 || viewIndex >= (int)asset->bufferViews.size()) continue;
+
+            BufferView *bufferView = asset->bufferViews[viewIndex];
+            size_t byteOffset = (size_t)a->integerMember("byteOffset");
+            if (byteOffset == (size_t)NotAnInt) byteOffset = 0;
+
+            int componentType = (int)a->integerMember("componentType");
+            int count = (int)a->integerMember("count");
+            std::string type = a->stringMember("type");
+
+            int span = AccessorSpan.count(type) ? AccessorSpan[type] : 1;
+
+            asset->accessors.push_back(new Accessor{
+                bufferView, byteOffset, componentType, count, {}, {}, type, span
+            });
+        }
+    }
+
+    // === Meshes ===
+    if (JSArray *meshes = doc->arrayMember("meshes")) {
+        for (JSValue *meshVal : meshes->values) {
+            if (!meshVal || meshVal->type != Object) continue;
+            JSObject *meshObj = meshVal->object;
+
+            std::vector<Primitive*> primitives;
+
+            if (JSArray *prims = meshObj->arrayMember("primitives")) {
+                for (JSValue *primVal : prims->values) {
+                    if (!primVal || primVal->type != Object) continue;
+                    JSObject *p = primVal->object;
+
+                    int indices = (int)p->integerMember("indices");
+                    if (indices == (int)NotAnInt) indices = -1;
+
+                    int materialIndex = (int)p->integerMember("material");
+                    if (materialIndex == (int)NotAnInt) materialIndex = -1;
+
+                    Primitive::Mode mode = Primitive::TRIANGLES;
+                    int modeVal = (int)p->integerMember("mode");
+                    if (modeVal != (int)NotAnInt) mode = (Primitive::Mode)modeVal;
+
+                    Attributes attributes;
+                    if (JSObject *attrs = p->objectMember("attributes")) {
+                        for (size_t i = 0; i < attrs->names.size(); ++i) {
+                            int index = (int)attrs->values[i]->integer;
+                            attributes[attrs->names[i]] = index;
+                        }
+                    }
+
+                    primitives.push_back(new Primitive{ attributes, indices, mode, materialIndex });
+                }
+            }
+
+            std::string name = meshObj->stringMember("name");
+            asset->meshes.push_back(new Mesh{ primitives, name });
+        }
+    }
+
+    // === Nodes ===
+    if (JSArray *nodes = doc->arrayMember("nodes")) {
+        // First pass: create nodes
+        for (JSValue *nodeVal : nodes->values) {
+            if (!nodeVal || nodeVal->type != Object) continue;
+            JSObject *n = nodeVal->object;
+
+            Node *node = new Node();
+
+            int meshIndex = (int)n->integerMember("mesh");
+            if (meshIndex != (int)NotAnInt && meshIndex < (int)asset->meshes.size()) {
+                node->mesh = asset->meshes[meshIndex];
+            }
+
+            if (JSArray *matrixArr = n->arrayMember("matrix")) {
+                for (JSValue *v : matrixArr->values) {
+                    if (v->type == Number) node->matrix.push_back(v->number);
+                    else if (v->type == Integer) node->matrix.push_back((double)v->integer);
+                }
+            }
+
+            asset->nodes.push_back(node);
+        }
+
+        // Second pass: names + children
+        for (size_t i = 0; i < nodes->values.size() && i < asset->nodes.size(); ++i) {
+            JSObject *n = nodes->values[i]->object;
+            Node *node = asset->nodes[i];
+
+            node->name = n->stringMember("name");
+
+            if (JSArray *children = n->arrayMember("children")) {
+                for (JSValue *c : children->values) {
+                    int childIndex = (int)c->integer;
+                    if (childIndex >= 0 && childIndex < (int)asset->nodes.size()) {
+                        node->children.push_back(asset->nodes[childIndex]);
+                    }
+                }
+            }
+        }
+    }
+
+    // === Scenes ===
+    if (JSArray *scenes = doc->arrayMember("scenes")) {
+        for (JSValue *sceneVal : scenes->values) {
+            if (!sceneVal || sceneVal->type != Object) continue;
+            JSObject *s = sceneVal->object;
+
+            std::string name = s->stringMember("name");
+            std::vector<Node*> sceneNodes;
+
+            if (JSArray *nodeList = s->arrayMember("nodes")) {
+                for (JSValue *nv : nodeList->values) {
+                    int idx = (int)nv->integer;
+                    if (idx >= 0 && idx < (int)asset->nodes.size()) {
+                        sceneNodes.push_back(asset->nodes[idx]);
+                    }
+                }
+            }
+
+            asset->scenes.push_back(new Scene{ name, sceneNodes });
+        }
+    }
+
+    // === Active Scene ===
+    int sceneIndex = (int)doc->integerMember("scene");
+    if (sceneIndex != (int)NotAnInt && sceneIndex < (int)asset->scenes.size()) {
+        asset->scene = asset->scenes[sceneIndex];
+    }
+
+    *result = asset;
+    return 0;
+}
+
+#endif
+
+
+
 
 #ifdef USE_RAPID_JSON
 

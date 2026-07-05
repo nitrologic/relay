@@ -1,4 +1,5 @@
 pushd bin
 cmake ..
 make
-popd bin
+popd
+./bin/snapshot
