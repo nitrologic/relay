@@ -2,9 +2,10 @@ cmake_minimum_required(VERSION 3.25)
 
 add_definitions( -DNO_PLATFORM )
 add_definitions( -DZLIB_CONST )
-add_definitions( -DZ_SOLO )
 add_definitions( -DFT2_BUILD_LIBRARY  )
 add_definitions( -DAGG2D_USE_FREETYPE )
+
+add_definitions( -DPNG_SEQUENTIAL_READ_SUPPORTED )
 
 if(UNIX AND NOT APPLE)
 		set(LINUX TRUE)
@@ -221,6 +222,7 @@ add_executable(snapshot
   writepng.cpp
   writejpg.cpp
   freetype.cpp
+  intpixels.cpp
 )
 target_compile_definitions(snapshot PRIVATE UNICODE _UNICODE PNG_STATIC)
 

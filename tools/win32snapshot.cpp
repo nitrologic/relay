@@ -6,6 +6,20 @@
 #include <stdio.h>
 #include <iostream>
 
+#include "intpixels.h"
+
+int testImage(const char *src){
+	Path srcPath=src;
+	size_t n = srcPath.string().size();
+	intPixels* image = new intPixels();
+	bool result = image->loadPNG(srcPath.string().c_str());
+	if (!result) {
+		std::cout << "publishRaw loadPNG failure for " << srcPath << EOL;
+		return -1;
+	}
+	return 0;
+}
+
 
 #include "base64.h"
 

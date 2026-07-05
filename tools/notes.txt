@@ -1,3 +1,5 @@
+# add_definitions( -DZ_SOLO )
+
 #pragma once
 
 // Encodes a raw buffer into a Base64 string using crypt32.lib.
