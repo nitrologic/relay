@@ -1,3 +1,14 @@
+C:\nitrologic\relay\tools>echo off 
+A subdirectory or file bin already exists.
+-- Configuring done (0.1s)
+-- Generating done (0.1s)
+-- Build files have been written to: C:/nitrologic/relay/tools/bin
+[2/2] Linking CXX executable snapshot.exe
+initFreetype face:verdanab.ttf height:5632 ascend:4672 descend:1024
+initFreetype OK
+image 3862 x 2110
+testImage 0
+
 rem set error
 rem copy ..\..\entheogen\vidbit\bin\vidbot2.elf .
 rem bin\snapshot

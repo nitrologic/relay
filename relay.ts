@@ -4,10 +4,10 @@
 
 // ⛯⛲🪣🐸🪠🐋🜁🐉🏛️❁𝕏🌟💫🌏📆💰👀🤖🫦💻👄🔧🧊❃🎙️🔉📷🖼️🗣️📡👁🧮📠⣯⛅⚙️🗜️🧰 🌕🌙✿
 
-// Testing with Deno 2.8.3 V8  14.9.207.2-rusty, TypeScript 6.0.3
+// Testing with Deno 2.9.1 V8  14.9.207.2-rusty, TypeScript 6.0.3
 
-const brandFountain="Relay";
-const relayVersion="1.9.4";
+const brandFountain="nitrologic Relay";
+const relayVersion="1.9.5";
 const fountainName=brandFountain+" "+relayVersion;
 
 // system prompt
@@ -50,7 +50,7 @@ const appDir=Deno.cwd();
 
 const defaultModel="deepseek-v4-flash@deepseek";
 
-const statusChar=" ꔀ "; //courtesy Vai Syllabary
+const statusChar="🟠";
 const activeChar="❃";
 
 const terminalColumns=100;	// default value for wordWrap()
@@ -2570,12 +2570,30 @@ async function writeForge(){
 	}
 }
 
+function flushProjects(){
+	let flush=0;
+	const result={};
+	for(let key in roha.keyedProjects){
+		const project=roha.keyedProjects[key];
+		if(project.name.indexOf("_")!=-1){
+			result[key]=project;
+		}else{
+			flush++;
+		}
+	}
+	if(flush){
+		echo("[KOHA]","flushProjects flush:",flush);
+	}
+	roha.keyedProjects=result;	
+}
+
 async function resetCommand(all=false){
 	grokTemperature=ResetTemperature;
 	roha.keyedShares={};
 	rohaSharePaths=[];
 	roha.sharedFiles=[];
 	roha.project="roha";
+	flushProjects();
 //	roha.persona="sloppy";
 	if(all){
 //		roha.keyedShares={};
@@ -4240,7 +4258,7 @@ async function relay(depth:number,from:string) {
 				const temp=frigid?"🧊":grokTemperature.toFixed(1)+"°";
 				const forge = roha.config.tools? (grokFunctions ? Pail : "🐸") : "🪠";
 				const modelSpec=[rohaTitle,rohaModel,emoji,temp,cost,forge,size,elapsed.toFixed(2)+"s"];
-				const status=statusChar+modelSpec.join(" ")+" ";
+				const status=statusChar+" "+modelSpec.join(" ")+" ";
 				if(true){//config.echostatus
 					echo(status);
 				}else{//config.internalstatus
