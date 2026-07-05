@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.25)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 add_definitions( -DNO_PLATFORM )
 add_definitions( -DZLIB_CONST )
 add_definitions( -DFT2_BUILD_LIBRARY  )
@@ -14,9 +17,6 @@ endif()
 project(snapshot)
 
 include_directories(${CMAKE_SOURCE_DIR}/zlib)
-
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(freetype_src
   freetype/src/autofit/autofit.c
@@ -190,7 +190,9 @@ add_executable(snapshot
   writepng.cpp
   writejpg.cpp
   freetype.cpp
-	macossnapshot.cpp
+#	macossnapshot.cpp
+  intpixels.cpp
+  pixels.cpp
 )
 
 target_include_directories(snapshot PRIVATE . 

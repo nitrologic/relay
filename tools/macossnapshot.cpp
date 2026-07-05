@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 #include <iostream>
-//#include "geoshape.h"
+#include "intpixels.h"
 #include "base64.h"
 
 extern "C" bool initFreetype(const char *filepath,int size);

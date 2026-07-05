@@ -42,8 +42,8 @@ struct MercRect {
 #include <algorithm>
 #include <filesystem>
 
-namespace fs = std::filesystem;
-typedef fs::path Path;
+//namespace fs = std::filesystem;
+//typedef fs::path Path;
 
 typedef size_t I;	 //index is unsigned integral
 
