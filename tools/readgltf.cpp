@@ -1,4 +1,6 @@
 #include <cstring>
+#include <cmath>
+
 #include "readgltf.h"
 #include "json.h"
 
@@ -11,19 +13,6 @@ const uint JSON_CHUNK = 0x4E4F534A;
 const uint BIN_CHUNK = 0x004E4942;
 
 JSONParser parser;
-
-int nitroparseGLTF2(Chunk &json, Chunk &bin, nitro::Asset **model, const char *path){
-	std::string js(json.begin(), json.end());
-	JSValue *result;
-	int fail=parser.parseJSON(js,&result);
-	JSObject *meta=result->objectMember("asset");
-	nitro::Asset *asset = new nitro::Asset();
-	asset->path = path;
-	asset->generator = meta->stringMember("generator");
-	asset->version = meta->stringMember("version");
-	*model=asset;
-	return 0;
-}
 
 int nitro::readGLB(const char *path, nitro::Asset **asset) {
 	std::ifstream stream;
@@ -412,9 +401,6 @@ int nitro::parseGLTF(Chunk &json, Chunk &bin, nitro::Asset **result, const char 
 
 #endif
 
-
-
-
 #ifdef USE_RAPID_JSON
 
 int nitro::parseGLTF(Chunk &json, Chunk &bin, nitro::Asset **result, const char *path) {
@@ -782,4 +768,18 @@ Chunk resolveURI(std::string uri) {
 	}
 
 	return chunk;
+}
+
+
+int nitroparseGLTF2(Chunk &json, Chunk &bin, nitro::Asset **model, const char *path){
+	std::string js(json.begin(), json.end());
+	JSValue *result;
+	int fail=parser.parseJSON(js,&result);
+	JSObject *meta=result->objectMember("asset");
+	nitro::Asset *asset = new nitro::Asset();
+	asset->path = path;
+	asset->generator = meta->stringMember("generator");
+	asset->version = meta->stringMember("version");
+	*model=asset;
+	return 0;
 }
