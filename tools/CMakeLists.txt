@@ -218,11 +218,12 @@ add_executable(snapshot
   ${png_src}
   agglite/agg.cpp
 	win32writebmp.cpp
-	win32snapshot.cpp
   writepng.cpp
   writejpg.cpp
   freetype.cpp
   intpixels.cpp
+#	win32snapshot.cpp
+  pixels.cpp
 )
 target_compile_definitions(snapshot PRIVATE UNICODE _UNICODE PNG_STATIC)
 

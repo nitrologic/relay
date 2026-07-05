@@ -1,46 +1,14 @@
-// image.h
+// intpixels.h
 
 #pragma once
 
 #include "nitrologic.h"
+
 #include <jpeglib.h>
 #include <zlib.h>
 #include <png.h>
 
-struct GeoPos {
-	double lat;	 // negative south
-	double lon;  // positive east
-};
-
-struct GeoRect {
-	GeoPos a;
-	GeoPos b;
-};
-
-struct GeoQuad {
-	GeoPos a;
-	GeoPos b;
-	GeoPos c;
-	GeoPos d;
-};
-
-
-enum Projection { MERC41, WGS, NZTM };
-
-struct MercPos {
-	double north;
-	double east;
-};
-
-// bottom left to top right
-
-struct MercRect {
-	MercPos a;
-	MercPos b;
-};
-
-
-#include "geo/tileaddress.h"
+#include "tileaddress.h"
 
 /*
 #include <zlib.h>

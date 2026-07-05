@@ -1,5 +1,36 @@
 #pragma once 
 
+struct GeoPos {
+	double lat;	 // negative south
+	double lon;  // positive east
+};
+
+struct GeoRect {
+	GeoPos a;
+	GeoPos b;
+};
+
+struct GeoQuad {
+	GeoPos a;
+	GeoPos b;
+	GeoPos c;
+	GeoPos d;
+};
+
+enum Projection { MERC41, WGS, NZTM };
+
+struct MercPos {
+	double north;
+	double east;
+};
+
+// bottom left to top right
+
+struct MercRect {
+	MercPos a;
+	MercPos b;
+};
+
 #define _USE_MATH_DEFINES
 
 #include <mutex>
@@ -99,8 +130,6 @@ inline XYZ CalculateNormal(XYZ& a, XYZ& b, XYZ& c) {
 
 	return n;
 }
-
-
 
 inline double Distance(XYZ& a, XYZ& b) {
 	double x = b.x - a.x;

@@ -1,6 +1,4 @@
-rem set error
-
-rem copy ..\..\entheogen\vidbit\bin\vidbot2.elf .
+echo off
 
 mkdir bin
 pushd bin
@@ -13,4 +11,5 @@ if %errorlevel% neq 0 (
     exit /b %errorlevel%
 )
 
-bin\snapshot
+bin\snapshot.exe
+

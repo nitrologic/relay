@@ -1,3 +1,8 @@
+rem set error
+rem copy ..\..\entheogen\vidbit\bin\vidbot2.elf .
+rem bin\snapshot
+
+
 # add_definitions( -DZ_SOLO )
 
 #pragma once
