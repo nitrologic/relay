@@ -141,17 +141,21 @@
 		"purpose":"frontier model for coding, agentic search, and creative writing",
 		"reality":"rate limited 20,000 input tokens per minute"
 	},
-	"gpt-5.6-sol@openai":{
-			"pricing":[5.00,0.50,30.0],
-			"cold":true
+	"gpt-5.6-luna@openai":{
+		"active": true,
+		"pricing":[1.00,0.10,6.0],
+		"cold":true,
+		"released": "2026-07-11"
 	},
 	"gpt-5.6-terra@openai":{
-			"pricing":[2.50,0.25,15.0],
-			"cold":true
+		"pricing":[2.50,0.25,15.0],
+		"cold":true,
+		"released": "2026-07-11"
 	},
-	"gpt-5.6-luna@openai":{
-			"pricing":[1.00,0.10,6.0],
-			"cold":true
+	"gpt-5.6-sol@openai":{
+		"pricing":[5.00,0.50,30.0],
+		"cold":true,
+		"released": "2026-07-11"
 	},
 	"gpt-5.5-2026-04-23@openai":{
 		"pricing":[5.00,0.50,30.0],
