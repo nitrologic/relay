@@ -116,6 +116,7 @@
 		"reality":"rate limited 20,000 input tokens per minute"
 	},
 	"claude-opus-4-7@anthropic":{
+		"deprecated":true,
 		"pricing":[5.0,25.0],
 		"cold":true,
 		"limit":[20000],
@@ -123,6 +124,7 @@
 		"reality":"rate limited 20,000 input tokens per minute"
 	},
 	"claude-sonnet-4-6@anthropic":{
+		"deprecated":true,
 		"pricing":[3.0,0.30,15.0],
 		"cold":true,
 		"purpose":"frontier model for coding, agentic search, and creative writing"
