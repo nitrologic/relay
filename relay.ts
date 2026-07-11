@@ -3374,7 +3374,7 @@ async function modelCommand(words){
 		}
 	}else{
 //		echoKey(modelKey,100);
-		echo_row("id","☐","model","vendor","count","price");
+		echo_row("id","☐","model","vendor","usage","price");
 		const all=(name && name=="all");
 		const voice=(name && name=="voice");
 		for(let i=0;i<modelList.length;i++){
