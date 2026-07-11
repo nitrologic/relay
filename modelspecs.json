@@ -72,6 +72,7 @@
 		"purpose": "Large scale mixture of Experts model, 256K context window"
 	},
 	"kimi-k2.5@moonshot": {
+		"deprecated":true,
 		"cold":true,
 		"released": "2026-01-26",
 		"pricing": [0.60,0.10,3.0],
@@ -158,12 +159,14 @@
 		"released": "2026-07-11"
 	},
 	"gpt-5.5-2026-04-23@openai":{
+		"deprecated":true,
 		"pricing":[5.00,0.50,30.0],
 		"cold":true,
 		"released": "2026-04-23",
 		"purpose":"gpt-5.5"
 	},
 	"gpt-5.5-pro-2026-04-23@openai":{
+		"deprecated":true,
 		"pricing":[30.00,180.0],
 		"cold":true,
 		"released": "2026-04-23",
@@ -171,32 +174,34 @@
 		"purpose":"gpt-5.5 pro"
 	},
 	"gpt-5.4-mini-2026-03-17@openai":{
-		"active": true,
+		"deprecated":true,
 		"pricing":[0.75,0.075,4.50],
 		"purpose":"gpt-5 mini"
 	},
 	"gpt-5.4-nano-2026-03-17@openai":{
-		"active": true,
+		"deprecated":true,
 		"pricing":[0.20,0.02,1.25],
 		"purpose":"nano nano 5 - faster than a fast thing",
 		"press":"supporting up to ? million tokens of context"
 	},
-	"gpt-5.3-codex@openai":{
-		"released": "2026-03-6",
-		"pricing":[1.75,14.00],
-		"active": true,
-		"endpoints":["v1/responses"],
-		"purpose":"High Cybersecurity Capability"
-	},
 	"gpt-5.4-2026-03-05@openai":{
+		"deprecated":true,
 		"released": "2026-03-6",
 		"pricing":[2.50,0.50,15.00],
 		"purpose":"frontier model for complex professional work"
 	},
 	"gpt-5.4-pro-2026-03-05@openai":{
+		"deprecated":true,
 		"released": "2026-03-6",
 		"pricing":[30.0,180.00],
 		"purpose":"frontier model designed to tackle tough problems"
+	},
+	"gpt-5.3-codex@openai":{
+		"deprecated":true,
+		"released": "2026-03-6",
+		"pricing":[1.75,14.00],
+		"endpoints":["v1/responses"],
+		"purpose":"High Cybersecurity Capability"
 	},
 	"gpt-realtime-2025-08-28@openai": {
 		"deprecated":true,
