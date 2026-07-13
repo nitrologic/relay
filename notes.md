@@ -1,3 +1,66 @@
+https://console.x.ai/
+
+Voice & Audio
+
+Realtime voice: $0.05/ min ($3.00 / hr)
+Text to Speech: $15.00/ 1M characters
+Speech to text: $0.10/ hr $0.20/ hr
+
+Altair: Male · Elegant, refined, and effortlessly premium.
+Ara: Female · Warm and friendly.
+Atlas: Male · Confident, commanding, and reassuring.
+Carina: Female · Soft, empathetic, and soothing.
+Castor: Male · Charismatic, down-to-earth, and easygoing.
+Celeste: Female · Compassionate, confident, and reassuring.
+Cosmo: Male · Bright, curious, and easy to follow.
+Eve: Female · Energetic and upbeat.
+Helios: Male · Upbeat, energetic, and endlessly versatile.
+Helix: Male · Bold, dynamic, and adrenaline-fueled.
+Iris: Female · Friendly, upbeat, and naturally charming.
+Kepler: Male · Inventive, forward-thinking, and charismatic.
+Leo: Male · Authoritative and strong.
+Lumen: Male · Warm, articulate, and engaging.
+Luna: Female · Gentle, patient, and deeply nurturing.
+Lux: Male · Grounded, calm, and quietly wise.
+Naksh: Male · Warm, thoughtful, and wise.
+Orion: Male · Rich, cinematic, and resonant.
+Perseus: Male · Strong, confident, and trustworthy.
+Rex: Male · Confident and clear.
+Rigel: Male · Precise, professional, and calmly confident.
+Sal: Male · Smooth and balanced.
+Sirius: Male · Quick-witted, clever, and playful.
+Ursa: Female · Friendly, warm, and steadfast.
+Zagan: Male · Powerful, dramatic, and unmistakable.
+Zenith: Male · Sharp, focused, and driven.
+
+https://docs.x.ai/developers/model-capabilities/audio/speech-to-text
+
+
+import fs from 'fs';
+// export XAI_API_KEY="xai-..."
+
+const res = await fetch('https://api.x.ai/v1/tts', {
+  method: 'POST',
+  headers: {
+    Authorization: `Bearer ${process.env.XAI_API_KEY}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    text: 'Hello! This is a text-to-speech demo.',
+    voice_id: 'Carina',
+    output_format: { codec: 'mp3', sample_rate: 44100, bit_rate: 128000 },
+    language: 'en',
+  }),
+});
+
+if (!res.ok) throw new Error(`TTS error ${res.status}: ${await res.text()}`);
+
+const buf = Buffer.from(await res.arrayBuffer());
+fs.writeFileSync('output.mp3', buf);
+console.log('Saved to output.mp3');
+
+
+
 [RELAY completions choked
 [RELAY] unhandled error 400 Invalid request: the message at position 5 with role 'user' must not be empty
 [RELAY] Error: 400 Invalid request: the message at position 5 with role 'user' must not be empty
