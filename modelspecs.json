@@ -41,7 +41,7 @@
 	},
 	"deepseek-v4-pro@deepseek":{
 		"active": true,
-		"pricing": [1.74, 0.145, 3.48],
+		"pricing": [0.435, 0.003625, 0.87],
 		"released": "2026-04-24",
 		"purpose":"1.6T total / 49B active params. Performance rivaling the world's top closed-source models.",
 		"press": "Agent capabilities and top-tier reasoning."
@@ -253,6 +253,7 @@
 		"purpose":"Agentic coding model optimized for long-context terminal automation and developer tool integrations."
 	},
 	"grok-4.3@xai":{
+		"deprecated":true,
 		"pricing": [1.25, 0.20, 2.5],
 		"released": "2026-05-1",
 		"purpose":"Reasoning model with 1M context window."
