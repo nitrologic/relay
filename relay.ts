@@ -7,7 +7,7 @@
 // Testing with Deno 2.9.1 V8  14.9.207.2-rusty, TypeScript 6.0.3
 
 const brandFountain="nitrologic Relay";
-const relayVersion="1.9.5";
+const relayVersion="1.9.6";
 const fountainName=brandFountain+" "+relayVersion;
 
 // system prompt
@@ -3864,8 +3864,10 @@ function plainHistory(history,model){
 				}
 				break;
 			case "user":{
+					if(item.content){
 //					const content=src+item.content;
-					list.push({role:item.role,content:item.content,name});
+						list.push({role:item.role,content:item.content,name});
+					}
 				}
 				break;
 			case "tool":
