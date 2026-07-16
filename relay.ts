@@ -1824,7 +1824,7 @@ async function aboutModel(modelname){
 	const mut=mutName(modelname);
 	const info=(modelname in modelSpecs)?modelSpecs[modelname]:null;
 	const active=info?info.active:false;
-	const name=mut+(active?"":"*");
+	const name=mut;//+(active?"":"★");
 	const rate=info?info.pricing||[]:[];
 	const limit=info?info.maxprompt||0:0;
 //	const id=(info?info.id:0)||0;
