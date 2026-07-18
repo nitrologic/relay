@@ -7,7 +7,7 @@
 // Testing with Deno 2.9.1 V8  14.9.207.2-rusty, TypeScript 6.0.3
 
 const brandFountain="nitrologic Relay";
-const relayVersion="1.9.6";
+const relayVersion="1.9.7";
 const fountainName=brandFountain+" "+relayVersion;
 
 // system prompt
@@ -3036,14 +3036,20 @@ async function projectCommand(words){
 			const keys=Object.keys(roha.keyedProjects);
 			name=keys[index];
 		}
-		if(drop){
+		if(drop){			
 			dropProject(name);
 			if(roha.project==name){
 				clearShares();
 				roha.project="roha";
 			}
 		}else{
-			await loadProject(name);
+			if(name==roha.project){
+				echo("[KEY] unload project",name);
+				clearShares();
+				roha.project="roha";
+			}else{
+				loadProject(name);
+			}
 		}
 	}
 }
