@@ -7,7 +7,7 @@
 // Testing with Deno 2.9.1 V8  14.9.207.2-rusty, TypeScript 6.0.3
 
 const brandFountain="nitrologic Relay";
-const relayVersion="1.9.7";
+const relayVersion="1.9.8";
 const fountainName=brandFountain+" "+relayVersion;
 
 // system prompt
@@ -562,8 +562,8 @@ function logHistory(){
 }
 
 // TODO: username is blobuser, pass message type for images
-function rohaPush(content,username){
-	const item={role:"user",name:username,content:content};
+function pushItem(title,name,content){
+	const item={role:"user",title,name,content};
 	rohaHistory.push(item);
 	slopPail.push({"push":{item}});
 }
@@ -1962,24 +1962,30 @@ async function dropCommand(words:string[]){
 		listShares(roha.sharedFiles);
 		listCommand="drop";
 	}else{
-		let dirty=false;
 		let name=words[1];
 		let share=null;
 		if(isFinite(name) && sortedShares?.length){
-			const index=name|0;
-			share=sortedShares[index];
-			delete sortedShares[index];
-			let id=share.id;
-			delete roha.sharedFiles[id];
-			echo("[DROP] share:",id);
-			dirty=true;
+			const sortIndex=name|0;
+			const id=sortedShares[sortIndex];
+			sortedShares.splice(sortIndex,1);
+			echo("[DROP] share id:",id);
+			const index=roha.sharedFiles.findIndex(item => item.id===id);
+			if (index!==-1) {
+				share=roha.sharedFiles[index];
+				roha.sharedFiles.splice(index,1);
+				echo("[DROP] dropping ",share);
+			}
 		}
-		for(const item of rohaHistory){
-			if(item.role==="user" && (item.name==="content" || item.name==="image")){
-				echo("[DROP] item:",item);
-//				item.name="fountain";
-//				item.content="dropped share";
-//				dirty=true;
+		let dirty=false;
+		if(share){
+			const path=share.path;
+			for(const item of rohaHistory){
+				if(item.role==="user" && (item.name==="content" || item.name==="image") && item.title==path){
+					echo("[DROP] TODO remove from rohHistory item:",path);
+					delete item.title;
+					item.content="<dropped>";
+					dirty=true;
+				}
 			}
 		}
 		if(dirty){
@@ -2787,14 +2793,14 @@ async function shareBlob(path,size,tag){
 	// gemini barfs on icons
 	if(mimeType=="image/x-icon") return false;
 	const metadata=JSON.stringify({ path:path,length:size,type:mimeType,tag });
-	rohaPush(metadata,"blob");
+	pushItem(path,"blob",metadata);
 	if(mimeType.startsWith("text/")){
 		const content=await Deno.readTextFile(path);
-		rohaPush(content,"content");
+		pushItem(path,"content",content);
 	} else {
 		const data=await Deno.readFile(path);
 		const base64=encodeBase64(data);
-		rohaPush(base64,"image");
+		pushItem(path,"image",base64);
 	}
 	return true;
 }
@@ -2986,13 +2992,13 @@ async function setProject(name,path):boolean{
 	return true;
 }
 
-async function dropProject(name){
+async function ditchProject(name){
 	const hasProject=Object.hasOwn(roha.keyedProjects,name);
 	if(hasProject){
 		delete roha.keyedProjects[name];		
-		echo("[DROP] deleted keyedProjects name:",name);
+		echo("[DITCH] deleted keyedProjects name:",name);
 	}else{
-		echo("[DROP] hasProject:",hasProject);
+		echo("[DITCH] hasProject:",hasProject);
 	}
 }
 
@@ -3037,7 +3043,7 @@ async function projectCommand(words){
 			name=keys[index];
 		}
 		if(drop){			
-			dropProject(name);
+			ditchProject(name);
 			if(roha.project==name){
 				clearShares();
 				roha.project="roha";
