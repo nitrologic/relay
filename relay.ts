@@ -7,7 +7,7 @@
 // Testing with Deno 2.9.1 V8  14.9.207.2-rusty, TypeScript 6.0.3
 
 const brandFountain="nitrologic Relay";
-const relayVersion="1.9.8";
+const relayVersion="1.9.9";
 const fountainName=brandFountain+" "+relayVersion;
 
 // system prompt
@@ -484,7 +484,7 @@ let sortedShares=[]; // sorted version for listshares sort command index
 
 let roha=emptyRoha;
 let activePersona=null;
-let rohaSharePaths=[];
+let rohaSharePaths=new Set<string>();
 let listCommand="";
 let creditCommand="";
 let currentDir=Deno.cwd();
@@ -1940,10 +1940,7 @@ function clearShares(){
 	dropShares();
 	roha.sharedFiles=[];
 	roha.attachedFiles=[];
-	if(rohaSharePaths.length){
-		rohaSharePaths=[];
-		echo("[SHARES] clearShares rohaSharePaths cleared");
-	}
+	rohaSharePaths.clear();
 }
 
 function dropShares(){
@@ -1979,9 +1976,10 @@ async function dropCommand(words:string[]){
 		let dirty=false;
 		if(share){
 			const path=share.path;
+			rohaSharePaths.delete(path);			
 			for(const item of rohaHistory){
 				if(item.role==="user" && (item.name==="content" || item.name==="image") && item.title==path){
-					echo("[DROP] TODO remove from rohHistory item:",path);
+					echo("[DROP] stripping item content from rohHistory path:",path);
 					delete item.title;
 					item.content="<dropped>";
 					dirty=true;
@@ -2179,7 +2177,7 @@ async function listShare(sortSize:boolean){
 		sorted.sort((a, b) => b.size - a.size);
 	}
 	for (const share of sorted) {
-		const shared=(rohaSharePaths.includes(share.path))?"🔗":"";
+		const shared=(rohaSharePaths.has(share.path))?"🔗":"";
 		const tags="[ "+share.tag+" "+rohaUser+" "+project+" ]";
 		const detail=(share.description)?share.description:"";
 		let size=share.size;
@@ -2595,8 +2593,8 @@ function flushProjects(){
 
 async function resetCommand(all=false){
 	grokTemperature=ResetTemperature;
+	rohaSharePaths.clear();
 	roha.keyedShares={};
-	rohaSharePaths=[];
 	roha.sharedFiles=[];
 	roha.project="roha";
 	flushProjects();
@@ -2853,15 +2851,15 @@ async function commitShares(tag) {
 				continue;
 			}
 			const modified=share.modified !== stat.mtime.getTime();
-			let isShared=rohaSharePaths.includes(path);
+			let isShared=rohaSharePaths.has(path);
 			if (modified || !isShared) {
 				let ok=await shareBlob(path,size,tag);
 				if(ok){
 					count++;
 					share.modified=stat.mtime.getTime();
 					dirty=true;
-					if (!rohaSharePaths.includes(path)) {
-						rohaSharePaths.push(path);
+					if (!rohaSharePaths.has(path)) {
+						rohaSharePaths.add(path);
 						echoInfo("[KOHA]","Shared path",path);
 					}else{
 						echoInfo("[KOHA]","Updated share path",path);
@@ -2962,8 +2960,7 @@ async function setProject(name,path):boolean{
 		echo("[KEY] new project created",{key,path,name});	
 	}
 	roha.project=key;
-	rohaSharePaths=[];
-
+	rohaSharePaths.clear();
 	if(Object.hasOwn(roha.keyedShares,key)){
 		const shares=roha.keyedShares[key];
 		if(roha.config.verbose){
@@ -3277,7 +3274,7 @@ function listShares(shares){
 	let sorted=shares.slice();
 	sorted.sort((a, b) => b.size - a.size);
 	for (const share of sorted) {
-		let shared=(rohaSharePaths.includes(share.path))?"*":"";
+		let shared=(rohaSharePaths.has(share.path))?"*":"";
 		let tags="["+rohaTitle+" "+share.tag+"]";
 		let info=(share.description)?share.description:"";
 		echo((count++),share.path,share.size,shared,tags,info);
