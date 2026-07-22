@@ -19,12 +19,12 @@
 		"active": true,
 		"pricing": [1.40, 0.26, 4.40],
 		"released": "2026-06-17",
-		"purpose": "frontier Chinese model"	
+		"purpose": "frontier Chinese model"
 	},
 	"glm-5.1@zai":{
 		"pricing": [1.40, 0.26, 4.40],
 		"released": "2026-04-08",
-		"purpose": "frontier Chinese model"	
+		"purpose": "frontier Chinese model"
 	},
 	"glm-5@zai":{
 		"deprecated":true,
@@ -220,6 +220,15 @@
 		"purpose":"speech-to-speech voice agents",
 		"endpoints":["wss://api.openai.com/v1/realtime"]
 	},
+	"models/gemini-3.5-flash-lite@gemini":{
+		"pricing":[0.30,0.03,2.50],
+		"released":"2026-07-22"
+	},
+	"models/gemini-3.6-flash@gemini":{
+		"active": true,
+		"pricing":[1.50,0.15,7.50],
+		"released":"2026-07-22"
+	},
 	"models/gemini-3-pro-image@gemini":{},
 	"models/gemini-3.1-flash-image@gemini":{},
 	"models/gemini-robotics-er-1.6-preview@gemini":{
@@ -232,10 +241,12 @@
 		"released":"2026-03-19"
 	},
 	"models/gemini-3.1-flash-lite-preview@gemini":{
+		"deprecated":true,
 		"pricing":[0.25,0.05,1.50],
 		"released":"2026-03-3"
 	},
 	"models/gemini-3.5-flash@gemini":{
+		"deprecated":true,
 		"pricing":[1.50,0.15,9.00],
 		"released":"2026-05-19"
 	},
