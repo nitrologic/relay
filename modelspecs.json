@@ -104,6 +104,12 @@
 		"pricing":[0.32,1.28],
 		"purpose":"vision heavy-hitter, ocr + chart + meme understanding"
 	},
+	"claude-opus-5@anthropic":{
+		"pricing":[5.0,0.50,25.0],
+		"cold":true,
+		"purpose":"frontier model for coding, agentic search, and creative writing",
+		"released":"2026-07-25"
+	},
 	"claude-sonnet-5@anthropic":{
 		"pricing":[2.0,0.30,10.0],
 		"cold":true,
