@@ -871,7 +871,7 @@ async function readFileNames(path:string,suffix:string){
 	try {
 		for await (const entry of Deno.readDir(path)) {
 			if (entry.isFile && entry.name.endsWith(suffix)) {
-				echoInfo("readDir",path,entry);
+				if(roha.config.debugging) echoInfo("readDir",path,entry);
 				result.push(entry.name);
 			}
 		}
@@ -2989,6 +2989,31 @@ async function setProject(name,path):boolean{
 	return true;
 }
 
+async function scrubProject(name){
+	if(roha.project==name){
+		clearShares();
+		roha.project="roha";
+		rohaSharePaths.clear();
+	}	
+	const key=name;
+	if(Object.hasOwn(roha.keyedShares,key)){
+		const shares=roha.keyedShares[key];
+		if(roha.config.verbose){
+			echo("[SCUBR] scrubbing",shares.length);	
+			echo("[SCRUB] sharenames",shares);
+		}
+		delete roha.keyedShares[key]
+	}
+	const hasProject=Object.hasOwn(roha.keyedProjects,name);
+	if(hasProject){
+		delete roha.keyedProjects[name];		
+		echo("[SCRUB] deleted keyedProjects name:",name);
+	}else{
+		echo("[SCRUB] hasProject:",hasProject);
+	}
+}
+
+
 async function ditchProject(name){
 	const hasProject=Object.hasOwn(roha.keyedProjects,name);
 	if(hasProject){
@@ -3029,9 +3054,14 @@ async function projectCommand(words){
 		listCommand="project";
 	}else{
 		let drop=false;
+		let scrub=false;
 		let name=words[1];
 		if(name=="drop"){
 			drop=true;
+			name=words[2];
+		}
+		if(name=="scrub"){
+			scrub=true;
 			name=words[2];
 		}
 		if(isFinite(name)){
@@ -3045,6 +3075,8 @@ async function projectCommand(words){
 				clearShares();
 				roha.project="roha";
 			}
+		}else if(scrub){
+			scrubProject(name);
 		}else{
 			if(name==roha.project){
 				echo("[KEY] unload project",name);
