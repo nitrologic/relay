@@ -4,10 +4,10 @@
 
 // ⛯⛲🪣🐸🪠🐋🜁🐉🏛️❁𝕏🌟💫🌏📆💰👀🤖🫦💻👄🔧🧊❃🎙️🔉📷🖼️🗣️📡👁🧮📠⣯⛅⚙️🗜️🧰 🌕🌙✿
 
-// Testing with Deno 2.9.1 V8  14.9.207.2-rusty, TypeScript 6.0.3
+// Testing with Deno 2.9.3 V8  14.9.207.2-rusty, TypeScript 6.0.3
 
 const brandFountain="nitrologic Relay";
-const relayVersion="1.9.9";
+const relayVersion="2.0.1";
 const fountainName=brandFountain+" "+relayVersion;
 
 // system prompt
@@ -1415,7 +1415,8 @@ async function anthropicFile(anthropic,blob){
 	if(blob.type.startsWith("text/")) fileType="text/plain";
 	if(blob.type.startsWith("image/jpeg") ) fileType=blob.type;
 	if(blob.type.startsWith("image/png") ) fileType=blob.type;
-	if(blob.type=="application/pdf") fileType=blob.type;
+	if(blob.type.startsWith("application/pdf") ) fileType=blob.type;
+//	if(blob.type=="application/pdf") {return anthropicDocument(anthropic,blob);}
 	if(!fileType) return null;
 	const file = await toFile(fileContent,name,{type:fileType});
 	const result = await anthropic.beta.files.upload({file,betas:['files-api-2025-04-14']});
@@ -1428,6 +1429,7 @@ async function anthropicMessages(anthropic,payload){
 	const messages=[];
 	let blob={};
 	let blocks=0;
+	let documentBlocks=0;
 	for(const item of payload.messages){
 //		console.log("[CLAUDE]","item ",item);
 		switch(item.role){
@@ -1441,7 +1443,22 @@ async function anthropicMessages(anthropic,payload){
 						try{
 							const id=await anthropicFile(anthropic,blob);
 							if(id){
+								const isDocument=blob.type.startsWith("application/pdf");
 //								echo("[ANTHROPIC]","file ",blob.path,name,id,blocks);
+if (isDocument){
+								const text="File shared path:"+blob.path+" type:"+blob.type;
+								const content=[
+									{type:"text",text},
+									{
+										type:"document",
+										source:{type:"file",file_id:id}
+//										...(documentBlocks<4 && {cache_control:{type:"ephemeral"}})
+									}
+								];
+								messages.push({role:"user",content});
+								documentBlocks++;
+}else{
+
 								const text="File shared path:"+blob.path+" type:"+blob.type;
 								const content=[
 									{type:"text",text},
@@ -1453,6 +1470,7 @@ async function anthropicMessages(anthropic,payload){
 								];
 								messages.push({role:"user",content});
 								blocks++;
+}
 							}else{
 //								echo("[ANTHROPIC]","ignoring unsupported file type",blob.path);
 							}
@@ -1560,7 +1578,7 @@ async function connectAnthropic(account,config){
 						const lizard=info?.lizard;
 						if(!cold){
 							request.temperature=grokTemperature;
-						}							
+						}
 //						request.top_p=grokGrounded;
 						if (payload.tools) {
 							request.tools = anthropicTools(payload); // Ensure this maps tools to Anthropic format
@@ -1976,7 +1994,7 @@ async function dropCommand(words:string[]){
 		let dirty=false;
 		if(share){
 			const path=share.path;
-			rohaSharePaths.delete(path);			
+			rohaSharePaths.delete(path);
 			for(const item of rohaHistory){
 				if(item.role==="user" && (item.name==="content" || item.name==="image") && item.title==path){
 					echo("[DROP] stripping item content from rohHistory path:",path);
@@ -2588,7 +2606,7 @@ function flushProjects(){
 	if(flush){
 		echo("[KOHA]","flushProjects flush:",flush);
 	}
-	roha.keyedProjects=result;	
+	roha.keyedProjects=result;
 }
 
 async function resetCommand(all=false){
@@ -2896,7 +2914,7 @@ function listProjects(projects,shares){
 	let index=0;
 	for(const key of Object.keys(projects)){
 		const git=(Object.hasOwn(projects,".gitignore"))?"G":"";
-		const star=(key==roha.project)?"*":""; 
+		const star=(key==roha.project)?"*":"";
 		const hasShares=Object.hasOwn(shares,key);
 		const share=hasShares?shares[key]:{};
 		const project=projects[key];
@@ -2957,14 +2975,14 @@ async function setProject(name,path):boolean{
 	// TODO: set current rohaSharePaths in keyedShares?
 	if(!Object.hasOwn(roha.keyedProjects,key)){
 		roha.keyedProjects[key]={key,path,name};
-		echo("[KEY] new project created",{key,path,name});	
+		echo("[KEY] new project created",{key,path,name});
 	}
 	roha.project=key;
 	rohaSharePaths.clear();
 	if(Object.hasOwn(roha.keyedShares,key)){
 		const shares=roha.keyedShares[key];
 		if(roha.config.verbose){
-			echo("[KEY] sharing",shares.length);	
+			echo("[KEY] sharing",shares.length);
 			echo("[KEY] sharenames",shares);
 		}
 		roha.sharedFiles=shares;
@@ -2974,12 +2992,12 @@ async function setProject(name,path):boolean{
 	const history=path+"/relay.log";
 	const exists=await pathExists(history);
 	if(exists){
-		echo("[KEY] history",history);	
+		echo("[KEY] history",history);
 		projectHistory=history;
 	}else{
 		projectHistory="";
 	}
-//	echo("[KEY] deno chdir",path);	
+//	echo("[KEY] deno chdir",path);
 	try{
 		Deno.chdir(path);
 		currentDir=Deno.cwd();
@@ -2994,19 +3012,19 @@ async function scrubProject(name){
 		clearShares();
 		roha.project="roha";
 		rohaSharePaths.clear();
-	}	
+	}
 	const key=name;
 	if(Object.hasOwn(roha.keyedShares,key)){
 		const shares=roha.keyedShares[key];
 		if(roha.config.verbose){
-			echo("[SCUBR] scrubbing",shares.length);	
+			echo("[SCUBR] scrubbing",shares.length);
 			echo("[SCRUB] sharenames",shares);
 		}
 		delete roha.keyedShares[key]
 	}
 	const hasProject=Object.hasOwn(roha.keyedProjects,name);
 	if(hasProject){
-		delete roha.keyedProjects[name];		
+		delete roha.keyedProjects[name];
 		echo("[SCRUB] deleted keyedProjects name:",name);
 	}else{
 		echo("[SCRUB] hasProject:",hasProject);
@@ -3017,7 +3035,7 @@ async function scrubProject(name){
 async function ditchProject(name){
 	const hasProject=Object.hasOwn(roha.keyedProjects,name);
 	if(hasProject){
-		delete roha.keyedProjects[name];		
+		delete roha.keyedProjects[name];
 		echo("[DITCH] deleted keyedProjects name:",name);
 	}else{
 		echo("[DITCH] hasProject:",hasProject);
@@ -3069,7 +3087,7 @@ async function projectCommand(words){
 			const keys=Object.keys(roha.keyedProjects);
 			name=keys[index];
 		}
-		if(drop){			
+		if(drop){
 			ditchProject(name);
 			if(roha.project==name){
 				clearShares();
@@ -4231,7 +4249,7 @@ async function relay(depth:number,from:string) {
 
 		if(responses){
 			let instructions=rohaGuide.join(" ");
-			// introduce persona 
+			// introduce persona
 			if(roha.config.persona && activePersona){
 				let intro=". You are "+activePersona.name+" "+activePersona.emoji+" "+activePersona.about;
 				instructions+=intro;
@@ -4591,7 +4609,7 @@ async function chat() {
 			await flush();
 			let line="";
 			if(listCommand){
-				line=await promptForge(listCommand+" #");			
+				line=await promptForge(listCommand+" #");
 				if(line && (!line.startsWith("//")||!line.startsWith("/"))){
 					const arg0=line[0]||"";
 					if(arg0.length){
@@ -4678,7 +4696,7 @@ async function chat() {
 				if(query.length){
 					const info=(grokModel in modelSpecs)?modelSpecs[grokModel]:null;
 					rohaHistory.push({ role: "user", name:rohaNic, content: query });
-					// 
+					//
 					const from=rohaUser;
 					slopBroadcast("<5"+rohaNic+">["+from+"]"+query,from);
 					await relay(0,from);

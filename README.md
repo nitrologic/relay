@@ -2,7 +2,7 @@
 [![Deno](https://img.shields.io/badge/deno-2.4.2-black?logo=deno)](https://deno.land/)
 [![Discord](https://img.shields.io/discord/1235838347717378118)](https://discord.gg/KVmR6DjpPB)
 
-# nitrologic Relay 1.9.3
+# nitrologic Relay 2.0.1
 
 A research tool for advanced model manipulation.
 
@@ -10,16 +10,6 @@ A research tool for advanced model manipulation.
 
 * Relay Forge Reference Manual - forge user documentation [forge.md](forge.md)
 * Summary Notes - machine generated summary blocks [notes.md](notes.md)
-
-## typical invoke script
-
-```
-setlocal enabledelayedexpansion
-set "snapshot=!cd!"
-pushd C:\nitrologic\relay\
-deno task relay "%snapshot%" %*
-popd
-```
 
 ## logging
 
@@ -53,9 +43,9 @@ The following native API are used by Slop Relay:
 
 ## roadmap
 
-* relay.ts project support
-* relay.ts sloppybots testing on discord
-* consider agents.md additions to system prompt
+* relay.ts project support - final testing
+* relay.ts sloppybots - document testing on discord
+* persona and agents.md addition plan
 
 ## project support
 
