@@ -226,6 +226,10 @@
 		"purpose":"speech-to-speech voice agents",
 		"endpoints":["wss://api.openai.com/v1/realtime"]
 	},
+	"models/gemini-robotics-er-2@gemini":{
+		"pricing":[2.0,10.0],
+		"released":"2026-07-31"
+	},
 	"models/gemini-3.5-flash-lite@gemini":{
 		"pricing":[0.30,0.03,2.50],
 		"released":"2026-07-22"
