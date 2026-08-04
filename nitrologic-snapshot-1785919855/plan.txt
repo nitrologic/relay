@@ -1,0 +1,50 @@
+🟠nitrologic Relay 2.0.1 claude-haiku-4-5 A\ 🪠 🧊 $0.003 48.10KB 12.41s
+Looking through the shared files, I can see the Relay system has substantial progress. A few
+observations on what's current:
+
+Strong Points
+
+• relay.ts architecture* — The multi-provider abstraction (OpenAI, DeepSeek, Anthropic,
+Google) is clean. Account routing, tool recursion with depth tracking, and error handling for rate
+limits and context exhaustion are solid patterns.
+
+• forge.md CLI* — Well-designed command vocabulary. The config flags are sensible (25
+toggles covering squash, reasoning, tools, websearch, logging, etc.). Project keying per relay.md
+folder is elegant for workspace isolation.
+
+• Terminal handling* — slopprompt.ts shows care: Unicode width per terminal type, grapheme
+segmentation, raw mode with history nav. The documented emoji width cludges are honest.
+
+Issues I'd Flag
+
+1. History squashing loses metadata — `squashMessages()` merges consecutive same-role
+messages but discards price, elapsed, tool_calls. That tracking data evaporates during output
+optimization.
+
+2. Tool result handling inconsistency — `relay()` creates `role:"tool"` items, but
+`plainHistory()`, `strictHistory()`, and `multiHistory()` diverge on how they're serialized. The
+`[TEST3]` echo in multiHistory looks like incomplete work.
+
+3. Recursive share feature (item 1 in notes.md) — `/share *.md` isn't implemented yet.
+Current `/share` takes a single path. Glob expansion would be useful but needs careful ordering on
+large trees.
+
+4. Help file resolution — `forge.md` path lookup fails on startup. The error "The system
+cannot find the file specified" suggests the working directory or relative path isn't what the
+loader expects when `/help` runs early.
+
+5. Project reset clarity — Item 4 notes that `/reset` should prompt before flushing all
+projects. Currently it may silently wipe without confirmation, risking accidental data loss.
+
+6. Drop share bug — In your notes, dropping share #2 doesn't actually remove it from the
+list—it reappears after `/share` is called again. The UI says it dropped, but the state didn't
+persist.
+
+Quick Wins
+
+- Add a `validateHistory()` pass before relay to catch orphaned toolCallIds
+- Extract the four history formatters into a pluggable registry (easier to test, extend)
+- Document what `config.budget` actually filters—the cheap-model logic isn't obvious
+- Make `/drop` persist immediately to roha.sharedFiles instead of deferring
+
+What's the priority for the next round?

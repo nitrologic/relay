@@ -227,6 +227,7 @@
 		"endpoints":["wss://api.openai.com/v1/realtime"]
 	},
 	"models/gemini-robotics-er-2@gemini":{
+		"active": true,
 		"pricing":[2.0,10.0],
 		"released":"2026-07-31"
 	},

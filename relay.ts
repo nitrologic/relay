@@ -2011,7 +2011,7 @@ async function dropCommand(words:string[]){
 	}
 }
 
-async function shareSlop(path:string,depth:number){
+async function shareSlop(path:string,depth:number,single:boolean){
 	const stat=await Deno.stat(path);
 	const tag="";
 	//await promptForge("Enter tag name (optional):");
@@ -2026,7 +2026,7 @@ async function shareSlop(path:string,depth:number){
 		echo("[KOHA] Share file path:",path," size:",size," ");
 		const hash=await hashFile(path);
 		echoInfo("hash:",hash);
-		await addShare({path,size,modified,hash,tag});
+		await addShare({path,size,modified,hash,tag},single);
 	}
 }
 
@@ -2156,7 +2156,7 @@ async function shareGlob(pattern:string){
 	const depth=false;
 	for await (const entry of expandGlob(pattern)) {
 		if (entry.isFile) {
-			await shareSlop(entry.path,depth);
+			await shareSlop(entry.path,depth,false);
 		}
 		if(entry.isDirectory){
 			console.log("### sharing",entry.path);
@@ -2174,7 +2174,8 @@ async function shareCommand(words:string[]){
 	const pattern=filename;
 	for await (const entry of expandGlob(pattern)) {
 		if (entry.isFile) {
-			await shareSlop(entry.path,depth);
+			const single=(pattern=="relay.md");
+			await shareSlop(entry.path,depth,single);
 		}
 		if(entry.isDirectory){
 			console.log("### sharing",entry.path);
@@ -2678,7 +2679,7 @@ async function promptForge(message:string):string {
 
 // share is {path size modified hash tag}
 // duplicates get removed
-async function addShare(share){
+async function addShare(share,single:boolean){
 	share.id="share"+increment("shares");
 	if(share.path){
 		const index=roha.sharedFiles.findIndex(item => item.path===share.path);
@@ -2689,7 +2690,7 @@ async function addShare(share){
 		// echo("[ADDSHARE]",share);
 		roha.sharedFiles.push(share);
 		const filename=basename(share.path);
-		if(filename=="relay.md"){
+		if(filename=="relay.md"&&single){
 			const dirpath=dirname(share.path);
 			const name=shareName(dirpath);
 			const success=await setProject(name,dirpath);
@@ -2729,7 +2730,7 @@ async function shareDir(dir:string, tag:string, depth=1, maxDepth=5) {
 				const size=stat.size||0;
 				const modified=stat.mtime.getTime();
 				const hash=await hashFile(path);
-				await addShare({ path, size, modified, hash, tag });
+				await addShare({ path, size, modified, hash, tag },false);
 				totalSize+=size;
 			} catch (error) {
 				echo("[KOHA]","shareDir error",path,error.message);
@@ -2920,6 +2921,7 @@ function listProjects(projects,shares){
 		const project=projects[key];
 		echo((index++),key,star,git,share?.length,project)
 	}
+	echo((index++),"none");
 }
 
 // new work in progress - relay bot persona system
@@ -3085,7 +3087,8 @@ async function projectCommand(words){
 		if(isFinite(name)){
 			const index=name|0;
 			const keys=Object.keys(roha.keyedProjects);
-			name=keys[index];
+			// apply none if #6
+			name=keys[index]||roha.project;
 		}
 		if(drop){
 			ditchProject(name);
