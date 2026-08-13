@@ -1,3 +1,16 @@
+import OpenAI from 'openai';
+const client = new OpenAI({
+  apiKey: process.env.XAI_API_KEY,
+  baseURL: 'https://api.x.ai/v1',
+});
+const response = await client.images.generate({
+  model: 'grok-imagine-image-quality',
+  prompt: 'A futuristic city skyline at sunset',
+});
+console.log(response.data[0].url);
+
+
+
 e":"user","content":"Files shared. Feel free to comment if content is new or different.","name":"simonsta"}]}
 [RELAY] unhandled error 503 {"type":"error","error":{"type":"overloaded_error","message":"There was a problem processing your media. Please try again momentarily."},"request_id":"req_011CdQDib4gDStEGHhxronJe"}
 [RELAY] Error: 503 {"type":"error","error":{"type":"overloaded_error","message":"There was a problem processing your media. Please try again momentarily."},"request_id":"req_011CdQDib4gDStEGHhxronJe"}
