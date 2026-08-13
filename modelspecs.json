@@ -1,47 +1,14 @@
 {
-	"gemma4:latest@ollama":{
-		"pricing": [0,0],
-		"purpose": "locally hosted ollama model"
-	},
-	"deepseek-coder:6.7b@ollama":{
-		"pricing": [0,0],
-		"purpose": "locally hosted ollama model"
-	},
-	"deepseek-r1:7b@ollama":{
-		"pricing": [0,0],
-		"purpose": "locally hosted ollama model"
-	},
-	"glm4:9b-chat-q4_0@ollama":{
-		"pricing": [0,0],
-		"purpose": "locally hosted ollama model"
-	},
-	"glm-5.2@zai":{
-		"active": true,
-		"pricing": [1.40, 0.26, 4.40],
-		"released": "2026-06-17",
-		"purpose": "frontier Chinese model"
-	},
-	"glm-5.1@zai":{
-		"pricing": [1.40, 0.26, 4.40],
-		"released": "2026-04-08",
-		"purpose": "frontier Chinese model"
-	},
-	"glm-5@zai":{
-		"deprecated":true,
-		"pricing": [1.00, 0.20, 3.20],
-		"released": "2026-02-11",
-		"purpose": "frontier Chinese model"
-	},
 	"deepseek-v4-flash@deepseek":{
 		"active": true,
-		"pricing": [0.14, 0.028, 0.28],
+		"pricing": [0.44, 0.014, 1.32],
 		"released": "2026-04-24",
 		"purpose":"284B total / 13B active params. Fast, efficient, and economical.",
 		"press": "Agent capabilities and top-tier reasoning."
 	},
 	"deepseek-v4-pro@deepseek":{
 		"active": true,
-		"pricing": [0.435, 0.003625, 0.87],
+		"pricing": [1.32, 0.044, 3.96],
 		"released": "2026-04-24",
 		"purpose":"1.6T total / 49B active params. Performance rivaling the world's top closed-source models.",
 		"press": "Agent capabilities and top-tier reasoning."
@@ -226,6 +193,11 @@
 		"purpose":"speech-to-speech voice agents",
 		"endpoints":["wss://api.openai.com/v1/realtime"]
 	},
+
+	"models/gemini-3.7-flash@gemini":{
+		"pricing":[0.75,0.075,3.75],
+		"released":"2026-08-14"
+	},
 	"models/gemini-robotics-er-2@gemini":{
 		"active": true,
 		"pricing":[2.0,10.0],
@@ -237,7 +209,7 @@
 	},
 	"models/gemini-3.6-flash@gemini":{
 		"active": true,
-		"pricing":[1.50,0.15,7.50],
+		"pricing":[0.75,0.075,3.75],
 		"released":"2026-07-22"
 	},
 	"models/gemini-3-pro-image@gemini":{},
@@ -328,5 +300,38 @@
 		"pricing": [2.75,8.10],
 		"released": "2025-05-7",
 		"purpose":"Efficient, enterprise-focused frontier model."
+	},
+	"gemma4:latest@ollama":{
+		"pricing": [0,0],
+		"purpose": "locally hosted ollama model"
+	},
+		"deepseek-coder:6.7b@ollama":{
+		"pricing": [0,0],
+		"purpose": "locally hosted ollama model"
+	},
+	"deepseek-r1:7b@ollama":{
+		"pricing": [0,0],
+		"purpose": "locally hosted ollama model"
+	},
+	"glm4:9b-chat-q4_0@ollama":{
+		"pricing": [0,0],
+		"purpose": "locally hosted ollama model"
+	},
+	"glm-5.2@zai":{
+		"active": true,
+		"pricing": [1.40, 0.26, 4.40],
+		"released": "2026-06-17",
+		"purpose": "frontier Chinese model"
+	},
+	"glm-5.1@zai":{
+		"pricing": [1.40, 0.26, 4.40],
+		"released": "2026-04-08",
+		"purpose": "frontier Chinese model"
+	},
+	"glm-5@zai":{
+		"deprecated":true,
+		"pricing": [1.00, 0.20, 3.20],
+		"released": "2026-02-11",
+		"purpose": "frontier Chinese model"
 	}
 }
