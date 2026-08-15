@@ -25,6 +25,29 @@
 		"purpose": "V3.2 Advanced reasoning and problem-solving",
 		"press": "High-performance model for complex math, coding, and logical tasks."
 	},
+	"glm-5.3@zai":{
+		"pricing": [1.40, 0.26, 4.40],
+		"released": "2026-08-15",
+		"purpose": "frontier Chinese model"
+	},
+	"glm-5.2@zai":{
+		"active": true,
+		"pricing": [1.40, 0.26, 4.40],
+		"released": "2026-06-17",
+		"purpose": "frontier Chinese model"
+	},
+	"glm-5.1@zai":{
+		"deprecated":true,
+		"pricing": [1.40, 0.26, 4.40],
+		"released": "2026-04-08",
+		"purpose": "frontier Chinese model"
+	},
+	"glm-5@zai":{
+		"deprecated":true,
+		"pricing": [1.00, 0.20, 3.20],
+		"released": "2026-02-11",
+		"purpose": "frontier Chinese model"
+	},
 	"kimi-k3@moonshot":{
 		"cold":true,
 		"pricing": [3.00,0.30,15.0],
@@ -316,22 +339,5 @@
 	"glm4:9b-chat-q4_0@ollama":{
 		"pricing": [0,0],
 		"purpose": "locally hosted ollama model"
-	},
-	"glm-5.2@zai":{
-		"active": true,
-		"pricing": [1.40, 0.26, 4.40],
-		"released": "2026-06-17",
-		"purpose": "frontier Chinese model"
-	},
-	"glm-5.1@zai":{
-		"pricing": [1.40, 0.26, 4.40],
-		"released": "2026-04-08",
-		"purpose": "frontier Chinese model"
-	},
-	"glm-5@zai":{
-		"deprecated":true,
-		"pricing": [1.00, 0.20, 3.20],
-		"released": "2026-02-11",
-		"purpose": "frontier Chinese model"
 	}
 }

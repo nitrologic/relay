@@ -15,8 +15,7 @@
 		"docs": "https://docs.z.ai/guides/overview/quick-start",
 		"platform": "https://z.ai/manage-apikey/billing",
 		"api": "OpenAI",
-		"locale": "zh-CN",
-		"disabled":true
+		"locale": "zh-CN"
 	},
 	"moonshot": {
 		"emoji": "🜁",
