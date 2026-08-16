@@ -7,7 +7,6 @@
 		"press": "Agent capabilities and top-tier reasoning."
 	},
 	"deepseek-v4-pro@deepseek":{
-		"active": true,
 		"pricing": [1.32, 0.044, 3.96],
 		"released": "2026-04-24",
 		"purpose":"1.6T total / 49B active params. Performance rivaling the world's top closed-source models.",
@@ -271,11 +270,9 @@
 		"released":"2026-08-13"
 	},
 	"grok-imagine-image-quality@xai":{
-		"active": true,
 		"pricing": [2.0, 6.0]
 	},
 	"grok-4.5@xai":{
-		"active": true,
 		"pricing": [2.0, 6.0],
 		"released":"2026-07-08"
 	},
