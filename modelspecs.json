@@ -111,6 +111,7 @@
 		"purpose":"next generation of intelligence for agents, coding, and the hardest knowledge work"
 	},
 	"claude-opus-4-8@anthropic":{
+		"deprecated":true,
 		"pricing":[5.0,25.0],
 		"cold":true,
 		"limit":[20000],
@@ -216,8 +217,8 @@
 		"purpose":"speech-to-speech voice agents",
 		"endpoints":["wss://api.openai.com/v1/realtime"]
 	},
-
 	"models/gemini-3.7-flash@gemini":{
+		"active": true,
 		"pricing":[0.75,0.075,3.75],
 		"released":"2026-08-14"
 	},
@@ -231,7 +232,7 @@
 		"released":"2026-07-22"
 	},
 	"models/gemini-3.6-flash@gemini":{
-		"active": true,
+		"deprecated":true,
 		"pricing":[0.75,0.075,3.75],
 		"released":"2026-07-22"
 	},
