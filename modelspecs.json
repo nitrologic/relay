@@ -25,12 +25,12 @@
 		"press": "High-performance model for complex math, coding, and logical tasks."
 	},
 	"glm-5.3@zai":{
+		"active": true,
 		"pricing": [1.40, 0.26, 4.40],
-		"released": "2026-08-15",
+		"released": "2026-08-19",
 		"purpose": "frontier Chinese model"
 	},
 	"glm-5.2@zai":{
-		"active": true,
 		"pricing": [1.40, 0.26, 4.40],
 		"released": "2026-06-17",
 		"purpose": "frontier Chinese model"
