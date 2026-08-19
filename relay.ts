@@ -4305,10 +4305,11 @@ async function relay(depth:number,from:string) {
 						echo("[RESPONSE] unsupported chunk type",chunk.type);
 				}
 			}
-
 			const usage=response.usage;
-			const cached=usage.input_tokens_details?.cached_tokens;
-			const spent3=[usage.input_tokens | 0,cached, usage.output_tokens | 0];
+//			const cached=usage.input_tokens_details?.cached_tokens;
+			const cached = usage.prompt_tokens_details?.cached_tokens ?? usage.input_tokens_details?.cached_tokens;
+
+			const spent3=[usage.input_tokens|0,cached|0,usage.output_tokens|0];
 			spend=await bumpModel(spent3,elapsed,account,useTools)
 
 			let cost="("+usage.input_tokens+"+"+usage.output_tokens+"["+grokUsage+"])";
@@ -4751,7 +4752,7 @@ async function enumerateModels(){
 		const endpoint=await connectAccount(account);
 		const elapsed=(performance.now()-t)/1000;
 		if(endpoint) {
-			const count="#"+(endpoint.modelList?.length||0);		//",endpoint.modelList
+			const count="("+(endpoint.modelList?.length||0)+")";
 			echoInfo("[FORGE] Connected to",account,count,elapsed.toFixed(2)+"s");
 			rohaEndpoint[account]=endpoint;
 			specAccount(account);
