@@ -216,6 +216,7 @@ const accountsPath=resolve(appDir,"accounts.json");
 const specsPath=resolve(appDir,"modelspecs.json");
 const personaPath=resolve(appDir,"persona.json");
 const unicodePath=resolve(appDir,"slopspec.json");
+const docsPath=resolve(appDir,"forge.md");
 
 const slopPath=resolve(appDir,"../slop");
 
@@ -3287,7 +3288,7 @@ async function onAccount(args){
 
 async function showHelp(words:string[]) {
 	try {
-		const md=await Deno.readTextFile("forge.md");
+		const md=await Deno.readTextFile(docsPath);
 		const cmds=md.split("\n### /");
 		const intro=cmds[0].split("\n## ")[0].trim();
 		if(words.length>1){
