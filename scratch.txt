@@ -1,0 +1,12 @@
+	"deepseek-chat@deepseek": {
+		"pricing": [0.28, 0.028, 0.42],
+		"released": "2025-03-24",
+		"purpose": "V3.2 General conversation and text generation",
+		"press": "Cost-effective model for versatile tasks, trained on massive text datasets."
+	},
+	"deepseek-reasoner@deepseek": {
+		"pricing": [0.28, 0.028, 0.42],
+		"released": "2025-05-28",
+		"purpose": "V3.2 Advanced reasoning and problem-solving",
+		"press": "High-performance model for complex math, coding, and logical tasks."
+	},
