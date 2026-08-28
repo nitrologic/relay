@@ -7,7 +7,7 @@
 // Testing with Deno 2.9.3 V8  14.9.207.2-rusty, TypeScript 6.0.3
 
 const brandFountain="nitrologic Relay";
-const relayVersion="2.0.1";
+const relayVersion="2.0.2";
 const fountainName=brandFountain+" "+relayVersion;
 
 // system prompt
@@ -39,11 +39,12 @@ import { dirname } from "node:path";
 import { exists } from "https://deno.land/std@0.224.0/fs/exists.ts";
 import { describe } from "node:test";
 
-function shareName(path) {
-	console.log("shareName:",path);
+function shareName(path:string):string {
+//	console.log("shareName:",path);
 	const dir = dirname(path);
 	const parent = basename(dir);
-	return parent+"_"+basename(path);
+	const name=parent+"_"+basename(path);
+	return name;
 }
 
 const appDir=Deno.cwd();
@@ -3725,8 +3726,8 @@ async function callCommand(command:string) {
 						const name=file.name;
 						if(file.isDirectory)dirs.push(name);else files.push(name);
 					}
-					if(dirs) echo("dirs",dirs.join(" "));
-					if(files) echo("files",files.join(" "));
+					if(dirs) echo("dirs",dirs.join("\n"));
+					if(files) echo("files",files.join("\n"));
 				}
 				break;
 			case "drop":
@@ -4780,9 +4781,6 @@ async function enumerateModels(){
 
 echo(rohaStatus,rohaTitle);
 
-echo("shareName:",shareName(currentDir));
-
-
 await flush();
 await readForge();
 await refreshSaves();
@@ -4903,7 +4901,14 @@ if(Deno.args && Deno.args.length>1){
 	if(roha.config.project){
 		await loadProject(roha.project);
 	}
+	if(Deno.args.length==1){
+		const path=Deno.args[0];
+		Deno.chdir(path);
+		currentDir=Deno.cwd();
+	}
 }
+
+// shareName(currentDir);
 
 if (roha.config.debugging) console.dir(roha.config);
 
