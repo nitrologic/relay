@@ -214,6 +214,10 @@
 		"purpose":"speech-to-speech voice agents",
 		"endpoints":["wss://api.openai.com/v1/realtime"]
 	},
+	"models/gemini-omni-1.1-flash@gemini":{
+		"comment":"This model only supports Interactions API.",
+		"released":"2026-09-1"
+	},
 	"models/gemini-3.7-flash@gemini":{
 		"active": true,
 		"pricing":[0.75,0.075,3.75],
