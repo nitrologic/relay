@@ -102,6 +102,11 @@
 		"cold":true,
 		"purpose":"frontier model for coding, agentic search, and creative writing"
 	},
+	"claude-fable-5-1@anthropic":{
+		"pricing":[10.0,50.0],
+		"cold":true,
+		"purpose":"next generation of intelligence for agents, coding, and the hardest knowledge work"
+	},
 	"claude-fable-5@anthropic":{
 		"pricing":[10.0,50.0],
 		"cold":true,
@@ -214,12 +219,16 @@
 		"purpose":"speech-to-speech voice agents",
 		"endpoints":["wss://api.openai.com/v1/realtime"]
 	},
+	"models/gemini-3.8-flash@gemini":{
+		"active": true,
+		"pricing":[0.75,0.075,3.75],
+		"released":"2026-09-3"
+	},
 	"models/gemini-omni-1.1-flash@gemini":{
 		"comment":"This model only supports Interactions API.",
 		"released":"2026-09-1"
 	},
 	"models/gemini-3.7-flash@gemini":{
-		"active": true,
 		"pricing":[0.75,0.075,3.75],
 		"released":"2026-08-14"
 	},
