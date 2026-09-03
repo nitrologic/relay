@@ -222,15 +222,20 @@
 	"models/gemini-3.8-flash@gemini":{
 		"active": true,
 		"pricing":[0.75,0.075,3.75],
+		"released":"2026-08-14"
+	},
+	"models/gemini-3.7-flash@gemini":{
+		"pricing":[0.75,0.075,3.75],
 		"released":"2026-09-3"
 	},
 	"models/gemini-omni-1.1-flash@gemini":{
 		"comment":"This model only supports Interactions API.",
 		"released":"2026-09-1"
 	},
-	"models/gemini-3.7-flash@gemini":{
-		"pricing":[0.75,0.075,3.75],
-		"released":"2026-08-14"
+	"models/gemini-3.1-flash-live-preview@gemini":{
+		"pricing":[0.75,4.5],
+		"comment":"Gemini Live API required",
+		"released":"2026-09-1"
 	},
 	"models/gemini-robotics-er-2@gemini":{
 		"active": true,

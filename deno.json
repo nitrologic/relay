@@ -1,5 +1,6 @@
 {
 	"tasks":{
+		"client": "deno run --allow-net --allow-env client.ts",
 		"relay": "deno run --allow-write --allow-sys --allow-run --allow-net --allow-env --allow-read relay.ts",
 		"ditto": "deno run --allow-net --allow-env --allow-write=./forge slopsearch.ts",
 		"sloppy🤖": "deno run --allow-net --allow-env relaybot.ts DISCORD_BOT sloppy 8081",

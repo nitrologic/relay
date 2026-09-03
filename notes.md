@@ -1,3 +1,154 @@
+/*
+
+class Client {
+
+	ws: WebSocket;
+
+	constructor() {
+		this.ws = new WebSocket("ws://localhost:8080");
+		this.ws.onopen = this.onOpen.bind(this);
+		this.ws.onmessage = this.onMessage.bind(this);
+		this.ws.onclose = this.onClose.bind(this);
+		this.ws.onerror = this.onError.bind(this);
+		console.log("startg websocket");
+
+	}
+
+	onOpen() {
+		console.log("connected to startg");
+		this.ws.send(JSON.stringify({ type: "init", cols: 80, rows: 24 }));
+	}
+
+	onMessage(event: MessageEvent) {
+		console.log("from godot:", event.data);
+	}
+
+	onClose() {
+		console.log("disconnected");
+	}
+
+	onError(err: Event) {
+		console.error("ws error:", err);
+	}
+
+}
+
+const client = new Client();
+
+
+class Client {
+
+	ws: WebSocket;
+
+	constructor() {
+		this.ws = new WebSocket("ws://localhost:8080");
+		this.ws.onopen = this.onOpen;
+		this.ws.onmessage = this.onMessage;
+		this.ws.onclose = this.onClose;
+		this.ws.onerror = this.onError;
+		console.log("startg websocket");
+	}
+
+	onOpen = () => {
+		console.log("connected to startg");
+		this.ws.send(JSON.stringify({ type: "init", cols: 80, rows: 24 }));
+	};
+
+	onMessage = (event: MessageEvent) => {
+
+		console.log("from godot:", event.data);
+
+	};
+
+	onClose = () => {
+
+		console.log("disconnected");
+
+	};
+
+	onError = (err: Event) => {
+
+		console.error("ws error:", err);
+
+	};
+
+}
+
+const client = new Client();
+
+
+// client.ts
+
+const ws = new WebSocket("ws://localhost:8080");
+
+function onOpen() {
+
+	console.log("connected to startg");
+
+	ws.send(JSON.stringify({ type: "init", cols: 80, rows: 24 }));
+
+}
+
+function onMessage(event: MessageEvent) {
+
+	const data = event.data;
+
+	console.log("from godot:", { event });
+
+}
+
+function onClose() {
+
+	console.log("disconnected");
+
+}
+
+function onError(err: Event) {
+
+	console.error("ws error:", err);
+
+}
+
+ws.onopen = onOpen;
+ws.onmessage = onMessage;
+ws.onclose = onClose;
+ws.onerror = onError;
+
+console.log("startg websocket");
+
+// client.ts
+const ws = new WebSocket("ws://localhost:8080");
+
+ws.onopen = () => {
+	console.log("connected to startg");
+	ws.send(JSON.stringify({ type: "init", cols: 80, rows: 24 }));
+};
+
+ws.onmessage = (event) => {
+	const data=event.data;
+	console.log("from godot:", {event});
+};
+
+ws.onclose = () => {
+	console.log("disconnected");
+};
+
+ws.onerror = (err) => {
+	console.error("ws error:", err);
+};
+
+console.log("startg websocket")
+
+
+*/
+
+  WARNING: modules/gltf/gltf_document.cpp:3106 - glTF: 
+ File uses different UV maps for metallic/roughness and base color textures. 
+ Godot does not support this. 
+ Using base color texture's UV map only and ignoring metallic/roughness texture's UV map.
+  WARNING: modules/gltf/gltf_document.cpp:3123 - glTF: File uses different UV maps for normal and base color textures. 
+ Godot does not support this. Using base color texture's UV map only and ignoring normal texture's UV map.
+
 import OpenAI from 'openai';
 const client = new OpenAI({
   apiKey: process.env.XAI_API_KEY,
