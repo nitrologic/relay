@@ -1,0 +1,7 @@
+var path = "/path/to/model.glb"
+var file = FileAccess.get_file_as_bytes(path)
+var doc = GLTFDocument.new()
+var state = GLTFState.new()
+doc.append_from_buffer(file, "", state)
+var model = doc.generate_scene(state)
+add_child(model)
