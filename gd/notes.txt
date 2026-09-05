@@ -5,3 +5,22 @@ var state = GLTFState.new()
 doc.append_from_buffer(file, "", state)
 var model = doc.generate_scene(state)
 add_child(model)
+
+								
+func onPacket2(client,packet):
+	var message = packet.get_string_from_utf8()
+	glog("onPacket received"+message+" from "+str(client))
+	var request = JSON.parse_string(message)
+	if request:
+		var response = {
+			"jsonrpc": "2.0",
+			"id": request.get("id", null),
+			"result": {
+				"echo": message,
+				"received_at": Time.get_unix_time_from_system()
+			}
+		}
+		var reply=JSON.stringify(response)
+		client.send_text(reply)
+
+

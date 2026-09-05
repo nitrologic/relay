@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://bb11clr77jeag"]
+
+[ext_resource type="Script" uid="uid://dlvn3yrapeukb" path="res://control.gd" id="1_0fbet"]
+[ext_resource type="Script" uid="uid://dlmidchuhwuw1" path="res://node.gd" id="2_62e2m"]
+[ext_resource type="Script" uid="uid://c8fuxse3w47qb" path="res://node2d.gd" id="3_qtu10"]
+
+[node name="Control" type="Control" unique_id=1359534088]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_0fbet")
+
+[node name="Node" type="Node" parent="." unique_id=1982804088]
+script = ExtResource("2_62e2m")
+
+[node name="Node2D" type="Node2D" parent="Node" unique_id=1056714112]
+script = ExtResource("3_qtu10")

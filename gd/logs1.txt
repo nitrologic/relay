@@ -1,0 +1,406 @@
+\\\\\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"id\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\":193,\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"method\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\":\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"tick\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"params\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\":{\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"count\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\":81}}\\\\\\\\\\\\\\\",\\\\\\\\\\\\\\\"received_at\\\\\\\\\\\\\\\":1788562265.031}}}}\\\\\\\",\\\\\\\"received_at\\\\\\\":1788562269.21}}}}\\\",\\\"received_at\\\":1788562273.733}}}}\",\"received_at\":1788562278.922}}}}","received_at":1788562285.199}}}} from <WebSocketPeer#-9223371999391250909>
+onPacket received{"jsonrpc":"2.0","id":399,"method":"echo","params":{"payload":{"id":358,"jsonrpc":"2.0","result":{"echo":"{\"jsonrpc\":\"2.0\",\"id\":358,\"method\":\"echo\",\"params\":{\"payload\":{\"id\":317,\"jsonrpc\":\"2.0\",\"result\":{\"echo\":\"{\\\"jsonrpc\\\":\\\"2.0\\\",\\\"id\\\":317,\\\"method\\\":\\\"echo\\\",\\\"params\\\":{\\\"payload\\\":{\\\"id\[...]
+  ERROR: [output overflow, print less text!]
+--- Debugging process stopped ---
+
+
+Microsoft Windows [Version 10.0.26200.9168]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\nitrologic\relay>deno run client
+Task client deno run --allow-net --allow-env client.ts
+connecting...
+startg websocket
+send not OPEN
+connected to startg
+ws error: ErrorEvent {
+  bubbles: false,
+  cancelable: false,
+  composed: false,
+  currentTarget: WebSocket {
+    url: "ws://localhost:8080/",
+    readyState: 3,
+    extensions: "",
+    protocol: "",
+    binaryType: "blob",
+    bufferedAmount: 0,
+    onmessage: [Function: bound onMessage],
+    onerror: [Function: bound onError],
+    onclose: [Function: bound onClose],
+    onopen: [Function: bound onOpen]
+  },
+  defaultPrevented: false,
+  eventPhase: 2,
+  srcElement: null,
+  target: WebSocket {
+    url: "ws://localhost:8080/",
+    readyState: 3,
+    extensions: "",
+    protocol: "",
+    binaryType: "blob",
+    bufferedAmount: 0,
+    onmessage: [Function: bound onMessage],
+    onerror: [Function: bound onError],
+    onclose: [Function: bound onClose],
+    onopen: [Function: bound onOpen]
+  },
+  returnValue: true,
+  timeStamp: 0,
+  type: "error",
+  message: "An existing connection was forcibly closed by the remote host. (os error 10054)",
+  filename: "",
+  lineno: 0,
+  colno: 0,
+  error: Error: An existing connection was forcibly closed by the remote host. (os error 10054)
+      at WebSocket.[[[eventLoop]]] (ext:deno_websocket/01_websocket.js:1:10584)
+}
+disconnected
+send not OPEN
+send not OPEN
+send not OPEN
+send not OPEN
+send not OPEN
+send not OPEN
+send not OPEN
+send not OPEN
+send not OPEN
+connecting...
+send not OPEN
+send not OPEN
+connected to startg
+ws error: ErrorEvent {
+  bubbles: false,
+  cancelable: false,
+  composed: false,
+  currentTarget: WebSocket {
+    url: "ws://localhost:8080/",
+    readyState: 3,
+    extensions: "",
+    protocol: "",
+    binaryType: "blob",
+    bufferedAmount: 0,
+    onmessage: [Function: bound onMessage],
+    onerror: [Function: bound onError],
+    onclose: [Function: bound onClose],
+    onopen: [Function: bound onOpen]
+  },
+  defaultPrevented: false,
+  eventPhase: 2,
+  srcElement: null,
+  target: WebSocket {
+    url: "ws://localhost:8080/",
+    readyState: 3,
+    extensions: "",
+    protocol: "",
+    binaryType: "blob",
+    bufferedAmount: 0,
+    onmessage: [Function: bound onMessage],
+    onerror: [Function: bound onError],
+    onclose: [Function: bound onClose],
+    onopen: [Function: bound onOpen]
+  },
+  returnValue: true,
+  timeStamp: 0,
+  type: "error",
+  message: "An existing connection was forcibly closed by the remote host. (os error 10054)",
+  filename: "",
+  lineno: 0,
+  colno: 0,
+  error: Error: An existing connection was forcibly closed by the remote host. (os error 10054)
+      at WebSocket.[[[eventLoop]]] (ext:deno_websocket/01_websocket.js:1:10584)
+}
+disconnected
+connecting...
+ws error: ErrorEvent {
+  bubbles: false,
+  cancelable: false,
+  composed: false,
+  currentTarget: WebSocket {
+    url: "ws://localhost:8080/",
+    readyState: 3,
+    extensions: "",
+    protocol: "",
+    binaryType: "blob",
+    bufferedAmount: 0,
+    onmessage: [Function: bound onMessage],
+    onerror: [Function: bound onError],
+    onclose: [Function: bound onClose],
+    onopen: [Function: bound onOpen]
+  },
+  defaultPrevented: false,
+  eventPhase: 2,
+  srcElement: null,
+  target: WebSocket {
+    url: "ws://localhost:8080/",
+    readyState: 3,
+    extensions: "",
+    protocol: "",
+    binaryType: "blob",
+    bufferedAmount: 0,
+    onmessage: [Function: bound onMessage],
+    onerror: [Function: bound onError],
+    onclose: [Function: bound onClose],
+    onopen: [Function: bound onOpen]
+  },
+  returnValue: true,
+  timeStamp: 0,
+  type: "error",
+  message: "NetworkError: failed to connect to WebSocket: tcp connect error",
+  filename: "",
+  lineno: 0,
+  colno: 0,
+  error: NetworkError: failed to connect to WebSocket: tcp connect error
+}
+disconnected
+connecting...
+ws error: ErrorEvent {
+  bubbles: false,
+  cancelable: false,
+  composed: false,
+  currentTarget: WebSocket {
+    url: "ws://localhost:8080/",
+    readyState: 3,
+    extensions: "",
+    protocol: "",
+    binaryType: "blob",
+    bufferedAmount: 0,
+    onmessage: [Function: bound onMessage],
+    onerror: [Function: bound onError],
+    onclose: [Function: bound onClose],
+    onopen: [Function: bound onOpen]
+  },
+  defaultPrevented: false,
+  eventPhase: 2,
+  srcElement: null,
+  target: WebSocket {
+    url: "ws://localhost:8080/",
+    readyState: 3,
+    extensions: "",
+    protocol: "",
+    binaryType: "blob",
+    bufferedAmount: 0,
+    onmessage: [Function: bound onMessage],
+    onerror: [Function: bound onError],
+    onclose: [Function: bound onClose],
+    onopen: [Function: bound onOpen]
+  },
+  returnValue: true,
+  timeStamp: 0,
+  type: "error",
+  message: "NetworkError: failed to connect to WebSocket: tcp connect error",
+  filename: "",
+  lineno: 0,
+  colno: 0,
+  error: NetworkError: failed to connect to WebSocket: tcp connect error
+}
+disconnected
+connecting...
+ws error: ErrorEvent {
+  bubbles: false,
+  cancelable: false,
+  composed: false,
+  currentTarget: WebSocket {
+    url: "ws://localhost:8080/",
+    readyState: 3,
+    extensions: "",
+    protocol: "",
+    binaryType: "blob",
+    bufferedAmount: 0,
+    onmessage: [Function: bound onMessage],
+    onerror: [Function: bound onError],
+    onclose: [Function: bound onClose],
+    onopen: [Function: bound onOpen]
+  },
+  defaultPrevented: false,
+  eventPhase: 2,
+  srcElement: null,
+  target: WebSocket {
+    url: "ws://localhost:8080/",
+    readyState: 3,
+    extensions: "",
+    protocol: "",
+    binaryType: "blob",
+    bufferedAmount: 0,
+    onmessage: [Function: bound onMessage],
+    onerror: [Function: bound onError],
+    onclose: [Function: bound onClose],
+    onopen: [Function: bound onOpen]
+  },
+  returnValue: true,
+  timeStamp: 0,
+  type: "error",
+  message: "NetworkError: failed to connect to WebSocket: tcp connect error",
+  filename: "",
+  lineno: 0,
+  colno: 0,
+  error: NetworkError: failed to connect to WebSocket: tcp connect error
+}
+disconnected
+connecting...
+ws error: ErrorEvent {
+  bubbles: false,
+  cancelable: false,
+  composed: false,
+  currentTarget: WebSocket {
+    url: "ws://localhost:8080/",
+    readyState: 3,
+    extensions: "",
+    protocol: "",
+    binaryType: "blob",
+    bufferedAmount: 0,
+    onmessage: [Function: bound onMessage],
+    onerror: [Function: bound onError],
+    onclose: [Function: bound onClose],
+    onopen: [Function: bound onOpen]
+  },
+  defaultPrevented: false,
+  eventPhase: 2,
+  srcElement: null,
+  target: WebSocket {
+    url: "ws://localhost:8080/",
+    readyState: 3,
+    extensions: "",
+    protocol: "",
+    binaryType: "blob",
+    bufferedAmount: 0,
+    onmessage: [Function: bound onMessage],
+    onerror: [Function: bound onError],
+    onclose: [Function: bound onClose],
+    onopen: [Function: bound onOpen]
+  },
+  returnValue: true,
+  timeStamp: 0,
+  type: "error",
+  message: "NetworkError: failed to connect to WebSocket: tcp connect error",
+  filename: "",
+  lineno: 0,
+  colno: 0,
+  error: NetworkError: failed to connect to WebSocket: tcp connect error
+}
+disconnected
+connecting...
+ws error: ErrorEvent {
+  bubbles: false,
+  cancelable: false,
+  composed: false,
+  currentTarget: WebSocket {
+    url: "ws://localhost:8080/",
+    readyState: 3,
+    extensions: "",
+    protocol: "",
+    binaryType: "blob",
+    bufferedAmount: 0,
+    onmessage: [Function: bound onMessage],
+    onerror: [Function: bound onError],
+    onclose: [Function: bound onClose],
+    onopen: [Function: bound onOpen]
+  },
+  defaultPrevented: false,
+  eventPhase: 2,
+  srcElement: null,
+  target: WebSocket {
+    url: "ws://localhost:8080/",
+    readyState: 3,
+    extensions: "",
+    protocol: "",
+    binaryType: "blob",
+    bufferedAmount: 0,
+    onmessage: [Function: bound onMessage],
+    onerror: [Function: bound onError],
+    onclose: [Function: bound onClose],
+    onopen: [Function: bound onOpen]
+  },
+  returnValue: true,
+  timeStamp: 0,
+  type: "error",
+  message: "NetworkError: failed to connect to WebSocket: tcp connect error",
+  filename: "",
+  lineno: 0,
+  colno: 0,
+  error: NetworkError: failed to connect to WebSocket: tcp connect error
+}
+disconnected
+connecting...
+ws error: ErrorEvent {
+  bubbles: false,
+  cancelable: false,
+  composed: false,
+  currentTarget: WebSocket {
+    url: "ws://localhost:8080/",
+    readyState: 3,
+    extensions: "",
+    protocol: "",
+    binaryType: "blob",
+    bufferedAmount: 0,
+    onmessage: [Function: bound onMessage],
+    onerror: [Function: bound onError],
+    onclose: [Function: bound onClose],
+    onopen: [Function: bound onOpen]
+  },
+  defaultPrevented: false,
+  eventPhase: 2,
+  srcElement: null,
+  target: WebSocket {
+    url: "ws://localhost:8080/",
+    readyState: 3,
+    extensions: "",
+    protocol: "",
+    binaryType: "blob",
+    bufferedAmount: 0,
+    onmessage: [Function: bound onMessage],
+    onerror: [Function: bound onError],
+    onclose: [Function: bound onClose],
+    onopen: [Function: bound onOpen]
+  },
+  returnValue: true,
+  timeStamp: 0,
+  type: "error",
+  message: "NetworkError: failed to connect to WebSocket: tcp connect error",
+  filename: "",
+  lineno: 0,
+  colno: 0,
+  error: NetworkError: failed to connect to WebSocket: tcp connect error
+}
+disconnected
+connecting...
+ws error: ErrorEvent {
+  bubbles: false,
+  cancelable: false,
+  composed: false,
+  currentTarget: WebSocket {
+    url: "ws://localhost:8080/",
+    readyState: 3,
+    extensions: "",
+    protocol: "",
+    binaryType: "blob",
+    bufferedAmount: 0,
+    onmessage: [Function: bound onMessage],
+    onerror: [Function: bound onError],
+    onclose: [Function: bound onClose],
+    onopen: [Function: bound onOpen]
+  },
+  defaultPrevented: false,
+  eventPhase: 2,
+  srcElement: null,
+  target: WebSocket {
+    url: "ws://localhost:8080/",
+    readyState: 3,
+    extensions: "",
+    protocol: "",
+    binaryType: "blob",
+    bufferedAmount: 0,
+    onmessage: [Function: bound onMessage],
+    onerror: [Function: bound onError],
+    onclose: [Function: bound onClose],
+    onopen: [Function: bound onOpen]
+  },
+  returnValue: true,
+  timeStamp: 0,
+  type: "error",
+  message: "NetworkError: failed to connect to WebSocket: tcp connect error",
+  filename: "",
+  lineno: 0,
+  colno: 0,
+  error: NetworkError: failed to connect to WebSocket: tcp connect error
+}
+disconnected

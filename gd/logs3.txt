@@ -1,0 +1,69 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+D3D12 12_0 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 1060 6GB
+
+ready!11:18:30
+startg initialized
+websocket listening on :8080
+WebSocket listening for clients on port :8080
+Connecting upstream to ws://localhost:9000
+nitrologic Control User Interface hosting Godot Engine public interface
+Accepted new local client from: 127.0.0.1
+onPacket init: {"jsonrpc":"2.0","id":103,"method":"init","params":{"cols":80,"rows":24}}
+Accepted new local client from: 0:0:0:0:0:0:0:1
+onPacket init: {"jsonrpc":"2.0","id":1,"method":"init","params":{"cols":80,"rows":24}}
+onPacket tick: {"jsonrpc":"2.0","id":2,"method":"tick","params":{"count":1}}
+onPacket tick: {"jsonrpc":"2.0","id":3,"method":"tick","params":{"count":2}}
+onPacket tick: {"jsonrpc":"2.0","id":4,"method":"tick","params":{"count":3}}
+onPacket tick: {"jsonrpc":"2.0","id":5,"method":"tick","params":{"count":4}}
+onPacket tick: {"jsonrpc":"2.0","id":6,"method":"tick","params":{"count":5}}
+onPacket tick: {"jsonrpc":"2.0","id":7,"method":"tick","params":{"count":6}}
+onPacket tick: {"jsonrpc":"2.0","id":8,"method":"tick","params":{"count":7}}
+onPacket tick: {"jsonrpc":"2.0","id":9,"method":"tick","params":{"count":8}}
+onPacket tick: {"jsonrpc":"2.0","id":10,"method":"tick","params":{"count":9}}
+onPacket tick: {"jsonrpc":"2.0","id":11,"method":"tick","params":{"count":10}}
+onPacket tick: {"jsonrpc":"2.0","id":12,"method":"tick","params":{"count":11}}
+onPacket tick: {"jsonrpc":"2.0","id":13,"method":"tick","params":{"count":12}}
+onPacket tick: {"jsonrpc":"2.0","id":14,"method":"tick","params":{"count":13}}
+onPacket tick: {"jsonrpc":"2.0","id":15,"method":"tick","params":{"count":14}}
+onPacket tick: {"jsonrpc":"2.0","id":16,"method":"tick","params":{"count":15}}
+onPacket tick: {"jsonrpc":"2.0","id":17,"method":"tick","params":{"count":16}}
+onPacket tick: {"jsonrpc":"2.0","id":18,"method":"tick","params":{"count":17}}
+onPacket tick: {"jsonrpc":"2.0","id":19,"method":"tick","params":{"count":18}}
+onPacket tick: {"jsonrpc":"2.0","id":20,"method":"tick","params":{"count":19}}
+onPacket tick: {"jsonrpc":"2.0","id":21,"method":"tick","params":{"count":20}}
+onPacket tick: {"jsonrpc":"2.0","id":22,"method":"tick","params":{"count":21}}
+onPacket tick: {"jsonrpc":"2.0","id":23,"method":"tick","params":{"count":22}}
+onPacket tick: {"jsonrpc":"2.0","id":24,"method":"tick","params":{"count":23}}
+onPacket tick: {"jsonrpc":"2.0","id":25,"method":"tick","params":{"count":24}}
+onPacket tick: {"jsonrpc":"2.0","id":26,"method":"tick","params":{"count":25}}
+onPacket tick: {"jsonrpc":"2.0","id":27,"method":"tick","params":{"count":26}}
+onPacket tick: {"jsonrpc":"2.0","id":28,"method":"tick","params":{"count":27}}
+onPacket tick: {"jsonrpc":"2.0","id":29,"method":"tick","params":{"count":28}}
+onPacket tick: {"jsonrpc":"2.0","id":30,"method":"tick","params":{"count":29}}
+onPacket tick: {"jsonrpc":"2.0","id":31,"method":"tick","params":{"count":30}}
+onPacket tick: {"jsonrpc":"2.0","id":32,"method":"tick","params":{"count":31}}
+onPacket tick: {"jsonrpc":"2.0","id":33,"method":"tick","params":{"count":32}}
+onPacket tick: {"jsonrpc":"2.0","id":34,"method":"tick","params":{"count":33}}
+onPacket tick: {"jsonrpc":"2.0","id":35,"method":"tick","params":{"count":34}}
+onPacket tick: {"jsonrpc":"2.0","id":36,"method":"tick","params":{"count":35}}
+onPacket tick: {"jsonrpc":"2.0","id":37,"method":"tick","params":{"count":36}}
+onPacket tick: {"jsonrpc":"2.0","id":38,"method":"tick","params":{"count":37}}
+onPacket tick: {"jsonrpc":"2.0","id":39,"method":"tick","params":{"count":38}}
+onPacket tick: {"jsonrpc":"2.0","id":40,"method":"tick","params":{"count":39}}
+onPacket tick: {"jsonrpc":"2.0","id":41,"method":"tick","params":{"count":40}}
+onPacket tick: {"jsonrpc":"2.0","id":42,"method":"tick","params":{"count":41}}
+onPacket tick: {"jsonrpc":"2.0","id":43,"method":"tick","params":{"count":42}}
+onPacket tick: {"jsonrpc":"2.0","id":44,"method":"tick","params":{"count":43}}
+onPacket tick: {"jsonrpc":"2.0","id":45,"method":"tick","params":{"count":44}}
+onPacket tick: {"jsonrpc":"2.0","id":46,"method":"tick","params":{"count":45}}
+onPacket tick: {"jsonrpc":"2.0","id":47,"method":"tick","params":{"count":46}}
+onPacket tick: {"jsonrpc":"2.0","id":48,"method":"tick","params":{"count":47}}
+onPacket tick: {"jsonrpc":"2.0","id":49,"method":"tick","params":{"count":48}}
+onPacket tick: {"jsonrpc":"2.0","id":50,"method":"tick","params":{"count":49}}
+onPacket tick: {"jsonrpc":"2.0","id":51,"method":"tick","params":{"count":50}}
+onPacket tick: {"jsonrpc":"2.0","id":52,"method":"tick","params":{"count":51}}
+onPacket tick: {"jsonrpc":"2.0","id":53,"method":"tick","params":{"count":52}}
+onPacket tick: {"jsonrpc":"2.0","id":54,"method":"tick","params":{"count":53}}
+onPacket tick: {"jsonrpc":"2.0","id":55,"method":"tick","params":{"count":54}}
+onPacket tick: {"jsonrpc":"2.0","id":56,"method":"tick","params":{"count":55}}
+Client [1] disconnected. Cleaning up.
