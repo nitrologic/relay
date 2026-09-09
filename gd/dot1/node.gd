@@ -1,6 +1,6 @@
 extends Node
 
-@onready var log_view = TextEdit.new()
+@onready var textView = TextEdit.new()
 
 const SPLASH_DATA = [
 		# Big Cross (4 lines)
@@ -37,8 +37,8 @@ func base64_to_vec2_array(base64: String) -> PackedVector2Array:
 
 func glog(msg: String):
 	print(msg)
-	log_view.text+="\n[DIAG] "+msg
-	log_view.scroll_vertical = log_view.get_line_count()
+	textView.text+="\n[DIAG] "+msg
+	textView.scroll_vertical = textView.get_line_count()
 
 func onPacket(client, packet):
 	var message = packet.get_string_from_utf8()
@@ -50,8 +50,17 @@ func onPacket(client, packet):
 		var method = request["method"]
 		var params = request.get("params", {})
 		match method:
+			"snoop":
+				glog("onPacket snoop: " + message)
+				var snoop = Snoop
+				if (snoop):
+					var schema=snoop.schema
+					var json=JSON.stringify(schema)					
+					glog("[SNOOP] godot schema:"+json)#str(json.length()))
+				else:
+					glog("[SNOOP] no snoop")
 			"init":
-				glog("onPacket init: " + message)
+				glog("onPacket splashScreen on init: " + message)
 				var vec_lines = splashScreen()
 				var node2d = $Node2D
 				if(node2d):
@@ -150,12 +159,15 @@ func _process(delta:float):
 	pollNetwork()
 
 func _ready():
-	print("ready!"+Time.get_time_string_from_system());
+	textView.add_theme_stylebox_override("normal", StyleBoxEmpty.new())
 
-	log_view.size = Vector2(1152, 648)
-	log_view.editable = false
-	log_view.add_theme_font_size_override("font_size", 20)
-	add_child(log_view)
+	var t=Time.get_time_string_from_system()
+	print("ready with normal theme time:"+t)
+
+	textView.size = Vector2(1152, 648)
+	textView.editable = false
+	textView.add_theme_font_size_override("font_size", 20)
+	add_child(textView)
 	
 	glog("startg initialized")
 	glog("websocket listening on :8080")

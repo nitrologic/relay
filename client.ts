@@ -36,6 +36,7 @@ class startgClient {
 	onOpen() {
 		console.log("connected to startg");
 		this.send("init",{cols: 80, rows: 24 });
+		this.send("snoop",{});
 	}
 
 	onMessage(event: MessageEvent) {

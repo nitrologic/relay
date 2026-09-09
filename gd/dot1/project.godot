@@ -15,6 +15,10 @@ run/main_scene="uid://bb11clr77jeag"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+Snoop="*uid://cvjxdxg7fmf7p"
+
 [display]
 
 window/stretch/mode="canvas_items"

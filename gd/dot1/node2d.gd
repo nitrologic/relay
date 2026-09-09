@@ -1,6 +1,14 @@
 extends Node2D
 
-var lines: PackedVector2Array = PackedVector2Array()
+var XLines: PackedVector2Array = PackedVector2Array([
+	Vector2(0, 0),
+	Vector2(100, 100),
+	Vector2(100, 0),
+	Vector2(0, 100)
+])
+
+# var lines: PackedVector2Array = PackedVector2Array()
+var lines: PackedVector2Array = XLines
 
 func set_lines(new_lines: PackedVector2Array) -> void:
 	lines = new_lines
