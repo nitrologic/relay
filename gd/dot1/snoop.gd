@@ -45,11 +45,21 @@ func snoopGodot() -> Dictionary:
 	]
 
 	var schema: Dictionary = {}
-	var globals = ProjectSettings.get_global_class_list()	
-	for node in globals:
-		print(JSON.stringify(node))
-		var name= node["class"]
-		schema[name] = getNodeSignatures(name)
+	var list=ClassDB.get_class_list()
+	for item in list:
+		var api=ClassDB.class_get_api_type(item)
+		var methods=ClassDB.class_get_method_list(item)
+#		print(item,methods.size)
+		var names=[]
+		for method in methods:		
+			var name=method["name"]
+			var args=method["args"]
+			var rtype=method["return"]
+			var flags=method["flags"]
+#			print(name,args)
+			var key=item+"."+name
+			names.push_back(name)
+		schema[item]=names
 
 	var result: Dictionary = {
 		"name": "godot",

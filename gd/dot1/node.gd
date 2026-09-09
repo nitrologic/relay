@@ -56,7 +56,8 @@ func onPacket(client, packet):
 				if (snoop):
 					var schema=snoop.schema
 					var json=JSON.stringify(schema)					
-					glog("[SNOOP] godot schema:"+json)#str(json.length()))
+					glog("[SNOOP] godot schema:"+str(json.length()))
+#					glog("[SNOOP] godot schema:"+json)
 				else:
 					glog("[SNOOP] no snoop")
 			"init":
