@@ -1771,7 +1771,7 @@ async function connectOpenAI(account,config) {
 		if(error.status==429){
 			echo("Account Credit Error, please topup.");
 		}else{
-			echo("Connection Error");
+			echo("Connection Error account:",account);
 			echo(JSON.stringify(error));
 		}
 	}

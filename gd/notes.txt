@@ -1,3 +1,26 @@
+var expr = Expression.new()
+var error = expr.parse("min(10, 20) + custom_modifier", ["custom_modifier"])
+
+if error == OK:
+	# You can optionally pass runtime context variables into the math execution
+	var result = expr.execute([5], self)
+	print(result) # Outputs: 15
+
+
+
+
+
+# Create a script from a string dynamically
+var dynamic_script = GDScript.new()
+dynamic_script.source_code = "func get_answer():\n\treturn 42"
+dynamic_script.reload()
+
+# Instantiate the script and call its function
+var script_instance = dynamic_script.new()
+var result = script_instance.call("get_answer") 
+print(result) # Outputs: 42
+
+
 var path = "/path/to/model.glb"
 var file = FileAccess.get_file_as_bytes(path)
 var doc = GLTFDocument.new()
