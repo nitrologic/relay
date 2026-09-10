@@ -1,15 +1,9 @@
 {
-	"deepseek-v4-flash-vision-exp@deepseek":{
-			"active": true,
-			"pricing": [0.44, 0.014, 1.32],
-			"released": "2026-08-22"
-	},
-	"deepseek-v4-flash@deepseek":{
+	"deepseek-flash@deepseek":{
 		"active": true,
-		"pricing": [0.44, 0.014, 1.32],
-		"released": "2026-04-24",
-		"purpose":"284B total / 13B active params. Fast, efficient, and economical.",
-		"press": "Agent capabilities and top-tier reasoning."
+		"pricing": [0.03, 0.006, 1.2],
+		"released": "2026-09-10",
+		"purpose":"1M context V4.1 Flash "
 	},
 	"deepseek-v4-pro@deepseek":{
 		"pricing": [1.32, 0.044, 3.96],

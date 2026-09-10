@@ -7,7 +7,7 @@
 // Testing with Deno 2.9.3 V8  14.9.207.2-rusty, TypeScript 6.0.3
 
 const brandFountain="nitrologic Relay";
-const relayVersion="2.0.2";
+const relayVersion="2.0.3";
 const fountainName=brandFountain+" "+relayVersion;
 
 // system prompt
@@ -109,7 +109,6 @@ type ConfigFlags = {
 	budget: false;
 	syncRelay: boolean;
 	listen: boolean;
-	project: boolean;
 	thinking: boolean;
 	underline: boolean;
 	persona: string;
@@ -130,7 +129,6 @@ class Plop {
 
 let rohaHistory:Plop[]=[];
 let rohaCallNames={};
-let projectHistory="";
 
 const sessionStack:Plop[][]=[];
 
@@ -349,7 +347,6 @@ const flagNames={
 	budget : "cheap models for the win",
 	syncRelay : "one thing at a time mode",
 	listen : "listen for remote connections on port 8081",
-	project : "load current project on start",
 	thinking : "enable thinking mode with dual purpose models",
 	underline : "enable underline markdown support",
 	persona : "extend system prompt",
@@ -394,14 +391,12 @@ const emptyRoha={
 	tags:{},
 	sharedFiles:[],	//Array<Share>,//[],
 	keyedShares:{},
-	keyedProjects:{},
 	attachedFiles:[],
 	saves:[],
 	counters:{},
 	mut:{},
 	lode:{},
 	forge:[],
-	project:"roha",
 	nic:"friend",
 	persona:"sloppy"
 };
@@ -858,11 +853,6 @@ async function logForge(lines:string,id:string){
 		const block=list.join("\n");
 		let path=resolve(forgePath,"forge.log");
 		await Deno.writeTextFile(path,block,{append:true});
-		if(projectHistory){
-			if(id!="roha" && id!="remote") {
-				await Deno.writeTextFile(projectHistory,block,{append:true});
-			}
-		}
 	}
 }
 
@@ -2190,7 +2180,7 @@ async function shareCommand(words:string[]){
 // updates global shareList array
 
 async function listShare(sortSize:boolean){
-	const project=roha.project;
+//	const project=roha.project;
 //	const list=[];
 	let count=0;
 	const sorted=roha.sharedFiles.slice();
@@ -2199,7 +2189,7 @@ async function listShare(sortSize:boolean){
 	}
 	for (const share of sorted) {
 		const shared=(rohaSharePaths.has(share.path))?"🔗":"";
-		const tags="[ "+share.tag+" "+rohaUser+" "+project+" ]";
+		const tags="[ "+share.tag+" "+rohaUser+" ]";	//+" "+project
 		const detail=(share.description)?share.description:"";
 		let size=share.size;
 		try{
@@ -2566,7 +2556,7 @@ async function readForge(){
 		if(!roha.lode) roha.lode={};
 		if(!roha.nic) roha.nic=sanitizeNic(username);
 		if(!roha.keyedShares) roha.keyedShares={};
-		if(!roha.keyedProjects) roha.keyedProjects={};
+//		if(!roha.keyedProjects) roha.keyedProjects={};
 		if(!roha.sharedFiles) roha.sharedFiles=[];
 	} catch (error) {
 		console.error("Error reading or parsing",rohaPath,error);
@@ -2595,34 +2585,17 @@ async function writeForge(){
 	}
 }
 
-function flushProjects(){
-	let flush=0;
-	const result={};
-	for(let key in roha.keyedProjects){
-		const project=roha.keyedProjects[key];
-		if(project.name.indexOf("_")!=-1){
-			result[key]=project;
-		}else{
-			flush++;
-		}
-	}
-	if(flush){
-		echo("[KOHA]","flushProjects flush:",flush);
-	}
-	roha.keyedProjects=result;
-}
-
 async function resetCommand(all=false){
 	grokTemperature=ResetTemperature;
 	rohaSharePaths.clear();
 	roha.keyedShares={};
 	roha.sharedFiles=[];
-	roha.project="roha";
-	flushProjects();
+//	roha.project="roha";
+//	flushProjects();
 //	roha.persona="sloppy";
 	if(all){
 //		roha.keyedShares={};
-		roha.keyedProjects={};
+//		roha.keyedProjects={};
 //		currentDir=Deno.cwd();
 //		Deno.chdir(currentDir);
 	}
@@ -2695,15 +2668,15 @@ async function addShare(share,single:boolean){
 		if(filename=="relay.md"&&single){
 			const dirpath=dirname(share.path);
 			const name=shareName(dirpath);
-			const success=await setProject(name,dirpath);
+//			const success=await setProject(name,dirpath);
 		}
 	}
 	if(share.tag) {
 		await setTag(share.tag,share.id);
 	}
 	// new keyedShares per project sharedFiles
-	const key=roha.project||"roha";
-	roha.keyedShares[key]=roha.sharedFiles;
+//	const key=roha.project||"roha";
+//	roha.keyedShares[key]=roha.sharedFiles;
 }
 
 async function shareDir(dir:string, tag:string, depth=1, maxDepth=5) {
@@ -2899,7 +2872,7 @@ async function commitShares(tag) {
 	}
 	if (removedPaths.length) {
 		roha.sharedFiles=validShares;
-		const key=roha.project||"roha";
+//		const key=roha.project||"roha";
 //		roha.keyedShares[key]=roha.sharedFiles;
 		await writeForge();
 		echoInfo("[KOHA]","commitShares removed", removedPaths.join(" "));
@@ -2911,19 +2884,6 @@ async function commitShares(tag) {
 		echoInfo("[KOHA]","Updated files",count,"of",validShares.length);
 	}
 	return dirty;
-}
-
-function listProjects(projects,shares){
-	let index=0;
-	for(const key of Object.keys(projects)){
-		const git=(Object.hasOwn(projects,".gitignore"))?"G":"";
-		const star=(key==roha.project)?"*":"";
-		const hasShares=Object.hasOwn(shares,key);
-		const share=hasShares?shares[key]:{};
-		const project=projects[key];
-		echo((index++),key,star,git,share?.length,project)
-	}
-	echo((index++),"none");
 }
 
 // new work in progress - relay bot persona system
@@ -2967,149 +2927,6 @@ async function setPersona(name:string):boolean{
 		return true;
 	}
 	return false;
-}
-
-// can fail when folder not found and chdir fails
-
-async function setProject(name,path):boolean{
-	clearShares();
-	echo("[KEY] setProject",name,path);
-	const key=name;
-	// TODO: set current roha.project in keyedProjects?
-	// TODO: set current rohaSharePaths in keyedShares?
-	if(!Object.hasOwn(roha.keyedProjects,key)){
-		roha.keyedProjects[key]={key,path,name};
-		echo("[KEY] new project created",{key,path,name});
-	}
-	roha.project=key;
-	rohaSharePaths.clear();
-	if(Object.hasOwn(roha.keyedShares,key)){
-		const shares=roha.keyedShares[key];
-		if(roha.config.verbose){
-			echo("[KEY] sharing",shares.length);
-			echo("[KEY] sharenames",shares);
-		}
-		roha.sharedFiles=shares;
-	}
-//	roha.keyedShares[key];
-//	logpath=path
-	const history=path+"/relay.log";
-	const exists=await pathExists(history);
-	if(exists){
-		echo("[KEY] history",history);
-		projectHistory=history;
-	}else{
-		projectHistory="";
-	}
-//	echo("[KEY] deno chdir",path);
-	try{
-		Deno.chdir(path);
-		currentDir=Deno.cwd();
-	}catch(err){
-		return false;
-	}
-	return true;
-}
-
-async function scrubProject(name){
-	if(roha.project==name){
-		clearShares();
-		roha.project="roha";
-		rohaSharePaths.clear();
-	}
-	const key=name;
-	if(Object.hasOwn(roha.keyedShares,key)){
-		const shares=roha.keyedShares[key];
-		if(roha.config.verbose){
-			echo("[SCUBR] scrubbing",shares.length);
-			echo("[SCRUB] sharenames",shares);
-		}
-		delete roha.keyedShares[key]
-	}
-	const hasProject=Object.hasOwn(roha.keyedProjects,name);
-	if(hasProject){
-		delete roha.keyedProjects[name];
-		echo("[SCRUB] deleted keyedProjects name:",name);
-	}else{
-		echo("[SCRUB] hasProject:",hasProject);
-	}
-}
-
-
-async function ditchProject(name){
-	const hasProject=Object.hasOwn(roha.keyedProjects,name);
-	if(hasProject){
-		delete roha.keyedProjects[name];
-		echo("[DITCH] deleted keyedProjects name:",name);
-	}else{
-		echo("[DITCH] hasProject:",hasProject);
-	}
-}
-
-async function loadProject(name){
-	const verbose=roha.config.verbose;
-	echo("[KEY] loadProject",name);
-	const hasProject=Object.hasOwn(roha.keyedProjects,name);
-	if(hasProject){
-		if(verbose) echo("[KEY] project key found for name:",name)
-	}
-	const hasShares=Object.hasOwn(roha.keyedShares,name)
-	if(hasShares){
-		if(verbose) echo("[KEY] shares key found for name:",name)
-	}
-	if(hasProject&&hasShares){
-		const project=roha.keyedProjects[name];
-		const path=project.path;
-		const loaded=await setProject(name,path);
-		if(loaded){
-			echo("project loaded",roha.project);
-		}else{
-			echo("project error",roha.project);
-			resetCommand(false);
-		}
-	}
-}
-
-async function projectCommand(words){
-	if (words.length==1){
-		listProjects(roha.keyedProjects,roha.keyedShares);
-		listCommand="project";
-	}else{
-		let drop=false;
-		let scrub=false;
-		let name=words[1];
-		if(name=="drop"){
-			drop=true;
-			name=words[2];
-		}
-		if(name=="scrub"){
-			scrub=true;
-			name=words[2];
-		}
-		if(isFinite(name)){
-			const index=name|0;
-			const keys=Object.keys(roha.keyedProjects);
-			// apply none if #6
-			name=keys[index]||roha.project;
-		}
-		if(drop){
-			ditchProject(name);
-			if(roha.project==name){
-				clearShares();
-				roha.project="roha";
-			}
-		}else if(scrub){
-			scrubProject(name);
-		}else{
-			if(name==roha.project){
-				echo("[KEY] unload project",name);
-				clearShares();
-				roha.project="roha";
-			}else{
-				loadProject(name);
-			}
-		}
-	}
 }
 
 async function setTag(name,note){
@@ -3688,9 +3505,6 @@ async function callCommand(command:string) {
 				break;
 			case "persona":
 				await personaCommand(words);
-				break;
-			case "project":
-				await projectCommand(words);
 				break;
 			case "model":
 				await modelCommand(words);
@@ -4866,12 +4680,11 @@ await flush();
 
 let rohaNic=roha.nic||"nic";
 const sharecount=roha.sharedFiles?.length||0;
-const project=roha.project;
 
 //let termSize = Deno.consoleSize();
 //echo("console:",termSize);
 
-echo("user:",{nic:rohaNic,user:rohaUser,project,sharecount,terminal:userterminal})
+echo("user:",{nic:rohaNic,user:rohaUser,sharecount,terminal:userterminal})
 echo("forge:","\""+rohaPath+"\"");
 
 echo("type /help for latest and exit to quit");
@@ -4898,9 +4711,6 @@ if(Deno.args && Deno.args.length>1){
 	Deno.chdir(seg0);
 	currentDir=Deno.cwd();
 }else{
-	if(roha.config.project){
-		await loadProject(roha.project);
-	}
 	if(Deno.args.length==1){
 		const path=Deno.args[0];
 		Deno.chdir(path);

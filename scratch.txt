@@ -1,3 +1,203 @@
+		if(projectHistory){
+			if(id!="roha" && id!="remote") {
+				await Deno.writeTextFile(projectHistory,block,{append:true});
+			}
+		}
+
+
+	keyedProjects:{},
+	project:"roha",
+
+
+	project: boolean;
+	project : "load current project on start",
+
+	if(roha.config.project){
+		await loadProject(roha.project);
+	}
+
+
+			case "project":
+				await projectCommand(words);
+				break;
+
+
+// can fail when folder not found and chdir fails
+function flushProjects(){
+	let flush=0;
+	const result={};
+	for(let key in roha.keyedProjects){
+		const project=roha.keyedProjects[key];
+		if(project.name.indexOf("_")!=-1){
+			result[key]=project;
+		}else{
+			flush++;
+		}
+	}
+	if(flush){
+		echo("[KOHA]","flushProjects flush:",flush);
+	}
+	roha.keyedProjects=result;
+}
+
+function listProjects(projects,shares){
+	let index=0;
+	for(const key of Object.keys(projects)){
+		const git=(Object.hasOwn(projects,".gitignore"))?"G":"";
+		const star=(key==roha.project)?"*":"";
+		const hasShares=Object.hasOwn(shares,key);
+		const share=hasShares?shares[key]:{};
+		const project=projects[key];
+		echo((index++),key,star,git,share?.length,project)
+	}
+	echo((index++),"none");
+}
+
+let projectHistory="";
+
+async function setProject(name,path):boolean{
+	clearShares();
+	echo("[KEY] setProject",name,path);
+	const key=name;
+	// TODO: set current roha.project in keyedProjects?
+	// TODO: set current rohaSharePaths in keyedShares?
+	if(!Object.hasOwn(roha.keyedProjects,key)){
+		roha.keyedProjects[key]={key,path,name};
+		echo("[KEY] new project created",{key,path,name});
+	}
+	roha.project=key;
+	rohaSharePaths.clear();
+	if(Object.hasOwn(roha.keyedShares,key)){
+		const shares=roha.keyedShares[key];
+		if(roha.config.verbose){
+			echo("[KEY] sharing",shares.length);
+			echo("[KEY] sharenames",shares);
+		}
+		roha.sharedFiles=shares;
+	}
+//	roha.keyedShares[key];
+//	logpath=path
+	const history=path+"/relay.log";
+	const exists=await pathExists(history);
+	if(exists){
+		echo("[KEY] history",history);
+		projectHistory=history;
+	}else{
+		projectHistory="";
+	}
+//	echo("[KEY] deno chdir",path);
+	try{
+		Deno.chdir(path);
+		currentDir=Deno.cwd();
+	}catch(err){
+		return false;
+	}
+	return true;
+}
+
+async function scrubProject(name){
+	if(roha.project==name){
+		clearShares();
+		roha.project="roha";
+		rohaSharePaths.clear();
+	}
+	const key=name;
+	if(Object.hasOwn(roha.keyedShares,key)){
+		const shares=roha.keyedShares[key];
+		if(roha.config.verbose){
+			echo("[SCUBR] scrubbing",shares.length);
+			echo("[SCRUB] sharenames",shares);
+		}
+		delete roha.keyedShares[key]
+	}
+	const hasProject=Object.hasOwn(roha.keyedProjects,name);
+	if(hasProject){
+		delete roha.keyedProjects[name];
+		echo("[SCRUB] deleted keyedProjects name:",name);
+	}else{
+		echo("[SCRUB] hasProject:",hasProject);
+	}
+}
+
+
+async function ditchProject(name){
+	const hasProject=Object.hasOwn(roha.keyedProjects,name);
+	if(hasProject){
+		delete roha.keyedProjects[name];
+		echo("[DITCH] deleted keyedProjects name:",name);
+	}else{
+		echo("[DITCH] hasProject:",hasProject);
+	}
+}
+
+async function loadProject(name){
+	const verbose=roha.config.verbose;
+	echo("[KEY] loadProject",name);
+	const hasProject=Object.hasOwn(roha.keyedProjects,name);
+	if(hasProject){
+		if(verbose) echo("[KEY] project key found for name:",name)
+	}
+	const hasShares=Object.hasOwn(roha.keyedShares,name)
+	if(hasShares){
+		if(verbose) echo("[KEY] shares key found for name:",name)
+	}
+	if(hasProject&&hasShares){
+		const project=roha.keyedProjects[name];
+		const path=project.path;
+		const loaded=await setProject(name,path);
+		if(loaded){
+			echo("project loaded",roha.project);
+		}else{
+			echo("project error",roha.project);
+			resetCommand(false);
+		}
+	}
+}
+
+async function projectCommand(words){
+	if (words.length==1){
+		listProjects(roha.keyedProjects,roha.keyedShares);
+		listCommand="project";
+	}else{
+		let drop=false;
+		let scrub=false;
+		let name=words[1];
+		if(name=="drop"){
+			drop=true;
+			name=words[2];
+		}
+		if(name=="scrub"){
+			scrub=true;
+			name=words[2];
+		}
+		if(isFinite(name)){
+			const index=name|0;
+			const keys=Object.keys(roha.keyedProjects);
+			// apply none if #6
+			name=keys[index]||roha.project;
+		}
+		if(drop){
+			ditchProject(name);
+			if(roha.project==name){
+				clearShares();
+				roha.project="roha";
+			}
+		}else if(scrub){
+			scrubProject(name);
+		}else{
+			if(name==roha.project){
+				echo("[KEY] unload project",name);
+				clearShares();
+				roha.project="roha";
+			}else{
+				loadProject(name);
+			}
+		}
+	}
+}
+
+
+
 	"deepseek-chat@deepseek": {
 		"pricing": [0.28, 0.028, 0.42],
 		"released": "2025-03-24",
