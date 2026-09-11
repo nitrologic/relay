@@ -2,7 +2,7 @@ extends Node2D
 
 var XLines: PackedVector2Array = PackedVector2Array([
 	Vector2(0, 0),
-	Vector2(100, 100),
+	Vector2(320, 100),
 	Vector2(100, 0),
 	Vector2(0, 100)
 ])
@@ -14,7 +14,11 @@ func set_lines(new_lines: PackedVector2Array) -> void:
 	lines = new_lines
 	queue_redraw()
 
+
 func _draw() -> void:
+	draw_multiline(lines, Color.WHITE, 1.0)
+
+func _draw2() -> void:
 	for i in range(0, lines.size(), 2):
 		var start := lines[i]
 		var end   := lines[i + 1]

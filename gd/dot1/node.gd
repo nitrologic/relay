@@ -1,5 +1,59 @@
 extends Node
 
+const FRAME_MAGIC := 0x4C52544E        # 'NTRL'
+const FRAME_VERSION := 1
+const CHUNK_JSON := 0x4E4F534A         # 'JSON'
+const CHUNK_BIN  := 0x004E4942         # 'BIN\0'
+
+func _pad4(n: int) -> int:
+	return (n + 3) & ~3
+
+func build_frame(header: Dictionary, binary: PackedByteArray) -> PackedByteArray:
+	var json := JSON.stringify(header).to_utf8_buffer()
+	var json_len := _pad4(json.size())
+	var bin_len := _pad4(binary.size())
+	var out := PackedByteArray()
+	out.resize(12 + 8 + json_len + 8 + bin_len)
+	out.encode_u32(0, FRAME_MAGIC)
+	out.encode_u32(4, FRAME_VERSION)
+	out.encode_u32(8, out.size())
+	out.encode_u32(12, json_len)
+	out.encode_u32(16, CHUNK_JSON)
+	out.fill(0x20)
+	out.encode_u32(20 + json_len, bin_len)
+	out.encode_u32(24 + json_len, CHUNK_BIN)
+	out.fill(0x00)
+	out.encode_u32(8, out.size())
+	return out
+
+func parse_frame(data: PackedByteArray) -> Dictionary:
+	if data.size() < 12 or data.decode_u32(0) != FRAME_MAGIC:
+		return {}
+	var header := {}
+	var binary := PackedByteArray()
+	var off := 12
+	while off + 8 <= data.size():
+		var clen := data.decode_u32(off)
+		var ctype := data.decode_u32(off + 4)
+		var body := data.slice(off + 8, off + 8 + clen)
+		if ctype == CHUNK_JSON:
+			header = JSON.parse_string(body.get_string_from_utf8())
+		elif ctype == CHUNK_BIN:
+			binary = body
+		off += 8 + clen
+	return {"header": header, "binary": binary}
+
+# keep packets in frames dictionary
+var globalBuffers: Dictionary = {}
+
+func onBuffer(client, header: Dictionary, binary: PackedByteArray) -> void:
+	var key: String = header.get("name", "")
+	if key.is_empty():
+		glog("onBuffer: missing name in header")
+		return
+	globalBuffers[key] = binary
+	glog("onBuffer: stored '%s' (%d bytes)" % [key, binary.size()])
+
 @onready var textView = TextEdit.new()
 
 const SPLASH_DATA = [
@@ -73,7 +127,7 @@ func onPacket(client, packet):
 				var node2d = $Node2D
 				if(node2d):
 					node2d.set_lines(vec_lines)
-					glog("onPacket draw: " + message.buffer)
+					glog("onPacket draw: " + message)
 				else:
 					glog("onPacket draw - missing node2D")
 			"tick":
@@ -146,7 +200,11 @@ func pollNetwork():
 		if client_state == WebSocketPeer.STATE_OPEN:
 			while client.get_available_packet_count() > 0:
 				var packet = client.get_packet()
-				onPacket(client,packet)
+				if packet.size() >= 4 and packet.decode_u32(0) == FRAME_MAGIC:
+					var frame := parse_frame(packet)
+					onBuffer(client, frame.header, frame.binary)
+				else:
+					onPacket(client,packet)
 				
 		elif client_state == WebSocketPeer.STATE_CLOSED:
 			glog("Client [%d] disconnected. Cleaning up." % i)

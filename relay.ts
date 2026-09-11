@@ -209,7 +209,7 @@ function quoteString(line:string):string{
 // application configuration
 
 const slowMillis=25;
-const MaxFileSize=512*1024*16;
+const MaxFileSize=512*1024*16*2;
 
 const accountsPath=resolve(appDir,"accounts.json");
 const specsPath=resolve(appDir,"modelspecs.json");
