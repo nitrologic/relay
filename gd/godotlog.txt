@@ -126,6 +126,3 @@ Standalone tools:
                                        If incompatibilities or errors are detected, the exit code will be non-zero.
   --benchmark                       E  Benchmark the run time and print it to console.
   --benchmark-file <path>           E  Benchmark the run time and save it to a given file in JSON format. The path should be absolute.
-
-
-C:\nitrologic\relay\gd>

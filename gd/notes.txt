@@ -1,3 +1,8 @@
+
+rem Godot_v4.7.2-stable_win64_console.exe --help --no-color
+rem Godot_v4.7.2-stable_win64_console.exe --scene control.tscn dot1/project.godot 
+
+
 var expr = Expression.new()
 var error = expr.parse("min(10, 20) + custom_modifier", ["custom_modifier"])
 
