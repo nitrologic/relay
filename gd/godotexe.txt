@@ -1,0 +1,131 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Free and open source software under the terms of the MIT license.
+(c) 2014-present Godot Engine contributors. (c) 2007-present Juan Linietsky, Ariel Manzur.
+
+Usage:
+  C:\nitrologic\relay\gd\Godot_v4.7.2-stable_win64.exe [options] [path to "project.godot" file]
+
+Option legend (this build = editor):
+  R  Available in editor builds, debug export templates and release export templates.
+  D  Available in editor builds and debug export templates only.
+  X  Only available in editor builds, and export templates compiled with `disable_path_overrides=false`.
+  E  Only available in editor builds.
+
+General options:
+  -h, --help                        R  Display this help message.
+  --version                         R  Display the version string.
+  -v, --verbose                     R  Use verbose stdout mode.
+  --quiet                           R  Quiet mode, silences stdout messages. Errors are still displayed.
+  --no-header                       R  Do not print engine version and rendering driver/method header on startup.
+
+Run options:
+  --, ++                            R  Separator for user-provided arguments. Following arguments are not used by the engine, but can be read from `OS.get_cmdline_user_args()`.
+  -e, --editor                      E  Start the editor instead of running the scene.
+  -p, --project-manager             E  Start the project manager, even if a project is auto-detected.
+  --recovery-mode                   E  Start the editor in recovery mode, which disables features that can typically cause startup crashes, such as tool scripts, editor plugins, GDExtension addons, and others.
+  --debug-server <uri>              E  Start the editor debug server (<protocol>://<host/IP>[:port], e.g. tcp://127.0.0.1:6007)
+  --dap-port <port>                 E  Use the specified port for the GDScript Debug Adapter Protocol. Recommended port range [1024, 49151].
+  --lsp-port <port>                 E  Use the specified port for the GDScript Language Server Protocol. Recommended port range [1024, 49151].
+  --quit                            R  Quit after the first iteration.
+  --quit-after <int>                R  Quit after the given number of iterations. Set to 0 to disable.
+  -l, --language <locale>           R  Use a specific locale (<locale> being a two-letter code).
+  --path <directory>                X  Path to a project (<directory> must contain a "project.godot" file).
+  --scene <path>                    X  Path or UID of a scene in the project that should be started.
+  --main-pack <file>                X  Path to a pack (.pck) file to load.
+  --render-thread <mode>            R  Render thread mode ("unsafe" [deprecated], "safe", "separate").
+  --remote-fs <address>             D  Remote filesystem (<host/IP>[:<port>] address).
+  --remote-fs-password <password>   D  Password for remote filesystem.
+  --audio-driver <driver>           R  Audio driver ["WASAPI", "Dummy"].
+  --display-driver <driver>         R  Display driver (and rendering driver) ["windows" ("vulkan", "d3d12", "opengl3", "opengl3_angle", "dummy"), "headless" ("dummy")].
+  --audio-output-latency <ms>       R  Override audio output latency in milliseconds (default is 15 ms).
+                                       Lower values make sound playback more reactive but increase CPU usage, and may result in audio cracking if the CPU can't keep up.
+  --rendering-method <renderer>     R  Renderer name. Requires driver support.
+  --rendering-driver <driver>       R  Rendering driver (depends on display driver).
+  --gpu-index <device_index>        R  Use a specific GPU (only available on the Forward+/Mobile renderers; run with --verbose to get a list of available devices).
+  --text-driver <driver>            R  Text driver (used for font rendering, bidirectional support and shaping).
+  --tablet-driver <driver>          R  Pen tablet input driver.
+  --headless                        R  Enable headless mode (--display-driver headless --audio-driver Dummy). Useful for servers and with --script.
+  --log-file <file>                 R  Write output/error log to the specified path instead of the default location defined by the project.
+                                       <file> path should be absolute or relative to the project directory.
+  --write-movie <file>              R  Write a video to the specified path (usually with .avi or .png extension).
+                                       --fixed-fps is forced when enabled, but it can be used to change movie FPS.
+                                       --disable-vsync can speed up movie writing but makes interaction more difficult.
+                                       --quit-after can be used to specify the number of frames to write.
+
+Display options:
+  -f, --fullscreen                  R  Request fullscreen mode.
+  -m, --maximized                   R  Request a maximized window.
+  -w, --windowed                    R  Request windowed mode.
+  -t, --always-on-top               R  Request an always-on-top window.
+  --resolution <W>x<H>              R  Request window resolution.
+  --position <X>,<Y>                R  Request window position.
+  --screen <N>                      R  Request window screen.
+  --single-window                   R  Use a single window (no separate subwindows).
+  --xr-mode <mode>                  R  Select XR (Extended Reality) mode ["default", "off", "on"].
+  --wid <window_id>                 R  Request parented to window.
+  --accessibility <mode>            R  Select accessibility mode ['auto' (when screen reader is running, default), 'always', 'disabled'].
+  --accessibility-driver <driver>   R  Select accessibility driver ['accesskit', 'dummy'].
+
+Debug options:
+  -d, --debug                       R  Debug (local stdout debugger).
+  -b, --breakpoints                 R  Breakpoint list as source::line comma-separated pairs, no spaces (use %%20 instead).
+  --ignore-error-breaks             R  If debugger is connected, prevents sending error breakpoints.
+  --profiling                       R  Enable profiling in the script debugger.
+  --gpu-profile                     R  Show a GPU profile of the tasks that took the most time during frame rendering.
+  --gpu-validation                  R  Enable graphics API validation layers for debugging.
+  --gpu-abort                       D  Abort on graphics API usage errors (usually validation layer errors). May help see the problem if your system freezes.
+  --generate-spirv-debug-info       R  Generate SPIR-V debug information (Vulkan only). This allows source-level shader debugging with RenderDoc.
+  --extra-gpu-memory-tracking       R  Enables additional memory tracking (see class reference for `RenderingDevice.get_driver_and_device_memory_report()` and linked methods). Currently only implemented for Vulkan. Enabling this feature may cause crashes on some systems due to buggy drivers or bugs in the Vulkan Loader. See https://github.com/godotengine/godot/issues/95967
+  --accurate-breadcrumbs            R  Force barriers between breadcrumbs. Useful for narrowing down a command causing GPU resets. Currently only implemented for Vulkan.
+  --remote-debug <uri>              R  Remote debug (<protocol>://<host/IP>[:<port>], e.g. tcp://127.0.0.1:6007).
+  --single-threaded-scene           R  Force scene tree to run in single-threaded mode. Sub-thread groups are disabled and run on the main thread.
+  --debug-collisions                D  Show collision shapes when running the scene.
+  --debug-paths                     D  Show path lines when running the scene.
+  --debug-navigation                D  Show navigation polygons when running the scene.
+  --debug-avoidance                 D  Show navigation avoidance debug visuals when running the scene.
+  --debug-stringnames               D  Print all StringName allocations to stdout when the engine quits.
+  --debug-canvas-item-redraw        D  Display a rectangle each time a canvas item requests a redraw (useful to troubleshoot low processor mode).
+  --max-fps <fps>                   R  Set a maximum number of frames per second rendered (can be used to limit power usage). A value of 0 results in unlimited framerate.
+  --frame-delay <ms>                R  Simulate high CPU load (delay each frame by <ms> milliseconds). Do not use as a FPS limiter; use --max-fps instead.
+  --time-scale <scale>              R  Force time scale (higher values are faster, 1.0 is normal speed).
+  --disable-vsync                   R  Forces disabling of vertical synchronization, even if enabled in the project settings. Does not override driver-level V-Sync enforcement.
+  --disable-render-loop             R  Disable render loop so rendering only occurs when called explicitly from script.
+  --disable-crash-handler           R  Disable crash handler when supported by the platform code.
+  --fixed-fps <fps>                 R  Force a fixed number of frames per second. This setting disables real-time synchronization.
+  --delta-smoothing <enable>        R  Enable or disable frame delta smoothing ["enable", "disable"].
+  --print-fps                       R  Print the frames per second to the stdout.
+  --editor-pseudolocalization       E  Enable pseudolocalization for the editor and the project manager.
+
+Standalone tools:
+  -s, --script <script>             X  Run a script.
+  --main-loop <main_loop_name>      X  Run a MainLoop specified by its global class name.
+  --check-only                      X  Only parse for errors and quit (use with --script).
+  --import                          E  Starts the editor, waits for any resources to be imported, and then quits.
+  --export-release <preset> <path>  E  Export the project in release mode using the given preset and output path. The preset name should match one defined in "export_presets.cfg".
+                                       <path> should be absolute or relative to the project directory, and include the filename for the binary (e.g. "builds/game.exe").
+                                       The target directory must exist.
+  --export-debug <preset> <path>    E  Export the project in debug mode using the given preset and output path. See --export-release description for other considerations.
+  --export-pack <preset> <path>     E  Export the project data only using the given preset and output path. The <path> extension determines whether it will be in PCK or ZIP format.
+  --export-patch <preset> <path>    E  Export pack with changed files only. See --export-pack description for other considerations.
+  --patches <paths>                 E  List of patches to use with --export-patch. The list is comma-separated.
+  --install-android-build-template  E  Install the Android build template. Used in conjunction with --export-release or --export-debug.
+  --convert-3to4                       
+    [max_file_kb] [max_line_size]   E  Converts project from Godot 3.x to Godot 4.x.
+  --validate-conversion-3to4           
+    [max_file_kb] [max_line_size]   E  Shows what elements will be renamed when converting project from Godot 3.x to Godot 4.x.
+  --doctool [path]                  E  Dump the engine API reference to the given <path> (defaults to current directory) in XML format, merging if existing files are found.
+  --no-docbase                      E  Disallow dumping the base types (used with --doctool).
+  --gdextension-docs                E  Rather than dumping the engine API, generate API reference from all the GDExtensions loaded in the current project (used with --doctool).
+  --gdscript-docs <path>            E  Rather than dumping the engine API, generate API reference from the inline documentation in the GDScript files found in <path> (used with --doctool).
+  --build-solutions                 E  Build the scripting solutions (e.g. for C# projects). Implies --editor and requires a valid project to edit.
+  --dump-gdextension-interface      E  Generate a GDExtension header file "gdextension_interface.h" in the current folder. This file is the base file required to implement a GDExtension.
+  --dump-gdextension-interface-json  E  Generate a JSON dump of the GDExtension interface named "gdextension_interface.json" in the current folder.
+  --dump-extension-api              E  Generate a JSON dump of the Godot API for GDExtension bindings named "extension_api.json" in the current folder.
+  --dump-extension-api-with-docs    E  Generate JSON dump of the Godot API like the previous option, but including documentation.
+  --validate-extension-api <path>   E  Validate an extension API file dumped (with one of the two previous options) from a previous version of the engine to ensure API compatibility.
+                                       If incompatibilities or errors are detected, the exit code will be non-zero.
+  --benchmark                       E  Benchmark the run time and print it to console.
+  --benchmark-file <path>           E  Benchmark the run time and save it to a given file in JSON format. The path should be absolute.
+
+
+C:\nitrologic\relay\gd>
