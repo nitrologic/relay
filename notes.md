@@ -132,6 +132,23 @@ uv run play Mjlab-Velocity-Flat-MicroDuck --wandb-run-path
 
 uv run scripts/infer_policy.py --walking output.onnx
 
+retired
+
+	"deepseek-v4-flash-vision-exp@deepseek":{
+			"active": true,
+			"pricing": [0.44, 0.014, 1.32],
+			"released": "2026-08-22"
+	},
+	"deepseek-v4-flash@deepseek":{
+		"active": true,
+		"pricing": [0.44, 0.014, 1.32],
+		"released": "2026-04-24",
+		"purpose":"284B total / 13B active params. Fast, efficient, and economical.",
+		"press": "Agent capabilities and top-tier reasoning."
+	},
+
+
+
 /*
 
 class Client {
