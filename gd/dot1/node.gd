@@ -1,5 +1,50 @@
 extends Node
 
+# dot1 relay node (c)2026 nitrologic 
+# named helpers not inline call chains
+
+# about
+# Godot Engine in use under MIT license
+# Copyright (c) 2014-present Godot Engine contributors.
+# Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.
+
+const FULLSCREEN_MODES := [
+	DisplayServer.WINDOW_MODE_FULLSCREEN,
+	DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN,
+]
+
+func _unhandled_input(event: InputEvent) -> void:
+	if is_fullscreen_toggle_event(event):
+		toggle_fullscreen()
+		mark_input_handled()
+
+func is_fullscreen_toggle_event(event: InputEvent) -> bool:
+	if not event is InputEventKey:
+		return false
+	if not event.pressed:
+		return false
+	if event.echo:
+		return false
+	return event.keycode == KEY_F12
+
+func mark_input_handled() -> void:
+	var viewport := get_viewport()
+	viewport.set_input_as_handled()
+
+func toggle_fullscreen() -> void:
+	var current_mode := DisplayServer.window_get_mode()
+	var next_mode := resolve_next_window_mode(current_mode)
+	DisplayServer.window_set_mode(next_mode)
+
+func resolve_next_window_mode(current_mode: int) -> int:
+	if is_fullscreen_mode(current_mode):
+		return DisplayServer.WINDOW_MODE_WINDOWED
+	return DisplayServer.WINDOW_MODE_FULLSCREEN
+
+func is_fullscreen_mode(mode: int) -> bool:
+	return mode in FULLSCREEN_MODES
+
+
 const FRAME_MAGIC := 0x4C52544E        # 'NTRL'
 const FRAME_VERSION := 1
 const CHUNK_JSON := 0x4E4F534A         # 'JSON'
@@ -132,6 +177,9 @@ func onPacket(client, packet):
 					glog("onPacket draw - missing node2D")
 			"tick":
 				glog("onPacket tick: " + message)
+			"quit":
+				glog("onPacket quit: " + message)
+				get_tree().quit()
 			_:
 				glog("onPacket: unknown method" + message)
 

@@ -1,3 +1,65 @@
+const FULLSCREEN_MODES := [
+	DisplayServer.WINDOW_MODE_FULLSCREEN,
+	DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN,
+]
+
+func _unhandled_input(event: InputEvent) -> void:
+	if is_fullscreen_toggle_event(event):
+		toggle_fullscreen()
+		mark_input_handled()
+
+func is_fullscreen_toggle_event(event: InputEvent) -> bool:
+	if not event is InputEventKey:
+		return false
+	if not event.pressed:
+		return false
+	if event.echo:
+		return false
+	return event.keycode == KEY_F12
+
+func mark_input_handled() -> void:
+	var viewport := get_viewport()
+	viewport.set_input_as_handled()
+
+func toggle_fullscreen() -> void:
+	var current_mode := DisplayServer.window_get_mode()
+	var next_mode := resolve_next_window_mode(current_mode)
+	DisplayServer.window_set_mode(next_mode)
+
+func resolve_next_window_mode(current_mode: int) -> int:
+	if is_fullscreen_mode(current_mode):
+		return DisplayServer.WINDOW_MODE_WINDOWED
+	return DisplayServer.WINDOW_MODE_FULLSCREEN
+
+func is_fullscreen_mode(mode: int) -> bool:
+	return mode in FULLSCREEN_MODES
+
+
+ctrl shift copy
+
+
+[skid@archlinux gd]$ cat run.bat 
+@echo off
+Godot_v4.7.2-stable_win64_console.exe --path "dot1" "res://control.tscn"
+
+
+about json
+
+nitrologic relay credits:
+
+Godot Engine in use under MIT license
+Copyright (c) 2014-present Godot Engine contributors.
+Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.
+
+
+\
+
+# named helpers not inline call chains
+
+terse, unhedged, no pleasantries.
+
+
+
 
 rem Godot_v4.7.2-stable_win64_console.exe --help --no-color
 rem Godot_v4.7.2-stable_win64_console.exe --scene control.tscn dot1/project.godot 
