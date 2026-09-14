@@ -1,3 +1,19 @@
+# status
+
+## spring clean report
+
+### slopprompt
+
+replaceShortCodes depends on shortcode.json with inline path
+
+const shortcode=JSON.parse(await Deno.readTextFile("./shortcode.json"));
+
+export function replaceShortCodes(text: string): string {
+	return text.replace(/:([a-z_]+):/g, (match, code) => {return shortcode[code] || match;});
+}
+
+
+
 /*
 
 class Client {

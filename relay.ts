@@ -4192,7 +4192,7 @@ async function relay(depth:number,from:string) {
 		// const system=completion.system_fingerprint;
 
 		const usage=completion.usage;
-		const spent=[usage.prompt_tokens | 0,usage.completion_tokens | 0];
+		const spent=usage?[usage.prompt_tokens | 0,usage.completion_tokens | 0]:[0,0];
 		grokUsage += spent[0]+spent[1];
 
 		// echo("[RELAY]","debugging spend 0",grokModel,usage);
