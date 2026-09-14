@@ -1,0 +1,1 @@
+/Applications/Godot.app/Contents/MacOS/Godot --path "dot1" --export-release "Windows Desktop" "build/dot1"

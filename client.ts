@@ -33,6 +33,10 @@ class startgClient {
 		}
 	}
 
+	quit(){
+		this.send("quit",{});
+	}
+
 	onOpen() {
 		console.log("connected to startg");
 		this.send("init",{cols: 80, rows: 24 });
@@ -59,6 +63,8 @@ export const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
 
 const client = new startgClient();
 
+const MaxFrames=20;
+
 let running=true;
 let count=0;
 
@@ -66,6 +72,9 @@ while(running){
 	client.send("tick",{count});
 	count++;
 	await sleep(100);
-	if (count>100) running=false;
+	if (count>MaxFrames) running=false;
 }
+
+client.quit();
+
 

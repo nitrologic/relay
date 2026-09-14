@@ -12,6 +12,159 @@ export function replaceShortCodes(text: string): string {
 	return text.replace(/:([a-z_]+):/g, (match, code) => {return shortcode[code] || match;});
 }
 
+## godot db digging
+
+Class:   ClassDB
+
+Inherits:   Object
+
+### Description
+A class information repository.
+Provides access to metadata stored for every available engine class.
+Note: Script-defined classes with class_name are not part of ClassDB, so they will not return reflection data such as a method or property list. However, GDExtension-defined classes are part of ClassDB, so they will return reflection data.
+
+### Methods
+boolcan_instantiate(class: StringName) constVariantclass_call_static(class: StringName, method: StringName, ...args: Array) varargboolclass_exists(class: StringName) constAPITypeclass_get_api_type(class: StringName) constPackedStringArrayclass_get_enum_constants(class: StringName, enum: StringName, no_inheritance: bool = false) constPackedStringArrayclass_get_enum_list(class: StringName, no_inheritance: bool = false) constintclass_get_integer_constant(class: StringName, name: StringName) constStringNameclass_get_integer_constant_enum(class: StringName, name: StringName, no_inheritance: bool = false) constPackedStringArrayclass_get_integer_constant_list(class: StringName, no_inheritance: bool = false) constintclass_get_method_argument_count(class: StringName, method: StringName, no_inheritance: bool = false) constArray[Dictionary]class_get_method_list(class: StringName, no_inheritance: bool = false) constVariantclass_get_property(object: Object, property: StringName) constVariantclass_get_property_default_value(class: StringName, property: StringName) constStringNameclass_get_property_getter(class: StringName, property: StringName)Array[Dictionary]class_get_property_list(class: StringName, no_inheritance: bool = false) constStringNameclass_get_property_setter(class: StringName, property: StringName)Dictionaryclass_get_signal(class: StringName, signal: StringName) constArray[Dictionary]class_get_signal_list(class: StringName, no_inheritance: bool = false) constboolclass_has_enum(class: StringName, name: StringName, no_inheritance: bool = false) constboolclass_has_integer_constant(class: StringName, name: StringName) constboolclass_has_method(class: StringName, method: StringName, no_inheritance: bool = false) constboolclass_has_signal(class: StringName, signal: StringName) constErrorclass_set_property(object: Object, property: StringName, value: Variant) constPackedStringArrayget_class_list() constPackedStringArrayget_inheriters_from_class(class: StringName) constStringNameget_parent_class(class: StringName) constVariantinstantiate(class: StringName) constboolis_class_enabled(class: StringName) constboolis_class_enum_bitfield(class: StringName, enum: StringName, no_inheritance: bool = false) constboolis_parent_class(class: StringName, inherits: StringName) const
+ 
+### Enumerations
+enum APIType:
+● API_CORE = 0
+Native Core class type.
+● API_EDITOR = 1
+Native Editor class type.
+● API_EXTENSION = 2
+GDExtension class type.
+● API_EDITOR_EXTENSION = 3
+GDExtension Editor class type.
+● API_NONE = 4
+Unknown class type.
+ 
+### Method Descriptions
+● bool can_instantiate(class: StringName) const
+Returns true if objects can be instantiated from the specified class, otherwise returns false.
+ 
+● Variant class_call_static(class: StringName, method: StringName, ...args: Array) vararg
+Calls a static method on a class.
+ 
+● bool class_exists(class: StringName) const
+Returns whether the specified class is available or not.
+ 
+● APIType class_get_api_type(class: StringName) const
+Returns the API type of the specified class.
+ 
+● PackedStringArray class_get_enum_constants(class: StringName, enum: StringName, no_inheritance: bool = false) const
+Returns an array with all the keys in enum of class or its ancestry.
+ 
+● PackedStringArray class_get_enum_list(class: StringName, no_inheritance: bool = false) const
+Returns an array with all the enums of class or its ancestry.
+ 
+● int class_get_integer_constant(class: StringName, name: StringName) const
+Returns the value of the integer constant name of class or its ancestry. Always returns 0 when the constant could not be found.
+ 
+● StringName class_get_integer_constant_enum(class: StringName, name: StringName, no_inheritance: bool = false) const
+Returns which enum the integer constant name of class or its ancestry belongs to.
+ 
+● PackedStringArray class_get_integer_constant_list(class: StringName, no_inheritance: bool = false) const
+Returns an array with the names all the integer constants of class or its ancestry.
+ 
+● int class_get_method_argument_count(class: StringName, method: StringName, no_inheritance: bool = false) const
+Returns the number of arguments of the method method of class or its ancestry if no_inheritance is false.
+ 
+● Array[Dictionary] class_get_method_list(class: StringName, no_inheritance: bool = false) const
+Returns an array with all the methods of class or its ancestry if no_inheritance is false. Every element of the array is a Dictionary with the following keys: args, default_args, flags, id, name, return: (class_name, hint, hint_string, name, type, usage).
+Note: In exported release builds the debug info is not available, so the returned dictionaries will contain only method names.
+ 
+● Variant class_get_property(object: Object, property: StringName) const
+Returns the value of property of object or its ancestry.
+ 
+● Variant class_get_property_default_value(class: StringName, property: StringName) const
+Returns the default value of property of class or its ancestor classes.
+ 
+● StringName class_get_property_getter(class: StringName, property: StringName)
+Returns the getter method name of property of class.
+ 
+● Array[Dictionary] class_get_property_list(class: StringName, no_inheritance: bool = false) const
+Returns an array with all the properties of class or its ancestry if no_inheritance is false.
+ 
+● StringName class_get_property_setter(class: StringName, property: StringName)
+Returns the setter method name of property of class.
+ 
+● Dictionary class_get_signal(class: StringName, signal: StringName) const
+Returns the signal data of class or its ancestry. The returned value is a Dictionary with the following keys: args, default_args, flags, id, name, return: (class_name, hint, hint_string, name, type, usage).
+ 
+● Array[Dictionary] class_get_signal_list(class: StringName, no_inheritance: bool = false) const
+Returns an array with all the signals of class or its ancestry if no_inheritance is false. Every element of the array is a Dictionary as described in class_get_signal().
+ 
+● bool class_has_enum(class: StringName, name: StringName, no_inheritance: bool = false) const
+Returns whether class or its ancestry has an enum called name or not.
+ 
+● bool class_has_integer_constant(class: StringName, name: StringName) const
+Returns whether class or its ancestry has an integer constant called name or not.
+ 
+● bool class_has_method(class: StringName, method: StringName, no_inheritance: bool = false) const
+Returns whether class (or its ancestry if no_inheritance is false) has a method called method or not.
+ 
+● bool class_has_signal(class: StringName, signal: StringName) const
+Returns whether class or its ancestry has a signal called signal or not.
+ 
+● Error class_set_property(object: Object, property: StringName, value: Variant) const
+Sets property value of object to value.
+ 
+● PackedStringArray get_class_list() const
+Returns the names of all engine classes available.
+Note: Script-defined classes with class_name are not included in this list. Use ProjectSettings.get_global_class_list() to get a list of script-defined classes instead.
+ 
+● PackedStringArray get_inheriters_from_class(class: StringName) const
+Returns the names of all engine classes that directly or indirectly inherit from class.
+ 
+● StringName get_parent_class(class: StringName) const
+Returns the parent class of class.
+ 
+● Variant instantiate(class: StringName) const
+Creates an instance of class.
+ 
+● bool is_class_enabled(class: StringName) const
+Returns whether this class is enabled or not.
+ 
+● bool is_class_enum_bitfield(class: StringName, enum: StringName, no_inheritance: bool = false) const
+Returns whether class (or its ancestor classes if no_inheritance is false) has an enum called enum that is a bitfield.
+ 
+● bool is_parent_class(class: StringName, inherits: StringName) const
+Returns whether inherits is an ancestor of class or not.
+
+
+## training notes
+
+
+resume training:
+
+uv run train.sh --resume logs/velocity/model_last.pt
+
+export
+uv run scripts/export.py Mjlab-Velocity-Flat-MicroDuck --checkpoint logs/velocity/model_last.pt
+interact
+uv run scripts/infer_policy.py --walking output.onnx
+
+
+uv run play Mjlab-Velocity-Flat-MicroDuck --wandb-run-path
+
+uv run scripts/infer_policy.py --walking output.onnx
+
+retired
+
+	"deepseek-v4-flash-vision-exp@deepseek":{
+			"active": true,
+			"pricing": [0.44, 0.014, 1.32],
+			"released": "2026-08-22"
+	},
+	"deepseek-v4-flash@deepseek":{
+		"active": true,
+		"pricing": [0.44, 0.014, 1.32],
+		"released": "2026-04-24",
+		"purpose":"284B total / 13B active params. Fast, efficient, and economical.",
+		"press": "Agent capabilities and top-tier reasoning."
+	},
+
 
 
 /*
