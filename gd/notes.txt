@@ -1,3 +1,28 @@
+2. Multi-Monitor Game DevelopmentIf you are building a game intended to span across multiple operating system windows or multiple hardware screens simultaneously, you must utilize Godot's Window node or DisplayServer API. [1] (https://www.youtube.com/watch?v=6151k2dcFh4), [2] (https://docs.godotengine.org/en/4.4/classes/class_displayserver.html)Step 1: Disable Sub-window EmbeddingBy default, Godot embeds new sub-windows inside the primary game window. To make windows independent so they can be moved onto separate physical monitors: [1] (https://www.youtube.com/watch?v=6151k2dcFh4)Navigate to Project > Project Settings.Enable Advanced Settings at the top right.Go to Display > Window.Scroll down and uncheck Embed Sub Windows. [1] (https://www.youtube.com/watch?v=pGoOYupU4qc), [2] (https://www.youtube.com/watch?v=6151k2dcFh4)Step 2: Spawn Windows ProgrammaticallyYou can instantiate independent Window nodes and use the DisplayServer API to query monitor count and screen dimensions: [1] (https://docs.godotengine.org/en/4.4/classes/class_displayserver.html), [2] (https://www.youtube.com/watch?v=6151k2dcFh4)gdscriptextends Node
+
+func _ready():
+    # 1. Check how many monitors are connected to the OS
+    var screen_count = DisplayServer.get_screen_count()
+    
+    if screen_count > 1:
+        # 2. Spawn a new Window node
+        var second_window = Window.new()
+        second_window.title = "Screen 2 View"
+        add_child(second_window)
+        
+        # 3. Fetch coordinates for the second monitor
+        # Screen indices start at 0 (Primary is usually 0, Secondary is 1)
+        var monitor_position = DisplayServer.screen_get_position(1)
+        var monitor_size = DisplayServer.screen_get_size(1)
+        
+        # 4. Position and size the window onto the second screen
+        second_window.position = monitor_position
+        second_window.size = monitor_size
+        second_window.mode = Window.MODE_FULLSCREEN # Force full screen on monitor 2
+Use code with caution.
+
+
+
 from gd dot1 export_presets
 
 [preset.3]
