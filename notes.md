@@ -1,5 +1,38 @@
 # status
 
+# arch setup
+
+sudo tar -C /srv/http/grid -cf - . | sudo tar -C /mnt/grid26 -xf -
+sync
+
+sudo mv /srv/http/grid /srv/http/grid.bak
+sudo mkdir -p /srv/http/grid
+
+sudo mount --bind /mnt/grid26 /srv/http/grid
+
+
+Make it permanent in `/etc/fstab` (append to the end of the file):
+
+/mnt/grid26    /srv/http/grid    none    bind    0    0
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Option B: Symlink (Soft Link)
+If you prefer a traditional symbolic link:
+
+1. Move or remove the original folder:
+
+   sudo mv /srv/http/grid /srv/http/grid.bak
+
+
+2. Create the link:
+
+   sudo ln -s /mnt/grid26 /srv/http/grid
+
+
+
+
 ## spring clean report
 
 ### slopprompt
