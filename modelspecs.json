@@ -11,6 +11,11 @@
 		"purpose":"1.6T total / 49B active params. Performance rivaling the world's top closed-source models.",
 		"press": "Agent capabilities and top-tier reasoning."
 	},
+	"glm-5.3-flashx@zai":{
+		"active": true,
+		"pricing": [0.15, 0.03, 0.50],
+		"released": "2026-09-21"
+	},
 	"glm-5.3-flash@zai":{
 		"active": true,
 		"pricing": [0.075, 0.015, 0.25],
