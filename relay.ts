@@ -7,7 +7,7 @@
 // Testing with Deno 2.9.3 V8  14.9.207.2-rusty, TypeScript 6.0.3
 
 const brandFountain="nitrologic Relay";
-const relayVersion="2.0.3";
+const relayVersion="2.0.4";
 const fountainName=brandFountain+" "+relayVersion;
 
 // system prompt
@@ -2824,7 +2824,7 @@ async function commitShares(tag) {
 	for (const share of roha.sharedFiles) {
 		const stars=share.stars||"";
 		if(starMode && (stars.length==0)) continue;
-		if(roha.config.verbose) echo("[SHARE] commitShares",share,stars);
+//		if(roha.config.verbose) echo("[SHARE] commitShares",share,stars);
 		if (tag && share.tag !== tag) {
 			validShares.push(share);
 			continue;
@@ -4374,7 +4374,7 @@ async function relay(depth:number,from:string) {
 		// error:{"type":"error","error":{"type":"rate_limit_error",
 		const err=(error.error&&error.error.error)?error.error.error:{};
 		if(err.type=="rate_limit_error"||err.type=="invalid_request_error"){
-			echoFail("Oops.",err.type,err.message);
+			echoFail("Oops. Reply says error type:",err.type,"message:",err.message);
 			return spend;
 		}
 

@@ -1,3 +1,54 @@
+🟠nitrologic Relay 2.0.3 claude-sonnet-5 A\ 🪠 🧊 $0.576 679.0KB 48.70s
+Looking at `dspwiki.js` (and its Redis-backed storage via `headless.h`'s `redis.run` RPC), here's a
+summary in the same style as the existing DSP Components list in `dsptool.md`, ready to
+slot in as item 16 (and added to the Table of Contents):
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+16. wiki
+
+• Summary:* A Redis-backed markdown wiki editor and viewer. Pages are addressed by key,
+fetched/saved via `GET wiki.<key>` / `SET wiki.<key>` through the generic `redis.run` RPC method,
+and rendered client-side into HTML. Supports tables, indented code blocks, fenced code blocks
+(plain, `html` passthrough, `csv`, and `latex` via KaTeX), inline live preview, and a basic
+in-browser editor with an emoji picker panel.
+
+• Globals:* `wiki`, `wikiDiv`, `wikiTools`, `wikiHome`, `wikiRefresh`, `wikiAddress`,
+`wikiEdit`, `wikiDebug`, `wikiPreview`, `wikiSave`, `wikiEmoji`, `WikiAnchors`, `homeWiki`,
+`goWiki`, `onWikiGet`, `onWikiWrite`, `onWikiAddress`, `onWikiEdit`, `onWikiDebug`,
+`onWikiPreview`, `onWikiSave`, `onWikiRun`, `onWikiEmoji`.
+
+• Sturdiness:* Core read/save/preview loop is solid and simple — plain string keys in Redis
+make it easy to inspect and back up externally. However, several rough edges remain: the emoji
+picker's data fetch (`nitrojs/json/emoji.json`) is commented out, so the panel currently renders
+empty; `back()` navigation is non-functional (`this.history` is never populated, and the method
+reads the global browser `history` object rather than the instance field); `run()` is a placeholder
+stub that scans lines for a leading digit but performs no execution; and `WikiAnchors` (hash-based
+navigation) is hardcoded `false`, so deep-linking via `#wiki.<key>` in `onHash()` (`dsptool.js`) is
+currently the only working navigation path — the toolbar's `Home` button does not update the URL
+hash. Currently only mounted on the Lab page (`dsplab.html`); other shells (Desktop, Studio,
+Device, Map, Sandbox) omit the `#wiki` div entirely, so this instrument is Lab-only for now.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+A few things worth confirming/fixing before finalizing the doc, since they affect what "sturdy"
+claims you can honestly make:
+
+1. Emoji fetch is dead code — either re-enable `getJSON("nitrojs/json/emoji.json",
+this.refresh.bind(this))` in the `Wiki` constructor, or remove the emoji panel/button until it's
+wired up.
+2. `back()` is broken — it references the free variable `history` (window.history) instead
+of `this.history`, and nothing ever pushes onto `this.history`.
+3. No caller for `requestPage()` — this alternate direct-fetch path exists but `go()`
+always uses the Redis RPC route instead; worth noting as dead/alternate code or removing.
+4. KaTeX dependency isn't declared in any of the `dsp*.html` script lists you shared, so
+the `latex` fenced block feature would currently throw a `ReferenceError` at runtime if exercised.
+
+Want me to also draft the Table of Contents line and index number update for `dsptool.md`,
+or go ahead and flag/fix the `back()` bug and the dead emoji fetch in `dspwiki.js`?
+
+
+
 # status
 
 # arch setup
