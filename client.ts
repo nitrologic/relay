@@ -1,4 +1,4 @@
-// talk to godot display terminal 
+// coms with godot display terminal 
 // startg json rpc protocol
 
 class startgClient {
