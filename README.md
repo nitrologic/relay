@@ -9,7 +9,6 @@ A research tool for advanced model manipulation.
 ## documentation
 
 * Relay Forge Reference Manual - forge user documentation [forge.md](forge.md)
-* Summary Notes - machine generated summary blocks [notes.md](notes.md)
 
 ## logging
 
