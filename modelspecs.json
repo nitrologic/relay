@@ -96,6 +96,11 @@
 		"pricing":[0.32,1.28],
 		"purpose":"vision heavy-hitter, ocr + chart + meme understanding"
 	},
+	"claude-sonnet-5-5@anthropic":{
+		"pricing":[2.0,0.30,10.0],
+		"cold":true,
+		"purpose":"frontier model for coding, agentic search, and creative writing"
+	},
 	"claude-opus-5-5@anthropic":{
 		"active": true,
 		"pricing":[4.0,0.20,20.0],
@@ -103,56 +108,10 @@
 		"purpose":"frontier model for coding, agentic search, and creative writing",
 		"released":"2026-09-23"
 	},
-	"claude-opus-5@anthropic":{
-		"deprecated":true,
-		"pricing":[5.0,0.50,25.0],
-		"cold":true,
-		"purpose":"frontier model for coding, agentic search, and creative writing",
-		"released":"2026-07-25"
-	},
-	"claude-sonnet-5-5@anthropic":{
-		"pricing":[2.50,0.20,20.0],
-		"cold":true,
-		"purpose":"frontier model for coding, agentic search, and creative writing"
-	},
-	"claude-sonnet-5@anthropic":{
-		"deprecated":true,
-		"pricing":[2.0,0.30,10.0],
-		"cold":true,
-		"purpose":"frontier model for coding, agentic search, and creative writing"
-	},
 	"claude-fable-5-1@anthropic":{
 		"pricing":[10.0,50.0],
 		"cold":true,
 		"purpose":"next generation of intelligence for agents, coding, and the hardest knowledge work"
-	},
-	"claude-fable-5@anthropic":{
-		"deprecated":true,
-		"pricing":[10.0,50.0],
-		"cold":true,
-		"purpose":"next generation of intelligence for agents, coding, and the hardest knowledge work"
-	},
-	"claude-opus-4-8@anthropic":{
-		"deprecated":true,
-		"pricing":[5.0,25.0],
-		"cold":true,
-		"limit":[20000],
-		"purpose":"frontier model for coding, agentic search, and creative writing",
-		"reality":"rate limited 20,000 input tokens per minute"
-	},
-	"claude-opus-4-7@anthropic":{
-		"deprecated":true,
-		"pricing":[5.0,25.0],
-		"cold":true,
-		"limit":[20000],
-		"purpose":"frontier model for coding, agentic search, and creative writing",
-		"reality":"rate limited 20,000 input tokens per minute"
-	},
-	"claude-sonnet-4-6@anthropic":{
-		"deprecated":true,
-		"pricing":[3.0,0.30,15.0],
-		"cold":true,
-		"purpose":"frontier model for coding, agentic search, and creative writing"
 	},
 	"claude-haiku-4-5-20251001@anthropic":{
 		"active": true,
@@ -161,13 +120,6 @@
 		"pricing":[0.80,4.0],
 		"purpose":"no thinking no temperature evaluation paused",
 		"reality":"I am nute."
-	},
-	"claude-opus-4-1-20250805@anthropic":{
-		"deprecated":true,
-		"pricing":[15.0,75.0],
-		"limit":[20000],
-		"purpose":"frontier model for coding, agentic search, and creative writing",
-		"reality":"rate limited 20,000 input tokens per minute"
 	},
 	"gpt-6-luna@openai":{
 		"active": true,
