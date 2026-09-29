@@ -110,7 +110,13 @@
 		"purpose":"frontier model for coding, agentic search, and creative writing",
 		"released":"2026-07-25"
 	},
+	"claude-sonnet-5-5@anthropic":{
+		"pricing":[2.50,0.20,20.0],
+		"cold":true,
+		"purpose":"frontier model for coding, agentic search, and creative writing"
+	},
 	"claude-sonnet-5@anthropic":{
+		"deprecated":true,
 		"pricing":[2.0,0.30,10.0],
 		"cold":true,
 		"purpose":"frontier model for coding, agentic search, and creative writing"
@@ -312,8 +318,12 @@
 		"pricing":[0.12,0.35],
 		"released":"2026-04-02"
 	},	
-	"grok-4.6@xai":{
+	"grok-4.7@xai":{
 		"active": true,
+		"pricing": [2.0, 6.0],
+		"released":"2026-09-21"
+	},
+	"grok-4.6@xai":{
 		"pricing": [2.0, 6.0],
 		"released":"2026-08-13"
 	},
