@@ -2810,7 +2810,7 @@ async function commitShares(tag) {
 		starCount+=share.stars?.length||0;
 	}
 	const starMode=roha.config.starshare&&(starCount>0);
-	if(roha.config.verbose) echo("[RELAY] commitShares starCount",starCount);
+	if(roha.config.debugging) echo("[RELAY] commitShares starCount",starCount);
 
 	//filter previously shared starless from history, considering sharedFiles
 	if(starMode&&starCount){
