@@ -28,6 +28,7 @@
 		"purpose": "frontier Chinese model"
 	},
 	"glm-5.2@zai":{
+		"deprecated":true,
 		"pricing": [1.40, 0.26, 4.40],
 		"released": "2026-06-17",
 		"purpose": "frontier Chinese model"
@@ -96,6 +97,14 @@
 		"pricing":[0.32,1.28],
 		"purpose":"vision heavy-hitter, ocr + chart + meme understanding"
 	},
+	"claude-haiku-5-5@anthropic":{
+		"active": true,
+		"cold":true,
+		"lizard":true,
+		"pricing":[0.50,0.05,2.50],
+		"purpose":"no thinking no temperature evaluation paused",
+		"reality":"I am nute."
+	},
 	"claude-sonnet-5-5@anthropic":{
 		"pricing":[2.0,0.30,10.0],
 		"cold":true,
@@ -114,7 +123,7 @@
 		"purpose":"next generation of intelligence for agents, coding, and the hardest knowledge work"
 	},
 	"claude-haiku-4-5-20251001@anthropic":{
-		"active": true,
+		"deprecated":true,
 		"cold":true,
 		"lizard":true,
 		"pricing":[0.80,4.0],
