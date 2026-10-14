@@ -224,6 +224,11 @@
 		"purpose":"speech-to-speech voice agents",
 		"endpoints":["wss://api.openai.com/v1/realtime"]
 	},
+	"models/gemini-4-argon@gemini":{
+		"active": true,
+		"pricing":[2,0.20,10],
+		"released":"2026-10-14"
+	},
 	"models/gemini-3.8-flash@gemini":{
 		"active": true,
 		"pricing":[0.75,0.075,3.75],
