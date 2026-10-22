@@ -2,7 +2,7 @@
 [![Deno](https://img.shields.io/badge/deno-2.4.2-black?logo=deno)](https://deno.land/)
 [![Discord](https://img.shields.io/discord/1235838347717378118)](https://discord.gg/KVmR6DjpPB)
 
-# nitrologic Relay 2.0.1
+# nitrologic Relay 2.0.5
 
 A research tool for advanced model manipulation.
 

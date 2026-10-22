@@ -7,7 +7,7 @@
 // Testing with Deno 2.9.3 V8  14.9.207.2-rusty, TypeScript 6.0.3
 
 const brandFountain="nitrologic Relay";
-const relayVersion="2.0.4";
+const relayVersion="2.0.5";
 const fountainName=brandFountain+" "+relayVersion;
 
 // system prompt
@@ -36,8 +36,6 @@ import { decodeBase64, encodeBase64 } from "https://deno.land/std/encoding/base6
 import { expandGlob } from "https://deno.land/std/fs/mod.ts";
 import { resolve,basename } from "https://deno.land/std/path/mod.ts";
 import { dirname } from "node:path";
-import { exists } from "https://deno.land/std@0.224.0/fs/exists.ts";
-import { describe } from "node:test";
 
 function shareName(path:string):string {
 //	console.log("shareName:",path);
@@ -1215,11 +1213,12 @@ function prepareGeminiPrompt(payload){
 	//system_instruction
 
 	const temperature=grokTemperature;
+	const thinkingConfig={includeThoughts:false}; // crypto sig only needs interactions API required for plain text?
 
 	const request={
 		model:payload.model,
 		system_instruction:{parts:sysparts},
-		generationConfig:{temperature},
+		generationConfig:{temperature,thinkingConfig},
 		contents,
 		tools
 	};
@@ -1521,7 +1520,8 @@ async function connectAnthropic(account,config){
 			"x-api-key":apiKey,
 			"Content-Type": "application/json",
 			"anthropic-version": "2023-06-01",
-			"anthropic-beta": "files-api-2025-04-14"
+//			"anthropic-beta": "files-api-2025-04-14",
+//			"anthropic-beta": "thinking-display-updates-2026-08-18"
 		};
 		const response = await fetch(baseURL+"/models",{ method: "GET", headers });
 		if (!response.ok) {
@@ -1567,7 +1567,6 @@ async function connectAnthropic(account,config){
 						const name=model+"@anthropic";
 						const info=name in modelSpecs?modelSpecs[name]:{};
 						const cold=info?.cold;
-						const lizard=info?.lizard;
 						if(!cold){
 							request.temperature=grokTemperature;
 						}
@@ -1576,8 +1575,8 @@ async function connectAnthropic(account,config){
 							request.tools = anthropicTools(payload); // Ensure this maps tools to Anthropic format
 						}
 
-						if(roha.config.thinking&&!lizard) {
-							request.thinking={type:"adaptive"};
+						if(roha.config.thinking) {
+							request.thinking={type:"adaptive",display: "summarized"};
 							request.output_config={effort:"high"};
 						}
 						const options = { headers: { "anthropic-beta": "files-api-2025-04-14" } };
@@ -1605,31 +1604,38 @@ async function connectAnthropic(account,config){
 									arguments: JSON.stringify(content.input || {})
 								}
 							}));
-							if (toolCalls.length > 0) {
-								choices.push({
-									index: choiceIndex++,
-									message: {
-										role: 'assistant',
-										content: null, // OpenAI sets content to null when tool_calls are present
-										tool_calls: toolCalls
-									},
-									finish_reason: 'tool_calls'
-								});
-							}
-							const textContent = reply.content
-								.filter(content => content.type === 'text')
-								.map(content => content.text)
-								.join('\n'); // Combine multiple text blocks if any
-							if (textContent) {
-								choices.push({
-									index: choiceIndex++,
-									message: {
-										role: 'assistant',
-										content: textContent
-									},
-									finish_reason: finish_reason
-								});
-							}
+						if (toolCalls.length > 0) {
+							choices.push({
+								index: choiceIndex++,
+								message: {
+									role: 'assistant',
+									content: null, // OpenAI sets content to null when tool_calls are present
+									tool_calls: toolCalls
+								},
+								finish_reason: 'tool_calls'
+							});
+						}
+						const textContent = reply.content
+							.filter(content => content.type === 'text')
+							.map(content => content.text)
+							.join('\n'); // Combine multiple text blocks if any
+
+						const reasoning = reply.content
+							.filter(content => content.type === 'thinking')
+							.map(content => content.thinking)
+							.join('\n'); // Combine multiple thinking blocks if any
+
+						if (textContent) {
+							choices.push({
+								index: choiceIndex++,
+								message: {
+									role: 'assistant',
+									content: textContent,
+									reasoning_content: reasoning
+								},
+								finish_reason: finish_reason
+							});
+						}
 
 						// Construct usage object
 						// echo("reply.usage",reply.usage);
@@ -4044,6 +4050,10 @@ async function relay(depth:number,from:string) {
 			payload.config={thinkingConfig:{thinkingBudget:grokThink}};
 		}
 
+		if (roha.config.thinking) {
+			console.warn("[RELAY]","thinking enabled");
+			payload.reasoning_effort="high"; // chatgpt responses api needed
+		}
 
 		if(debugging){
 			const dump=JSON.stringify(payload,null,"\t");

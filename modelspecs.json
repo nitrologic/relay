@@ -100,7 +100,6 @@
 	"claude-haiku-5-5@anthropic":{
 		"active": true,
 		"cold":true,
-		"lizard":true,
 		"pricing":[0.50,0.05,2.50],
 		"purpose":"no thinking no temperature evaluation paused",
 		"reality":"I am nute."
