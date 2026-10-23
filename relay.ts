@@ -7,7 +7,7 @@
 // Testing with Deno 2.9.3 V8  14.9.207.2-rusty, TypeScript 6.0.3
 
 const brandFountain="nitrologic Relay";
-const relayVersion="2.0.5";
+const relayVersion="2.0.6";
 const fountainName=brandFountain+" "+relayVersion;
 
 // system prompt
@@ -18,7 +18,7 @@ const rohaStatus="🟢";
 const rohaMihi="Welcome to the nitrologic model research institute.";
 
 const rohaGuide=[
-	"As a guest assistant language model please be mindful of others, courteous and professional.",
+	"As one of many models under test please be mindful of others, courteous and professional.",
 	"Only post code on request and do not patronise.",
 	"Use tabs when indenting source files.",
 	"Prefer named reusable functions over inlining code with arrow and map style suggestions."
@@ -4015,7 +4015,6 @@ async function relay(depth:number,from:string) {
 
 	const size=measure(rohaHistory);
 
-
 //	if(verbose)echo("[RELAY]","",depth,mut);
 	try {
 	// prepare payload
@@ -4051,7 +4050,6 @@ async function relay(depth:number,from:string) {
 		}
 
 		if (roha.config.thinking) {
-			console.warn("[RELAY]","thinking enabled");
 			payload.reasoning_effort="high"; // chatgpt responses api needed
 		}
 
