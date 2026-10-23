@@ -1,7 +1,7 @@
 {
 	"deepseek-flash@deepseek":{
 		"active": true,
-		"pricing": [0.03, 0.006, 1.2],
+		"pricing": [0.3, 0.006, 1.2],
 		"released": "2026-09-10",
 		"purpose":"1M context V4.1 Flash "
 	},
