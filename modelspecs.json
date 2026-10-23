@@ -45,6 +45,16 @@
 		"released": "2026-02-11",
 		"purpose": "frontier Chinese model"
 	},
+	"kimi-k3.1-pro-highspeed@moonshot":{
+		"cold":true,
+		"pricing": [3.00,0.30,15.0],
+		"released": "2026-07-17"
+	},
+	"kimi-k3.1-pro@moonshot":{
+		"cold":true,
+		"pricing": [3.00,0.30,15.0],
+		"released": "2026-07-17"
+	},
 	"kimi-k3@moonshot":{
 		"cold":true,
 		"pricing": [3.00,0.30,15.0],
