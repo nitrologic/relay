@@ -535,7 +535,7 @@ function listHistory(){
 		cost+=item.price||0;
 	}
 	const size=unitString(total,4,"B");
-	echo("History size",size," cost ",cost.toFixed(4));
+	echo("Session size",size," cost ",cost.toFixed(4));
 }
 function logHistory(){
 	const wide=terminalColumns;

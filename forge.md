@@ -4,13 +4,6 @@ The forge text interfaces is designed for research tools such as Slop Relay⛲ t
 
 It is designed to be human usable adopting traditional platforms where appropriate. Commands with no arguments may often prompt for a # index from the items displayed.
 
-### /files
-
-Certain files when shared 
-
-* relay.md - active workspace for project storage
-* history.log - per project relay logging 
-
 ### /config
 
 Toggle configuration flags.
@@ -49,10 +42,6 @@ Starts the TCP listener on port 8081 for remote bots.
 
 Config option available.
 
-### /project [drop] [key]
-
-List keyed projects or load active project by key or drop project by key.
-
 ### /think
 
 Set or show the persona settings thinking budget.
@@ -75,7 +64,7 @@ A 🔗 signifies file share is included in current context.
 
 Valid extensions for image files are .jpg and .png.
 
-> See forge files section for treatment of "agents.md", "history.log" and "relay.md" files when shared.
+> See forge files section for treatment of "agents.md", "relay.log" and "relay.md" files when shared.
 
 ### /drop
 
@@ -111,11 +100,13 @@ Defaults current project to empty "roha".
 
 If config resetcounters true then clear all counters too.
 
-### /history /list
+### /history 
 
-List a summary of recent conversation entries. 
+Output summary of recent conversations.
 
-Provides a quick overview of chat history.
+### /list
+
+Provides a quick overview of chat history with size and cost
 
 ### /log
 

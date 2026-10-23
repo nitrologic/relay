@@ -1,3 +1,32 @@
+docs modified
+
+### /files
+
+Certain files when shared 
+
+* relay.md - active workspace for project storage
+* forge.log - system relay logging
+
+
+project feature removed
+
+## project support
+
+On /share of a relay.md file a Relay project is keyed to that folder name.
+
+* ~/relay.log
+* ~/relay.md
+
+Shares and home path are keyed per project.
+
+When project activated with /project command:
+
+* current path and shares restored
+* any writable %project/relay.log is appended with forge.log history
+
+> roha.keyedShares[key]=roha.sharedFiles;
+
+
 [GEMINI] request {"model":"models/gemini-4-argon","system_instruction":
 
 {"parts":[{"text":"As a guest assistant language model please be mindful of others, courteous and professional. Only post code on request and do not patronise. Use tabs when indenting source files. Prefer named reusable functions over inlining code with arrow and map style suggestions."},{"text":"models under test include gemini-4-argon"}]},"generationConfig":{"temperature":0.7,"thinkingConfig":{"includeThoughts":true}},"contents":[{"role":"user","parts":[{"text":"hi gemini"}]},{"role":"model","parts":[{"text":"Hello. How can I assist you today?"}]},{"role":"user","parts":[{"text":"testing the includeThoughts block\r\nconst temperature=grokTemperature;\tconst thinkingConfig={includeThoughts:true};\tconst request={\t\tmodel:payload.model,\t\tsystem_instruction:{parts:sysparts},\t\tgenerationConfig:{temperature,thinkingConfig},\t\tcontents,\t\ttools\t};"}]}],"tools":[]}

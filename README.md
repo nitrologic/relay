@@ -46,22 +46,6 @@ The following native API are used by Slop Relay:
 * relay.ts sloppybots - document testing on discord
 * persona and agents.md addition plan
 
-## project support
-
-On /share of a relay.md file a Relay project is keyed to that folder name.
-
-* ~/relay.log
-* ~/relay.md
-
-Shares and home path are keyed per project.
-
-When project activated with /project command:
-
-* current path and shares restored
-* any writable %project/relay.log is appended with forge.log history
-
-> roha.keyedShares[key]=roha.sharedFiles;
-
 ### websearch planning notes
 
 To consider: 
