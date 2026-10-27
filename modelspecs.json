@@ -141,6 +141,11 @@
 		"purpose":"no thinking no temperature evaluation paused",
 		"reality":"I am nute."
 	},
+	"gpt-6.1-terra@openai":{
+		"pricing":[1.00,0.05,5.0],
+		"cold":true,
+		"released": "2026-10-10"
+	},
 	"gpt-6.1-sol@openai":{
 		"pricing":[4.00,0.40,15.0],
 		"cold":true,
@@ -148,7 +153,7 @@
 	},
 	"gpt-6-luna@openai":{
 		"active": true,
-		"pricing":[0.20,0.02,0.75],
+		"pricing":[0.10,0.01,0.50],
 		"cold":true,
 		"released": "2026-09-23"
 	},
