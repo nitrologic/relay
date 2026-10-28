@@ -2736,10 +2736,11 @@ const imageExtensions=[
 
 const textExtensions=[
 	"js", "ts", "txt", "json", "md",
-	"css","html", "svg",
+	"css", "html", "svg",
 	"cpp", "c", "h", "cs", "s", "java",
 	"sh", "bat",
-	"log","py","csv","xml","ini"
+	"log", "py", "csv", "xml", "ini",
+	"lean"
 ];
 
 const fileTypes={
