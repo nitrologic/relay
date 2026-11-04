@@ -386,5 +386,13 @@
 	"glm4:9b-chat-q4_0@ollama":{
 		"pricing": [0,0],
 		"purpose": "locally hosted ollama model"
+	},
+	"muse-spark-1.3@meta":{
+		"pricing": [1.25,0.15,4.25],
+		"released": "2026-11-4"
+	},
+	"muse-wonder-1.0@meta":{
+		"pricing": [4.00,0.20,20.00],
+		"released": "2026-11-4"
 	}
 }

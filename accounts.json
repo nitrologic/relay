@@ -63,6 +63,14 @@
 		"api": "Google",
 		"locale": "en-US"
 	},
+	"meta":{
+		"emoji":"∞",
+		"env": "META_API_KEY",
+		"url": "https://api.meta.ai/v1",
+		"platform":"https://dev.meta.ai",
+		"api": "OpenAI",
+		"locale": "en-US"
+	},
 	"ollama":{
 		"emoji": "🔗",
 		"url":"http://192.168.1.10:11434/v1",
