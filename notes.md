@@ -1,3 +1,7 @@
+Error: 429 "Your team Moonshot has either used all available credits or reached its monthly spending limit.
+To continue making API requests, please purchase more credits or raise your spending limit."
+
+
 docs modified
 
 ### /files

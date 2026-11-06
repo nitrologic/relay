@@ -4043,6 +4043,8 @@ async function relay(depth:number,from:string) {
 			payload.top_p=grokGrounded;
 		}
 
+		payload.prompt_cache_key="cache-key-1";
+
 		if(info && info.max_tokens){
 			payload.max_tokens=info.max_tokens;
 		}
