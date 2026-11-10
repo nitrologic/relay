@@ -246,70 +246,70 @@
 		"purpose":"speech-to-speech voice agents",
 		"endpoints":["wss://api.openai.com/v1/realtime"]
 	},
-	"models/gemini-4-argon@gemini":{
+	"models/gemini-4-argon@google":{
 		"active": true,
 		"pricing":[2,0.20,10],
 		"released":"2026-10-14"
 	},
-	"models/gemini-3.8-flash@gemini":{
+	"models/gemini-3.8-flash@google":{
 		"active": true,
 		"pricing":[0.75,0.075,3.75],
 		"released":"2026-08-14"
 	},
-	"models/gemini-3.7-flash@gemini":{
+	"models/gemini-3.7-flash@google":{
 		"deprecated":true,
 		"pricing":[0.75,0.075,3.75],
 		"released":"2026-09-3"
 	},
-	"models/gemini-omni-1.1-flash@gemini":{
+	"models/gemini-omni-1.1-flash@google":{
 		"comment":"This model only supports Interactions API.",
 		"released":"2026-09-1"
 	},
-	"models/gemini-3.1-flash-live-preview@gemini":{
+	"models/gemini-3.1-flash-live-preview@google":{
 		"pricing":[0.75,4.5],
 		"comment":"Gemini Live API required",
 		"released":"2026-09-1"
 	},
-	"models/gemini-robotics-er-2@gemini":{
+	"models/gemini-robotics-er-2@google":{
 		"active": true,
 		"pricing":[2.0,10.0],
 		"released":"2026-07-31"
 	},
-	"models/gemini-3.5-flash-lite@gemini":{
+	"models/gemini-3.5-flash-lite@google":{
 		"pricing":[0.30,0.03,2.50],
 		"released":"2026-07-22"
 	},
-	"models/gemini-3.6-flash@gemini":{
+	"models/gemini-3.6-flash@google":{
 		"deprecated":true,
 		"pricing":[0.75,0.075,3.75],
 		"released":"2026-07-22"
 	},
-	"models/gemini-3-pro-image@gemini":{},
-	"models/gemini-3.1-flash-image@gemini":{},
-	"models/gemini-robotics-er-1.6-preview@gemini":{
+	"models/gemini-3-pro-image@google":{},
+	"models/gemini-3.1-flash-image@google":{},
+	"models/gemini-robotics-er-1.6-preview@google":{
 		"deprecated":true,
 		"pricing":[1.00,5.00],
 		"released":"2026-04-15"
 	},
-	"models/gemini-3.1-pro-preview@gemini":{
+	"models/gemini-3.1-pro-preview@google":{
 		"pricing":[2.00,0.20,12.0],
 		"released":"2026-03-19"
 	},
-	"models/gemini-3.1-flash-lite-preview@gemini":{
+	"models/gemini-3.1-flash-lite-preview@google":{
 		"deprecated":true,
 		"pricing":[0.25,0.05,1.50],
 		"released":"2026-03-3"
 	},
-	"models/gemini-3.5-flash@gemini":{
+	"models/gemini-3.5-flash@google":{
 		"deprecated":true,
 		"pricing":[1.50,0.15,9.00],
 		"released":"2026-05-19"
 	},
-	"models/gemma-4-26b-a4b-it@gemini":{
+	"models/gemma-4-26b-a4b-it@google":{
 		"pricing":[0.15,0.60],
 		"released":"2026-04-02"
 	},
-	"models/gemma-4-31b-it@gemini":{
+	"models/gemma-4-31b-it@google":{
 		"pricing":[0.12,0.35],
 		"released":"2026-04-02"
 	},	

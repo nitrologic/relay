@@ -53,8 +53,8 @@
 		"search": "XAI",
 		"locale": "en-US"
 	},
-	"gemini": {
-		"emoji": "🌟",
+	"google": {
+		"emoji": "𝔾",
 		"env": "GEMINI_API_KEY",
 		"url2": "https://generativelanguage.googleapis.com/v1alpha",
 		"url": "https://generativelanguage.googleapis.com/v1beta",
