@@ -14,6 +14,6 @@
 		"discord":{"dependencies":["relay","foggy🤖","sloppy🤖","riff🤖"]}
 	},
 	"imports": {
-		"@openai/openai": "jsr:@openai/openai@^5.23.2"
+		"@openai/openai": "jsr:@openai/openai@^7.2.0"
 	}
 }

@@ -26,7 +26,7 @@ const rohaGuide=[
 
 import { replaceShortCodes, safeString, discordStringWidth, stringWidth, announceCommand, listenService, dropConnections, slopPrompt, slopBroadcast } from "./slopprompt.ts";
 
-import { OpenAI, ChatCompletionRequest, ChatCompletionResponse } from "jsr:@openai/openai@5.23.0";
+import { OpenAI, ChatCompletionRequest, ChatCompletionResponse } from "jsr:@openai/openai@7.2.0";
 
 import { GoogleGenerativeAI, GenerativeModel } from "npm:@google/generative-ai";
 import { Anthropic, toFile } from "npm:@anthropic-ai/sdk";
