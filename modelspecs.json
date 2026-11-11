@@ -246,6 +246,11 @@
 		"purpose":"speech-to-speech voice agents",
 		"endpoints":["wss://api.openai.com/v1/realtime"]
 	},
+	"models/gemini-4-carbon@google":{
+		"pricing":[2,0.20,10],
+		"purpose":"long-horizon agentic work: complex coding and debugging, cybersecurity, scientific research",
+		"released":"2026-10-14"
+	},
 	"models/gemini-4-argon@google":{
 		"active": true,
 		"pricing":[2,0.20,10],
