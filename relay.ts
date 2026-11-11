@@ -110,7 +110,6 @@ type ConfigFlags = {
 	thinking: boolean;
 	underline: boolean;
 	persona: string;
-	starshare: boolean;
 };
 
 // a shared context state
@@ -347,8 +346,7 @@ const flagNames={
 	listen : "listen for remote connections on port 8081",
 	thinking : "enable thinking mode with dual purpose models",
 	underline : "enable underline markdown support",
-	persona : "extend system prompt",
-	starshare : "conserve file share by star"
+	persona : "extend system prompt"
 };
 
 const emptyConfig:ConfigFlags={
@@ -373,15 +371,13 @@ const emptyConfig:ConfigFlags={
 	syncRelay:true,
 	listen:false,
 	thinking:true,
-	underline:false,
-	starshare:false
+	underline:false
 };
 
 interface Share{
 	id:string,
 	path:string,
 	name:string,
-	stars:string
 };
 
 const emptyRoha={
@@ -2183,7 +2179,7 @@ async function shareCommand(words:string[]){
 	await writeForge();
 }
 
-// updates global shareList array
+// updates global sortedShares array
 
 async function listShare(sortSize:boolean){
 //	const project=roha.project;
@@ -2207,50 +2203,12 @@ async function listShare(sortSize:boolean){
 //		echo((count++),share.path,share.size,shared,tags,detail);
 		if(size){
 			const hash="";//share.hash;
-			const stars=share.stars||"-";
-			echo((count++),share.path,unitString(size),shared,stars,tags,detail,hash);
+			echo((count++),share.path,unitString(size),shared,tags,detail,hash);
 //			list.push(share.id);
 		}
 	}
 	sortedShares=sorted;
 }
-
-async function starCommand(words:string[]){
-	if (words.length==1){
-		await listShare(true);
-		listCommand="star";
-	}else{
-		let name=words[1];//.slice(1).join(" ");
-		if(name=="clear"){
-			for(const share of roha.sharedFiles){
-//				echo("[FORGE] clearing stars from keyedShares",share.id);
-				if(share.stars?.length){
-					share.stars="";
-					echo("[FORGE] cleared stars from share",share.id);
-				}
-			}
-
-		}
-		let share=null;
-		if(isFinite(name) && shareList?.length){
-			const index=name|0;
-			share=shareList[index];
-		}
-		if(share){
-			let addStars=words[2];
-			let stars=(share.stars||"")+(addStars||"");
-			if(addStars && stars.length){
-				share.stars=stars;
-				await writeForge();
-				echo("[FORGE] added stars to share",share.id,stars);
-			}else{
-				share.stars="";
-				echo("[FORGE] removed stars from share",share.id);
-			}
-		}
-	}
-}
-
 
 async function listSaves(){
 	const saves=roha.saves||[];
@@ -2812,26 +2770,8 @@ async function commitShares(tag) {
 	let validShares=[];
 	const removedPaths=[];
 
-	let starCount=0;
 	for (const share of roha.sharedFiles) {
-		starCount+=share.stars?.length||0;
-	}
-	const starMode=roha.config.starshare&&(starCount>0);
-	if(roha.config.debugging) echo("[RELAY] commitShares starCount",starCount);
-
-	//filter previously shared starless from history, considering sharedFiles
-	if(starMode&&starCount){
-		for (const share of roha.sharedFiles) {
-			if(!(share.stars?.length)){
-				let durty=stripShare(share);
-				if(durty) echo("[RELAY] commitShares strip share:",share.id);
-			}
-		}
-	}
-	for (const share of roha.sharedFiles) {
-		const stars=share.stars||"";
-		if(starMode && (stars.length==0)) continue;
-//		if(roha.config.verbose) echo("[SHARE] commitShares",share,stars);
+//		if(roha.config.verbose) echo("[SHARE] commitShares",share);
 		if (tag && share.tag !== tag) {
 			validShares.push(share);
 			continue;
@@ -3553,9 +3493,6 @@ async function callCommand(command:string) {
 				break;
 			case "drop":
 				await dropCommand(words);
-				break;
-			case "star":
-				await starCommand(words);
 				break;
 			case "attach":
 			case "share":

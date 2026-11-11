@@ -1,3 +1,157 @@
+todo; sortedShares contains ids for drop command and items for listShare command
+
+removed:
+
+type configFiles 
+	starshare: boolean;
+
+const flagNames={
+	starshare : "conserve file share by star"
+
+const emptyConfig:ConfigFlags={
+	starShare: false
+
+interface Share{
+	stars:string
+};
+
+async function starCommand(words:string[]){
+	if (words.length==1){
+		await listShare(true);
+		listCommand="star";
+	}else{
+		let name=words[1];//.slice(1).join(" ");
+		if(name=="clear"){
+			for(const share of roha.sharedFiles){
+//				echo("[FORGE] clearing stars from keyedShares",share.id);
+				if(share.stars?.length){
+					share.stars="";
+					echo("[FORGE] cleared stars from share",share.id);
+				}
+			}
+
+		}
+		let share=null;
+		if(isFinite(name) && sortedShares?.length){
+			const index=name|0;
+			share=sortedShares[index];
+		}
+		if(share){
+			let addStars=words[2];
+			let stars=(share.stars||"")+(addStars||"");
+			if(addStars && stars.length){
+				share.stars=stars;
+				await writeForge();
+				echo("[FORGE] added stars to share",share.id,stars);
+			}else{
+				share.stars="";
+				echo("[FORGE] removed stars from share",share.id);
+			}
+		}
+	}
+}
+
+from listShare:
+			case "star":
+				await starCommand(words);
+				break;
+
+		if(size){
+			const hash="";//share.hash;
+			const stars=share.stars||"-";
+			echo((count++),share.path,unitString(size),shared,stars,tags,detail,hash);
+//			list.push(share.id);
+		}
+
+
+async function commitShares(tag) {
+	let count=0;
+	let dirty=false;
+	let validShares=[];
+	const removedPaths=[];
+
+	let starCount=0;
+	for (const share of roha.sharedFiles) {
+		starCount+=share.stars?.length||0;
+	}
+	const starMode=roha.config.starshare&&(starCount>0);
+	if(roha.config.debugging) echo("[RELAY] commitShares starCount",starCount);
+
+	//filter previously shared starless from history, considering sharedFiles
+	if(starMode&&starCount){
+		for (const share of roha.sharedFiles) {
+			if(!(share.stars?.length)){
+				let durty=stripShare(share);
+				if(durty) echo("[RELAY] commitShares strip share:",share.id);
+			}
+		}
+	}
+	for (const share of roha.sharedFiles) {
+		const stars=share.stars||"";
+		if(starMode && (stars.length==0)) continue;
+//		if(roha.config.verbose) echo("[SHARE] commitShares",share,stars);
+		if (tag && share.tag !== tag) {
+			validShares.push(share);
+			continue;
+		}
+		try {
+			const path=share.path;
+			const stat=await Deno.stat(path);
+			const size=stat.size;
+			if (!stat.isFile) {
+				removedPaths.push(path);
+				echo("[KOHA]","Removed invalid path",path);
+				dirty=true;
+				continue;
+			}
+			if (size > MaxFileSize) {
+				echo("[KOHA]","MaxFileSize breached",path);
+				dirty=true;
+				continue;
+			}
+			const modified=share.modified !== stat.mtime.getTime();
+			let isShared=rohaSharePaths.has(path);
+			if (modified || !isShared) {
+				let ok=await shareBlob(path,size,tag);
+				if(ok){
+					count++;
+					share.modified=stat.mtime.getTime();
+					dirty=true;
+					if (!rohaSharePaths.has(path)) {
+						rohaSharePaths.add(path);
+						echoInfo("[KOHA]","Shared path",path);
+					}else{
+						echoInfo("[KOHA]","Updated share path",path);
+					}
+				}
+			}
+			validShares.push(share);
+		} catch (error) {
+			if (error instanceof Deno.errors.NotFound || error instanceof Deno.errors.PermissionDenied) {
+				removedPaths.push(share.path);
+				dirty=true;
+			}
+			echo("[KOHA]","commitShares error path",share.path);
+			echo("[KOHA]","commitShares error",error.message);
+		}
+	}
+	if (removedPaths.length) {
+		roha.sharedFiles=validShares;
+//		const key=roha.project||"roha";
+//		roha.keyedShares[key]=roha.sharedFiles;
+		await writeForge();
+		echoInfo("[KOHA]","commitShares removed", removedPaths.join(" "));
+	}
+	if (dirty && tag) {
+		rohaHistory.push({ role: "system", title:"Fountain Tool Hint", content: "Feel free to call tag_slop to tag " + tag });
+	}
+	if (count) {
+		echoInfo("[KOHA]","Updated files",count,"of",validShares.length);
+	}
+	return dirty;
+}
+
+
 Error: 429 "Your team Moonshot has either used all available credits or reached its monthly spending limit.
 To continue making API requests, please purchase more credits or raise your spending limit."
 
