@@ -414,8 +414,6 @@ const unicodeSpec=JSON.parse(await Deno.readTextFile(unicodePath));
 		"purpose":"Efficient, enterprise-focused frontier model."
 	},
 
-
-
 	"claude-opus-4-8@anthropic":{
 		"deprecated":true,
 		"pricing":[5.0,25.0],

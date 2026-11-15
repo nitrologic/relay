@@ -26,6 +26,14 @@
 		"api": "OpenAI",
 		"locale": "zh-CN"
 	},
+	"xiaomi":{
+		"emoji":"▢",
+		"env": "MIMO_API_KEY",
+		"url": "https://api.xiaomimimo.com/v1",
+		"platform":"https://mimo.mi.com/",
+		"api": "OpenAI",
+		"locale": "en-US"
+	},
 	"anthropic": {
 		"emoji": "A\\",
 		"env": "ANTHROPIC_API_KEY",

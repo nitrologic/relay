@@ -148,5 +148,11 @@
 	"muse-wonder-1.0@meta":{
 		"pricing": [4.00,0.20,20.00],
 		"released": "2026-11-4"
+	},
+	"mimo-v2.6-flash@xiaomi":{
+		"pricing":[0.14,0.0028,0.28]
+	},
+	"mimo-v2.6-pro@xiaomi":{
+		"pricing":[0.435,0.0036,0.87]
 	}
 }
