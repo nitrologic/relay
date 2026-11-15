@@ -1,3 +1,421 @@
+// deprecated 2026.5.14
+// never read - work in progress
+// let tagList=[];
+// let shareList=[]; // sorted version for listshares sort command index
+// let memberList=[];
+// const emptyModel={name:"empty",account:"",hidden:false,prompts:0,completion:0}
+// const emptyTag={}
+// const emptyShare={path,size,modified,hash,tag,id}
+
+
+function oldGeminiToolCalls(geminiCalls){
+	return geminiCalls.map((call) => ({
+		id: "call_" + (geminiCallCount++),
+		type: "function",
+		function: {
+			name: call.name,
+			arguments: JSON.stringify(call.args)
+		}
+	}));
+}
+
+
+
+const modelKeys="👀🤖👄"+Pail+"🧊❃";
+
+
+const glyphs=" ⛲🪣🐸🪠🐋🐉🌟💫🌏📆💰👀🤖🫦💻👄🔧🧊🔉📷📡🧮📠⛅🧰🌕🌙🏛️🎙️🖼️🗣️🗜️👁𝕏⣯🜁❁❃⚙️✿";
+function testUnicode(){
+	echo("```")
+	echo("|1234|");
+	for(const code of glyphs){
+		if(code==ZeroWidthJoiner) continue;
+		const w=discordStringWidth(code);
+		let padding=(w==1)?"---":(ZeroWidthJoiner+"--");
+/*
+		let padding=" --"+ThinSpace;
+		if(w==2.5) padding="++";	//🪣 Wide
+		if(w==2) padding="**"+ThinSpace;		//🏛️ thick = normal???
+		if(w==1.5) padding="~~~";	//🜁 thin
+*/
+		echo("|"+code+padding+"|");
+	}
+	echo("```")
+}
+
+
+async function clipText(text: string): Promise<void> {
+	if (typeof text !== "string") {
+		throw new Error("Input must be a string");
+	}
+	let clipCmd: string;
+	let args: string[] = [];
+	let encodedText: Uint8Array;
+	// Determine the clipboard command and encoding based on the operating system
+	switch (Deno.build.os) {
+		case "darwin":
+			clipCmd = "pbcopy";
+			args = [];
+			encodedText = new TextEncoder().encode(text); // UTF-8 for macOS
+			break;
+		case "windows":
+			clipCmd = "clip";
+			args = [];
+			// Convert to UTF-16LE with BOM for Windows
+			const encoder = new TextEncoder();
+			const textBuffer = encoder.encode(text); // Encode to UTF-8 first
+			const utf16le = new Uint8Array(text.length * 2 + 2); // Allocate for UTF-16LE (2 bytes per char) + BOM
+			utf16le[0] = 0xFF; // BOM: FF FE for UTF-16LE
+			utf16le[1] = 0xFE;
+			// Convert UTF-8 to UTF-16LE
+			let offset = 2;
+			for (let i = 0; i < text.length; i++) {
+				const charCode = text.charCodeAt(i);
+				utf16le[offset++] = charCode & 0xFF;
+				utf16le[offset++] = (charCode >> 8) & 0xFF;
+			}
+			encodedText = utf16le;
+			break;
+//			const utf16le = new Uint8Array(encoder.encode(text).buffer,0,text.length * 2);
+//			encodedText = new Uint8Array([0xFF, 0xFE, ...utf16le]);
+		case "linux":
+			clipCmd = "xclip";
+			args = ["-selection", "clipboard"];
+			encodedText = new TextEncoder().encode(text); // UTF-8 for Linux
+			break;
+		default:
+			throw new Error(`Unsupported platform: ${Deno.build.os}`);
+	}
+	try {
+		const process = Deno.run({cmd: [clipCmd, ...args],stdin: "piped",stdout: "piped",stderr: "piped",});
+		await process.stdin.write(encodedText);
+		process.stdin.close();
+		const status = await process.status();
+		if (!status.success) {
+			const stderr = await process.stderrOutput();
+			const errorText = new TextDecoder().decode(stderr);
+			throw new Error(`Failed to copy to clipboard: ${errorText}`);
+		}
+		process.close();
+	} catch (err) {
+		if (err instanceof Deno.errors.NotFound) {
+			throw new Error(`Clipboard command '${clipCmd}' not found. Ensure it is installed.`);
+		}
+		throw err;
+	}
+}
+
+
+function echo_row2(...cells:any):void{
+	const row = cells.map(String).join('|');
+	markdownBuffer.push("|"+row);
+}
+
+
+function stringFit(text:string,width:number):string{
+	return text.substring(0,width);
+}
+
+function objectify(obj:unknown){
+	if (typeof(obj)=="string") return obj;
+	return obj;
+}
+function formatValues(o): string {
+	return Object.values(o).join(" ");
+}
+
+function formatObject(obj: Record<string, unknown>): string {
+	return Object.entries(obj)
+		.map(([key, value]) => `${key}:${value}`)
+		.join(', ');
+}
+
+
+function parseUnicode(){
+	for(const group in unicodeSpec){
+		const keys = Object.keys(unicodeSpec[group].emoji);
+		echo("[UNICODE]",group,keys.join(" "));
+	}
+}
+			case "spec":
+				parseUnicode();
+				break;
+if(roha.config.debugging){
+	parseUnicode();
+}
+
+const unicodePath=resolve(appDir,"slopspec.json");
+const unicodeSpec=JSON.parse(await Deno.readTextFile(unicodePath));
+
+
+	"glm-5.2@zai":{
+		"deprecated":true,
+		"pricing": [1.40, 0.26, 4.40],
+		"released": "2026-06-17",
+		"purpose": "frontier Chinese model"
+	},
+	"glm-5.1@zai":{
+		"deprecated":true,
+		"pricing": [1.40, 0.26, 4.40],
+		"released": "2026-04-08",
+		"purpose": "frontier Chinese model"
+	},
+	"glm-5@zai":{
+		"deprecated":true,
+		"pricing": [1.00, 0.20, 3.20],
+		"released": "2026-02-11",
+		"purpose": "frontier Chinese model"
+	},
+	"kimi-k2.7-code-highspeed@moonshot":{
+		"cold":true,
+		"released": "2026-06-14",
+		"pricing": [1.90,0.38,8.0],
+		"purpose": "fast intelligent Coding model"
+	},
+	"kimi-k2.7-code@moonshot":{
+		"cold":true,
+		"released": "2026-06-13",
+		"pricing": [0.95,0.19,4.0],
+		"purpose": "intelligent Coding model"
+	},
+	"kimi-k2.6@moonshot": {
+		"active": true,
+		"cold":true,
+		"released": "2026-04-21",
+		"pricing": [0.95,0.16,4.0],
+		"purpose": "Large scale mixture of Experts model, 256K context window"
+	},
+	"kimi-k2.5@moonshot": {
+		"deprecated":true,
+		"cold":true,
+		"released": "2026-01-26",
+		"pricing": [0.60,0.10,3.0],
+		"purpose": "Large scale mixture of Experts model, 256K context window"
+	},
+	"qwen-turbo-latest@alibaba":{
+		"pricing":[0.05,0.20],
+		"purpose":"fastest cheap general llm, perfect for burner scripts & chat"
+	},
+	"qwen-plus-latest@alibaba":{
+		"pricing":[0.15,0.60],
+		"purpose":"step-up when you need deeper reasoning or long docs"
+	},
+	"qwq-plus@alibaba":{
+		"pricing":[0.30,1.20],
+		"purpose":"math/code reasoning beast, local deepseek-r1 vibe"
+	},
+	"qwen3-coder-30b-a3b-instruct@alibaba":{
+		"pricing":[0.18,0.72],
+		"purpose":"agentic coding with tool calls, good for auto-repo hacks"
+	},
+	"qwen-vl-max-latest@alibaba":{
+		"pricing":[0.32,1.28],
+		"purpose":"vision heavy-hitter, ocr + chart + meme understanding"
+	},
+	"claude-fable-5-1@anthropic":{
+		"pricing":[10.0,50.0],
+		"cold":true,
+		"purpose":"next generation of intelligence for agents, coding, and the hardest knowledge work"
+	},
+	"claude-haiku-4-5-20251001@anthropic":{
+		"deprecated":true,
+		"cold":true,
+		"lizard":true,
+		"pricing":[0.80,4.0],
+		"purpose":"no thinking no temperature evaluation paused",
+		"reality":"I am nute."
+	},
+	"gpt-5.6-luna@openai":{
+		"deprecated":true,
+		"pricing":[1.00,0.10,6.0],
+		"cold":true,
+		"released": "2026-07-11"
+	},
+	"gpt-5.6-terra@openai":{
+		"deprecated":true,
+		"pricing":[2.50,0.25,15.0],
+		"cold":true,
+		"released": "2026-07-11"
+	},
+	"gpt-5.6-sol@openai":{
+		"deprecated":true,
+		"pricing":[5.00,0.50,30.0],
+		"cold":true,
+		"released": "2026-07-11"
+	},
+	"gpt-5.5-2026-04-23@openai":{
+		"deprecated":true,
+		"pricing":[5.00,0.50,30.0],
+		"cold":true,
+		"released": "2026-04-23",
+		"purpose":"gpt-5.5"
+	},
+	"gpt-5.5-pro-2026-04-23@openai":{
+		"deprecated":true,
+		"pricing":[30.00,180.0],
+		"cold":true,
+		"released": "2026-04-23",
+		"endpoints":["v1/responses"],
+		"purpose":"gpt-5.5 pro"
+	},
+	"gpt-5.4-mini-2026-03-17@openai":{
+		"deprecated":true,
+		"pricing":[0.75,0.075,4.50],
+		"purpose":"gpt-5 mini"
+	},
+	"gpt-5.4-nano-2026-03-17@openai":{
+		"deprecated":true,
+		"pricing":[0.20,0.02,1.25],
+		"purpose":"nano nano 5 - faster than a fast thing",
+		"press":"supporting up to ? million tokens of context"
+	},
+	"gpt-5.4-2026-03-05@openai":{
+		"deprecated":true,
+		"released": "2026-03-6",
+		"pricing":[2.50,0.50,15.00],
+		"purpose":"frontier model for complex professional work"
+	},
+	"gpt-5.4-pro-2026-03-05@openai":{
+		"deprecated":true,
+		"released": "2026-03-6",
+		"pricing":[30.0,180.00],
+		"purpose":"frontier model designed to tackle tough problems"
+	},
+	"gpt-5.3-codex@openai":{
+		"deprecated":true,
+		"released": "2026-03-6",
+		"pricing":[1.75,14.00],
+		"endpoints":["v1/responses"],
+		"purpose":"High Cybersecurity Capability"
+	},
+	"gpt-realtime-2025-08-28@openai": {
+		"deprecated":true,
+		"robot":true,
+		"multi":true,
+		"released": "2025-08-28",
+		"pricing":[32,64],
+		"purpose":"speech-to-speech voice agents",
+		"endpoints":["wss://api.openai.com/v1/realtime"]
+	},
+	"models/gemini-3.8-flash@google":{
+		"deprecated":true,
+		"pricing":[0.75,0.075,3.75],
+		"released":"2026-08-14"
+	},
+	"models/gemini-3.7-flash@google":{
+		"deprecated":true,
+		"pricing":[0.75,0.075,3.75],
+		"released":"2026-09-3"
+	},
+	"models/gemini-omni-1.1-flash@google":{
+		"comment":"This model only supports Interactions API.",
+		"released":"2026-09-1"
+	},
+	"models/gemini-3.1-flash-live-preview@google":{
+		"pricing":[0.75,4.5],
+		"comment":"Gemini Live API required",
+		"released":"2026-09-1"
+	},
+	"models/gemini-robotics-er-2@google":{
+		"active": true,
+		"pricing":[2.0,10.0],
+		"released":"2026-07-31"
+	},
+	"models/gemini-3.5-flash-lite@google":{
+		"pricing":[0.30,0.03,2.50],
+		"released":"2026-07-22"
+	},
+	"models/gemini-3.6-flash@google":{
+		"deprecated":true,
+		"pricing":[0.75,0.075,3.75],
+		"released":"2026-07-22"
+	},
+	"models/gemini-3-pro-image@google":{},
+	"models/gemini-3.1-flash-image@google":{},
+	"models/gemini-robotics-er-1.6-preview@google":{
+		"deprecated":true,
+		"pricing":[1.00,5.00],
+		"released":"2026-04-15"
+	},
+	"models/gemini-3.1-pro-preview@google":{
+		"deprecated":true,
+		"pricing":[2.00,0.20,12.0],
+		"released":"2026-03-19"
+	},
+	"models/gemini-3.1-flash-lite-preview@google":{
+		"deprecated":true,
+		"pricing":[0.25,0.05,1.50],
+		"released":"2026-03-3"
+	},
+	"models/gemini-3.5-flash@google":{
+		"deprecated":true,
+		"pricing":[1.50,0.15,9.00],
+		"released":"2026-05-19"
+	},
+	"models/gemma-4-26b-a4b-it@google":{
+		"pricing":[0.15,0.60],
+		"released":"2026-04-02"
+	},
+	"models/gemma-4-31b-it@google":{
+		"pricing":[0.12,0.35],
+		"released":"2026-04-02"
+	},	
+	"grok-4.6@xai":{
+		"deprecated":true,
+		"pricing": [2.0, 6.0],
+		"released":"2026-08-13"
+	},
+	"grok-4.5@xai":{
+		"deprecated":true,
+		"pricing": [2.0, 6.0],
+		"released":"2026-07-08"
+	},
+	"grok-imagine-image-quality@xai":{
+		"pricing": [2.0, 6.0]
+	},
+	"grok-4.3@xai":{
+		"deprecated":true,
+		"pricing": [1.25, 0.20, 2.5],
+		"released": "2026-05-1",
+		"purpose":"Reasoning model with 1M context window."
+	},
+	"grok-4.20-0309-reasoning@xai":{
+		"deprecated":true,
+		"pricing": [2.0, 0.20, 6.0],
+		"released": "2026-03-12",
+		"purpose":"Reasoning model with 2M context window."
+	},
+	"grok-4.20-0309-non-reasoning@xai":{
+		"deprecated":true,
+		"pricing": [2.0, 0.20, 6.0],
+		"released": "2026-03-12",
+		"purpose":"2M context window."
+	},
+	"grok-4-1-fast-non-reasoning@xai":{
+		"deprecated":true,
+		"pricing": [0.20, 0.05, 0.50],
+		"released": "2025-11-17",
+		"purpose":"2M context window."
+	},
+	"grok-4-1-fast-reasoning@xai":{
+		"deprecated":true,
+		"pricing": [0.20, 0.05, 0.50],
+		"released": "2025-11-17",
+		"purpose":"2M context window."
+	},
+	"command-r-08-2024@cohere":{
+		"pricing": [0.15,0.60],
+		"released": "2024-08-30",
+		"purpose":"High-efficiency, enterprise-ready model."
+	},
+	"mistral-medium@mistral":{
+		"pricing": [2.75,8.10],
+		"released": "2025-05-7",
+		"purpose":"Efficient, enterprise-focused frontier model."
+	},
+
+
+
 	"claude-opus-4-8@anthropic":{
 		"deprecated":true,
 		"pricing":[5.0,25.0],

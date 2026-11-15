@@ -7,7 +7,7 @@
 // Testing with Deno 2.9.3 V8  14.9.207.2-rusty, TypeScript 6.0.3
 
 const brandFountain="nitrologic Relay";
-const relayVersion="2.0.6";
+const relayVersion="2.0.7";
 const fountainName=brandFountain+" "+relayVersion;
 
 // system prompt
@@ -211,7 +211,6 @@ const MaxFileSize=512*1024*16*2;
 const accountsPath=resolve(appDir,"accounts.json");
 const specsPath=resolve(appDir,"modelspecs.json");
 const personaPath=resolve(appDir,"persona.json");
-const unicodePath=resolve(appDir,"slopspec.json");
 const docsPath=resolve(appDir,"forge.md");
 
 const slopPath=resolve(appDir,"../slop");
@@ -222,7 +221,6 @@ const rohaPath=resolve(forgePath,"forge.json");
 const modelAccounts=JSON.parse(await Deno.readTextFile(accountsPath));
 const modelSpecs=JSON.parse(await Deno.readTextFile(specsPath));
 const relayPersona=JSON.parse(await Deno.readTextFile(personaPath));
-const unicodeSpec=JSON.parse(await Deno.readTextFile(unicodePath));
 
 const emojiIndex = {};
 
@@ -272,10 +270,6 @@ function stringifyArray(array:[]):string{
 	return array.join(",");
 }
 
-function stringFit(text:string,width:number):string{
-	return text.substring(0,width);
-}
-
 function stringRight(text:string,width:number):string{
 	const n=stringWidth(text);
 	const pad=(width>n)?" ".repeat(width-n):"";
@@ -288,33 +282,10 @@ function textify(obj:unknown){
 	return String(obj);
 }
 
-function objectify(obj:unknown){
-	if (typeof(obj)=="string") return obj;
-	return obj;
-}
-
-
 function echoKey(key:object,wide:number){
 	const text=JSON.stringify(key);
 	const rtext=stringRight(text,wide);
 	echo(rtext);
-}
-
-function parseUnicode(){
-	for(const group in unicodeSpec){
-		const keys = Object.keys(unicodeSpec[group].emoji);
-		echo("[UNICODE]",group,keys.join(" "));
-	}
-}
-
-function formatValues(o): string {
-	return Object.values(o).join(" ");
-}
-
-function formatObject(obj: Record<string, unknown>): string {
-	return Object.entries(obj)
-		.map(([key, value]) => `${key}:${value}`)
-		.join(', ');
 }
 
 const decoder=new TextDecoder("utf-8");
@@ -461,18 +432,7 @@ let accountList=[];
 
 const emptyMUT={notes:[],errors:[],relays:0,cost:0,elapsed:0,created:0}
 
-// deprecated 2026.5.14
-// never read - work in progress
-// let tagList=[];
-// let shareList=[]; // sorted version for listshares sort command index
-// let memberList=[];
-// const emptyModel={name:"empty",account:"",hidden:false,prompts:0,completion:0}
-// const emptyTag={}
-// const emptyShare={path,size,modified,hash,tag,id}
-
 let sortedShares=[]; // sorted version for listshares sort command index
-
-
 let roha=emptyRoha;
 let activePersona=null;
 let rohaSharePaths=new Set<string>();
@@ -821,11 +781,6 @@ function echo_bold(...cells:any):void{
 function echo_row(...cells:any):void{
 	const row = cells.map(String).join('|');
 	markdownBuffer.push("|"+row+"|");
-}
-
-function echo_row2(...cells:any):void{
-	const row = cells.map(String).join('|');
-	markdownBuffer.push("|"+row);
 }
 
 function debugValue(title:string,value:unknown){
@@ -1256,17 +1211,6 @@ function geminiToolCalls(geminiCalls){
 		function_call: {
 			name: call.name,
 			args: call.args
-		}
-	}));
-}
-
-function oldGeminiToolCalls(geminiCalls){
-	return geminiCalls.map((call) => ({
-		id: "call_" + (geminiCallCount++),
-		type: "function",
-		function: {
-			name: call.name,
-			arguments: JSON.stringify(call.args)
 		}
 	}));
 }
@@ -2913,66 +2857,6 @@ function listTags(){
 	}
 //	tagList=list;
 }
-async function clipText(text: string): Promise<void> {
-	if (typeof text !== "string") {
-		throw new Error("Input must be a string");
-	}
-	let clipCmd: string;
-	let args: string[] = [];
-	let encodedText: Uint8Array;
-	// Determine the clipboard command and encoding based on the operating system
-	switch (Deno.build.os) {
-		case "darwin":
-			clipCmd = "pbcopy";
-			args = [];
-			encodedText = new TextEncoder().encode(text); // UTF-8 for macOS
-			break;
-		case "windows":
-			clipCmd = "clip";
-			args = [];
-			// Convert to UTF-16LE with BOM for Windows
-			const encoder = new TextEncoder();
-			const textBuffer = encoder.encode(text); // Encode to UTF-8 first
-			const utf16le = new Uint8Array(text.length * 2 + 2); // Allocate for UTF-16LE (2 bytes per char) + BOM
-			utf16le[0] = 0xFF; // BOM: FF FE for UTF-16LE
-			utf16le[1] = 0xFE;
-			// Convert UTF-8 to UTF-16LE
-			let offset = 2;
-			for (let i = 0; i < text.length; i++) {
-				const charCode = text.charCodeAt(i);
-				utf16le[offset++] = charCode & 0xFF;
-				utf16le[offset++] = (charCode >> 8) & 0xFF;
-			}
-			encodedText = utf16le;
-			break;
-//			const utf16le = new Uint8Array(encoder.encode(text).buffer,0,text.length * 2);
-//			encodedText = new Uint8Array([0xFF, 0xFE, ...utf16le]);
-		case "linux":
-			clipCmd = "xclip";
-			args = ["-selection", "clipboard"];
-			encodedText = new TextEncoder().encode(text); // UTF-8 for Linux
-			break;
-		default:
-			throw new Error(`Unsupported platform: ${Deno.build.os}`);
-	}
-	try {
-		const process = Deno.run({cmd: [clipCmd, ...args],stdin: "piped",stdout: "piped",stderr: "piped",});
-		await process.stdin.write(encodedText);
-		process.stdin.close();
-		const status = await process.status();
-		if (!status.success) {
-			const stderr = await process.stderrOutput();
-			const errorText = new TextDecoder().decode(stderr);
-			throw new Error(`Failed to copy to clipboard: ${errorText}`);
-		}
-		process.close();
-	} catch (err) {
-		if (err instanceof Deno.errors.NotFound) {
-			throw new Error(`Clipboard command '${clipCmd}' not found. Ensure it is installed.`);
-		}
-		throw err;
-	}
-}
 
 async function openWithDefaultApp(path:string) {
 	const cmd=Deno.build.os === "windows" ? ["start", "", path] : Deno.build.os === "darwin" ? ["open", path] : ["xdg-open", path];
@@ -3186,7 +3070,6 @@ async function openCommand(words){
 
 // modelCommand - list table of models
 
-const modelKeys="👀🤖👄"+Pail+"🧊❃";
 const modelKey={"👀":"Vision","🤖":"Low Latency","👄":"Speech","🪣":"Tools","🧊":"Frigid","❃":"Active"};
 
 async function modelCommand(words){
@@ -3271,25 +3154,6 @@ async function attachMedia(words){
 	}
 }
 
-const glyphs=" ⛲🪣🐸🪠🐋🐉🌟💫🌏📆💰👀🤖🫦💻👄🔧🧊🔉📷📡🧮📠⛅🧰🌕🌙🏛️🎙️🖼️🗣️🗜️👁𝕏⣯🜁❁❃⚙️✿";
-function testUnicode(){
-	echo("```")
-	echo("|1234|");
-	for(const code of glyphs){
-		if(code==ZeroWidthJoiner) continue;
-		const w=discordStringWidth(code);
-		let padding=(w==1)?"---":(ZeroWidthJoiner+"--");
-/*
-		let padding=" --"+ThinSpace;
-		if(w==2.5) padding="++";	//🪣 Wide
-		if(w==2) padding="**"+ThinSpace;		//🏛️ thick = normal???
-		if(w==1.5) padding="~~~";	//🜁 thin
-*/
-		echo("|"+code+padding+"|");
-	}
-	echo("```")
-}
-
 // can emit [FOUNTAIN] callCommand error
 // TODO: validate docs and link to information
 async function callCommand(command:string) {
@@ -3300,9 +3164,6 @@ async function callCommand(command:string) {
 			case "tex":
 				const tex=words[1];
 				echo(replaceLatex(tex));
-				break;
-			case "spec":
-				parseUnicode();
 				break;
 			case "sys":
 			case "announce":
@@ -4572,10 +4433,6 @@ if(roha.config){
 	roha.config={};
 }
 await flush();
-
-if(roha.config.debugging){
-	parseUnicode();
-}
 
 // signal handlers go here
 

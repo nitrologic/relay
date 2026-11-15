@@ -27,24 +27,6 @@
 		"released": "2026-08-19",
 		"purpose": "frontier Chinese model"
 	},
-	"glm-5.2@zai":{
-		"deprecated":true,
-		"pricing": [1.40, 0.26, 4.40],
-		"released": "2026-06-17",
-		"purpose": "frontier Chinese model"
-	},
-	"glm-5.1@zai":{
-		"deprecated":true,
-		"pricing": [1.40, 0.26, 4.40],
-		"released": "2026-04-08",
-		"purpose": "frontier Chinese model"
-	},
-	"glm-5@zai":{
-		"deprecated":true,
-		"pricing": [1.00, 0.20, 3.20],
-		"released": "2026-02-11",
-		"purpose": "frontier Chinese model"
-	},
 	"kimi-k3.1-pro@moonshot":{
 		"cold":true,
 		"pricing": [2.00,0.20,10.0],
@@ -63,52 +45,6 @@
 		"released": "2026-07-17",
 		"purpose": "flagship model for long-horizon coding and end-to-end knowledge work"
 	},
-	"kimi-k2.7-code-highspeed@moonshot":{
-		"cold":true,
-		"released": "2026-06-14",
-		"pricing": [1.90,0.38,8.0],
-		"purpose": "fast intelligent Coding model"
-	},
-	"kimi-k2.7-code@moonshot":{
-		"cold":true,
-		"released": "2026-06-13",
-		"pricing": [0.95,0.19,4.0],
-		"purpose": "intelligent Coding model"
-	},
-	"kimi-k2.6@moonshot": {
-		"active": true,
-		"cold":true,
-		"released": "2026-04-21",
-		"pricing": [0.95,0.16,4.0],
-		"purpose": "Large scale mixture of Experts model, 256K context window"
-	},
-	"kimi-k2.5@moonshot": {
-		"deprecated":true,
-		"cold":true,
-		"released": "2026-01-26",
-		"pricing": [0.60,0.10,3.0],
-		"purpose": "Large scale mixture of Experts model, 256K context window"
-	},
-	"qwen-turbo-latest@alibaba":{
-		"pricing":[0.05,0.20],
-		"purpose":"fastest cheap general llm, perfect for burner scripts & chat"
-	},
-	"qwen-plus-latest@alibaba":{
-		"pricing":[0.15,0.60],
-		"purpose":"step-up when you need deeper reasoning or long docs"
-	},
-	"qwq-plus@alibaba":{
-		"pricing":[0.30,1.20],
-		"purpose":"math/code reasoning beast, local deepseek-r1 vibe"
-	},
-	"qwen3-coder-30b-a3b-instruct@alibaba":{
-		"pricing":[0.18,0.72],
-		"purpose":"agentic coding with tool calls, good for auto-repo hacks"
-	},
-	"qwen-vl-max-latest@alibaba":{
-		"pricing":[0.32,1.28],
-		"purpose":"vision heavy-hitter, ocr + chart + meme understanding"
-	},
 	"claude-haiku-5-5@anthropic":{
 		"active": true,
 		"cold":true,
@@ -122,7 +58,6 @@
 		"purpose":"frontier model for coding, agentic search, and creative writing"
 	},
 	"claude-opus-5-5@anthropic":{
-		"active": true,
 		"pricing":[4.0,0.20,20.0],
 		"cold":true,
 		"purpose":"frontier model for coding, agentic search, and creative writing",
@@ -133,19 +68,6 @@
 		"cold":true,
 		"purpose":"next generation of intelligence for agents, coding, and the hardest knowledge work",
 		"released":"2026-11-10"
-	},
-	"claude-fable-5-1@anthropic":{
-		"pricing":[10.0,50.0],
-		"cold":true,
-		"purpose":"next generation of intelligence for agents, coding, and the hardest knowledge work"
-	},
-	"claude-haiku-4-5-20251001@anthropic":{
-		"deprecated":true,
-		"cold":true,
-		"lizard":true,
-		"pricing":[0.80,4.0],
-		"purpose":"no thinking no temperature evaluation paused",
-		"reality":"I am nute."
 	},
 	"gpt-6.1-terra@openai":{
 		"pricing":[1.00,0.05,5.0],
@@ -174,213 +96,30 @@
 		"cold":true,
 		"released": "2026-09-23"
 	},
-	"gpt-5.6-luna@openai":{
-		"deprecated":true,
-		"pricing":[1.00,0.10,6.0],
-		"cold":true,
-		"released": "2026-07-11"
-	},
-	"gpt-5.6-terra@openai":{
-		"deprecated":true,
-		"pricing":[2.50,0.25,15.0],
-		"cold":true,
-		"released": "2026-07-11"
-	},
-	"gpt-5.6-sol@openai":{
-		"deprecated":true,
-		"pricing":[5.00,0.50,30.0],
-		"cold":true,
-		"released": "2026-07-11"
-	},
-	"gpt-5.5-2026-04-23@openai":{
-		"deprecated":true,
-		"pricing":[5.00,0.50,30.0],
-		"cold":true,
-		"released": "2026-04-23",
-		"purpose":"gpt-5.5"
-	},
-	"gpt-5.5-pro-2026-04-23@openai":{
-		"deprecated":true,
-		"pricing":[30.00,180.0],
-		"cold":true,
-		"released": "2026-04-23",
-		"endpoints":["v1/responses"],
-		"purpose":"gpt-5.5 pro"
-	},
-	"gpt-5.4-mini-2026-03-17@openai":{
-		"deprecated":true,
-		"pricing":[0.75,0.075,4.50],
-		"purpose":"gpt-5 mini"
-	},
-	"gpt-5.4-nano-2026-03-17@openai":{
-		"deprecated":true,
-		"pricing":[0.20,0.02,1.25],
-		"purpose":"nano nano 5 - faster than a fast thing",
-		"press":"supporting up to ? million tokens of context"
-	},
-	"gpt-5.4-2026-03-05@openai":{
-		"deprecated":true,
-		"released": "2026-03-6",
-		"pricing":[2.50,0.50,15.00],
-		"purpose":"frontier model for complex professional work"
-	},
-	"gpt-5.4-pro-2026-03-05@openai":{
-		"deprecated":true,
-		"released": "2026-03-6",
-		"pricing":[30.0,180.00],
-		"purpose":"frontier model designed to tackle tough problems"
-	},
-	"gpt-5.3-codex@openai":{
-		"deprecated":true,
-		"released": "2026-03-6",
-		"pricing":[1.75,14.00],
-		"endpoints":["v1/responses"],
-		"purpose":"High Cybersecurity Capability"
-	},
-	"gpt-realtime-2025-08-28@openai": {
-		"deprecated":true,
-		"robot":true,
-		"multi":true,
-		"released": "2025-08-28",
-		"pricing":[32,64],
-		"purpose":"speech-to-speech voice agents",
-		"endpoints":["wss://api.openai.com/v1/realtime"]
+	"models/gemini-4-hydrogen@google":{
+		"active": true,
+		"pricing":[1.5,0.075,7.5],
+		"purpose":"speed and efficiency for everyday coding and agentic workflows",
+		"released":"2026-11-13"
 	},
 	"models/gemini-4-carbon@google":{
 		"pricing":[2,0.20,10],
 		"purpose":"long-horizon agentic work: complex coding and debugging, cybersecurity, scientific research",
-		"released":"2026-10-14"
+		"released":"2026-11-12"
 	},
 	"models/gemini-4-argon@google":{
-		"active": true,
 		"pricing":[2,0.20,10],
 		"released":"2026-10-14"
 	},
-	"models/gemini-3.8-flash@google":{
-		"active": true,
-		"pricing":[0.75,0.075,3.75],
-		"released":"2026-08-14"
-	},
-	"models/gemini-3.7-flash@google":{
-		"deprecated":true,
-		"pricing":[0.75,0.075,3.75],
-		"released":"2026-09-3"
-	},
-	"models/gemini-omni-1.1-flash@google":{
-		"comment":"This model only supports Interactions API.",
-		"released":"2026-09-1"
-	},
-	"models/gemini-3.1-flash-live-preview@google":{
-		"pricing":[0.75,4.5],
-		"comment":"Gemini Live API required",
-		"released":"2026-09-1"
-	},
-	"models/gemini-robotics-er-2@google":{
-		"active": true,
-		"pricing":[2.0,10.0],
-		"released":"2026-07-31"
-	},
-	"models/gemini-3.5-flash-lite@google":{
-		"pricing":[0.30,0.03,2.50],
-		"released":"2026-07-22"
-	},
-	"models/gemini-3.6-flash@google":{
-		"deprecated":true,
-		"pricing":[0.75,0.075,3.75],
-		"released":"2026-07-22"
-	},
-	"models/gemini-3-pro-image@google":{},
-	"models/gemini-3.1-flash-image@google":{},
-	"models/gemini-robotics-er-1.6-preview@google":{
-		"deprecated":true,
-		"pricing":[1.00,5.00],
-		"released":"2026-04-15"
-	},
-	"models/gemini-3.1-pro-preview@google":{
-		"pricing":[2.00,0.20,12.0],
-		"released":"2026-03-19"
-	},
-	"models/gemini-3.1-flash-lite-preview@google":{
-		"deprecated":true,
-		"pricing":[0.25,0.05,1.50],
-		"released":"2026-03-3"
-	},
-	"models/gemini-3.5-flash@google":{
-		"deprecated":true,
-		"pricing":[1.50,0.15,9.00],
-		"released":"2026-05-19"
-	},
-	"models/gemma-4-26b-a4b-it@google":{
-		"pricing":[0.15,0.60],
-		"released":"2026-04-02"
-	},
-	"models/gemma-4-31b-it@google":{
-		"pricing":[0.12,0.35],
-		"released":"2026-04-02"
-	},	
 	"grok-4.7@xai":{
 		"active": true,
 		"pricing": [2.0, 6.0],
 		"released":"2026-09-21"
 	},
-	"grok-4.6@xai":{
-		"deprecated":true,
-		"pricing": [2.0, 6.0],
-		"released":"2026-08-13"
-	},
-	"grok-4.5@xai":{
-		"deprecated":true,
-		"pricing": [2.0, 6.0],
-		"released":"2026-07-08"
-	},
-	"grok-imagine-image-quality@xai":{
-		"pricing": [2.0, 6.0]
-	},
 	"grok-build-0.1@xai":{
-		"active": true,
 		"pricing": [1.0, 0.20, 2.0],
 		"released": "2026-05-26",
 		"purpose":"Agentic coding model optimized for long-context terminal automation and developer tool integrations."
-	},
-	"grok-4.3@xai":{
-		"deprecated":true,
-		"pricing": [1.25, 0.20, 2.5],
-		"released": "2026-05-1",
-		"purpose":"Reasoning model with 1M context window."
-	},
-	"grok-4.20-0309-reasoning@xai":{
-		"deprecated":true,
-		"pricing": [2.0, 0.20, 6.0],
-		"released": "2026-03-12",
-		"purpose":"Reasoning model with 2M context window."
-	},
-	"grok-4.20-0309-non-reasoning@xai":{
-		"deprecated":true,
-		"pricing": [2.0, 0.20, 6.0],
-		"released": "2026-03-12",
-		"purpose":"2M context window."
-	},
-	"grok-4-1-fast-non-reasoning@xai":{
-		"deprecated":true,
-		"pricing": [0.20, 0.05, 0.50],
-		"released": "2025-11-17",
-		"purpose":"2M context window."
-	},
-	"grok-4-1-fast-reasoning@xai":{
-		"deprecated":true,
-		"pricing": [0.20, 0.05, 0.50],
-		"released": "2025-11-17",
-		"purpose":"2M context window."
-	},
-	"command-r-08-2024@cohere":{
-		"pricing": [0.15,0.60],
-		"released": "2024-08-30",
-		"purpose":"High-efficiency, enterprise-ready model."
-	},
-	"mistral-medium@mistral":{
-		"pricing": [2.75,8.10],
-		"released": "2025-05-7",
-		"purpose":"Efficient, enterprise-focused frontier model."
 	},
 	"gemma4:latest@ollama":{
 		"pricing": [0,0],
