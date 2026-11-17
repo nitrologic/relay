@@ -32,7 +32,15 @@
 		"url": "https://api.xiaomimimo.com/v1",
 		"platform":"https://mimo.mi.com/",
 		"api": "OpenAI",
-		"locale": "en-US"
+		"locale": "zh-CN"
+	},
+	"alibaba": {
+		"emoji": "𝓪",
+		"env": "ALIBABA_API_KEY",
+		"url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
+		"platform": "https://bailian.console.alibabacloud.com/",
+		"api": "OpenAI",
+		"locale": "zh-CN"
 	},
 	"anthropic": {
 		"emoji": "A\\",

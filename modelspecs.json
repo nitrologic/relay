@@ -69,6 +69,16 @@
 		"purpose":"next generation of intelligence for agents, coding, and the hardest knowledge work",
 		"released":"2026-11-10"
 	},
+	"gpt-6.2-astra@openai":{
+		"pricing":[20.00,2.00,75.0],
+		"cold":true,
+		"released": "2026-11-18"
+	},
+	"gpt-6.2-sol@openai":{
+		"pricing":[4.00,0.40,15.0],
+		"cold":true,
+		"released": "2026-11-18"	
+	},
 	"gpt-6.1-terra@openai":{
 		"pricing":[1.00,0.05,5.0],
 		"cold":true,

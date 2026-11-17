@@ -1,3 +1,13 @@
+	"alibaba": {
+		"emoji": "𝓪",
+		"env": "ALIBABA_API_KEY",
+		"url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
+		"platform": "https://bailian.console.alibabacloud.com/",
+		"api": "OpenAI",
+		"locale": "zh-CN"
+	},
+
+
 // deprecated 2026.5.14
 // never read - work in progress
 // let tagList=[];
