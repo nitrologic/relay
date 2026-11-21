@@ -173,5 +173,8 @@
 	},
 	"qwen4-max@alibaba":{
 		"pricing":[1.5,4.5]
+	},
+	"mindlab/macaron-v1.1-venti-pro@alibaba":{
+		"pricing":[2,10]
 	}
 }
