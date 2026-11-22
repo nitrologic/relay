@@ -7,7 +7,7 @@
 // Testing with Deno 2.9.3 V8  14.9.207.2-rusty, TypeScript 6.0.3
 
 const brandFountain="nitrologic Relay";
-const relayVersion="2.0.7";
+const relayVersion="2.0.8";
 const fountainName=brandFountain+" "+relayVersion;
 
 // system prompt
@@ -36,6 +36,8 @@ import { decodeBase64, encodeBase64 } from "https://deno.land/std/encoding/base6
 import { expandGlob } from "https://deno.land/std/fs/mod.ts";
 import { resolve,basename } from "https://deno.land/std/path/mod.ts";
 import { dirname } from "node:path";
+
+import { latexToUnicode } from "npm:@devhub-io/latex-to-unicode";
 
 function shareName(path:string):string {
 //	console.log("shareName:",path);
@@ -109,6 +111,7 @@ type ConfigFlags = {
 	listen: boolean;
 	thinking: boolean;
 	underline: boolean;
+	latex: boolean;
 	persona: string;
 };
 
@@ -317,6 +320,7 @@ const flagNames={
 	listen : "listen for remote connections on port 8081",
 	thinking : "enable thinking mode with dual purpose models",
 	underline : "enable underline markdown support",
+	latex : "enable parsing of latex math symbols",
 	persona : "extend system prompt"
 };
 
@@ -342,7 +346,8 @@ const emptyConfig:ConfigFlags={
 	syncRelay:true,
 	listen:false,
 	thinking:true,
-	underline:false
+	underline:false,
+	latex:true
 };
 
 interface Share{
@@ -2402,6 +2407,10 @@ function mdToAnsi(md) {
 					const ink=Deno.noColor?"":ANSI.COLOR[(colorCycle++)&7];
 					line=ink + line + ANSI.RESET;	//ansiPop
 				}
+				// latex
+				if(roha.config.latex){
+					line=latexToUnicode(line);
+				}
 				// quotes
 				if (line.startsWith("> ")) {
 					line=quoteString(line.substring(2));
@@ -2420,6 +2429,7 @@ function mdToAnsi(md) {
 				if(roha.config.underline){
 					line=line.replace(/_(.*?)_/g, "\x1b[3m$1\x1b[0m");
 				}
+
 				line=replaceLatex(line);
 				// wordwrap
 				line=wordWrap(line,terminalColumns);
