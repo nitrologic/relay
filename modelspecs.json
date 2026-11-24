@@ -39,11 +39,11 @@
 		"released": "2026-10-24",
 		"purpose":"1M-token context, 2.8T total / 104B active params (MoE), Multimodal."
 	},
-	"kimi-k3@moonshot":{
+	"kimi-k2.7-code@moonshot":{
 		"cold":true,
-		"pricing": [3.00,0.30,15.0],
-		"released": "2026-07-17",
-		"purpose": "flagship model for long-horizon coding and end-to-end knowledge work"
+		"released": "2026-06-13",
+		"pricing": [0.95,0.19,4.0],
+		"purpose": "intelligent Coding model"
 	},
 	"claude-haiku-5-5@anthropic":{
 		"active": true,
@@ -84,27 +84,18 @@
 		"cold":true,
 		"released": "2026-10-10"
 	},
-	"gpt-6.1-sol@openai":{
-		"pricing":[4.00,0.40,15.0],
-		"cold":true,
-		"released": "2026-09-23"
-	},
 	"gpt-6-luna@openai":{
 		"active": true,
 		"pricing":[0.10,0.01,0.50],
 		"cold":true,
 		"released": "2026-09-23"
 	},
-	"gpt-6-astra@openai":{
-		"pricing":[20.00,2.00,75.0],
-		"cold":true,
-		"released": "2026-09-05"
-	},
-	"gpt-6-sol@openai":{
+	"gpt-5.3-codex@openai":{
 		"deprecated":true,
-		"pricing":[4.00,0.40,15.0],
-		"cold":true,
-		"released": "2026-09-23"
+		"released": "2026-03-6",
+		"pricing":[1.75,14.00],
+		"endpoints":["v1/responses"],
+		"purpose":"High Cybersecurity Capability"
 	},
 	"models/gemini-4-neon@google":{
 		"active": true,
