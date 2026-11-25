@@ -1816,6 +1816,7 @@ function mutName(modelname:string):string{
 	const path=modelAccount[0];
 	const names=path.split("/");
 	let name:string=names.pop()||"";
+	name=name.replace("-healthcare","⚕️");
 	name=name.replace("-R1-Distill-","-");
 	name=name.replace("Meta-Llama-","Llama");
 	name=name.replace("-experimental","#");
@@ -3072,6 +3073,11 @@ async function openCommand(words){
 
 const modelKey={"👀":"Vision","🤖":"Low Latency","👄":"Speech","🪣":"Tools","🧊":"Frigid","❃":"Active"};
 
+function recent(date:Date) {
+  const twoWeeks = 14 * 24 * 60 * 60 * 1000;
+  return Date.now() - new Date(date).getTime() < twoWeeks;
+}
+
 async function modelCommand(words){
 	let name=words[1];
 	if(name && name==="next"){
@@ -3112,6 +3118,8 @@ async function modelCommand(words){
 //			if(info.inline) notes.push("📘");
 			const seconds=mutspec.created;
 			const created=dateStamp(seconds);
+			const date=new Date(info.released||"2025-4-12")
+			const isNew=recent(date)?"✧":"";
 			const priced=info.pricing;
 			const deprecated:boolean=info.deprecated;
 			// account from modelProvder
@@ -3127,7 +3135,7 @@ async function modelCommand(words){
 			if(cheap || all || audible || isMut){
 				const pricing=(info&&info.pricing)?stringifyArray(info.pricing):"";
 //				echo_row(i,attr,mut,provider,mutspec.relays|0,created,pricing,notes.join(" "));
-				echo_row(i,attr,mut,provider,mutspec.relays|0,pricing);
+				echo_row(i,attr,mut+isNew,provider,mutspec.relays|0,pricing);
 			}
 		}
 		listCommand="model";

@@ -263,12 +263,13 @@ const WideRanges=[
 ];
 const isWide=(cp: number) => WideRanges.some(([start, end]) => cp >= start && cp <= end);
 
-//🌏 1f30f
+//🌏 1f30f ⚕️2695
 
 const isDoubleWidth = (() => {
 	const ranges = [
 		[0x1100, 0x115F],
 		[0x2329, 0x232A],
+		[0x2695, 0x2696],	//charcode for ⚕️
 		[0x26a1, 0x26a2],	//charcode for ⚡️
 		[0x2E80, 0x303E],
 		[0x3040, 0xA4CF],
