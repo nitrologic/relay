@@ -1,3 +1,46 @@
+//import { latexToUnicode } from "npm:@devhub-io/latex-to-unicode";
+//import { convertLaTeXToUnicode } from "npm:latex-to-unicode-converter";
+import unicodeit from "npm:unicodeit";
+	latex: boolean;
+	latex : "enable parsing of latex math symbols",
+	latex:true
+// warning - do not call echo from here
+// kimi-k2 tiny tex→unicode mapper (extend as needed)
+// work in progress latex $\mu$ support
+function texToUnicode(tex: string): string {
+	return tex
+		// Greek
+		.replace(/\\alpha/g,'α').replace(/\\beta/g,'β').replace(/\\gamma/g,'γ')
+		.replace(/\\delta/g,'δ').replace(/\\theta/g,'θ').replace(/\\mu/g,'μ')
+		.replace(/\\pi/g,'π').replace(/\\sigma/g,'σ').replace(/\\omega/g,'ω')
+		// Math
+		.replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '$1⁄$2')
+		.replace(/\\sqrt\{([^}]+)\}/g, '√$1')
+		.replace(/\\sqrt/g,'√')
+		.replace(/\\cdot/g,'·').replace(/\\times/g,'×')
+		.replace(/\\leq/g,'≤').replace(/\\geq/g,'≥')
+		// Superscripts (simple single digit)
+		.replace(/\^([0-9])/g, (m, d) => "⁰¹²³⁴⁵⁶⁷⁸⁹"[d])
+		// Cleanup braces
+		.replace(/\{|\}/g, '');
+}
+
+function replaceLatex(line: string): string {
+	return line.replace(/(\$\$?)((\\.|[^$])+?)\1/g, (_, delim, tex) => texToUnicode(tex));
+}
+				// latex
+				if(roha.config.latex){
+//					line=latexToUnicode(line);
+					const normalized = line.replace(/\\dots[a-z]?\b/g, "\\ldots");
+//					line=unicodeit.replace(normalized);
+				}
+				line=replaceLatex(line);
+			case "tex":
+				const tex=words[1];
+				echo(replaceLatex(tex));
+				break;
+
+
 qwen3.5-livetranslate-flash-realtime │
 qwen3.5-livetranslate-flash-realtime
 qwen3.5-omni-flash

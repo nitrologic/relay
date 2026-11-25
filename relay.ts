@@ -19,6 +19,7 @@ const rohaMihi="Welcome to the nitrologic model research institute.";
 
 const rohaGuide=[
 	"As one of many models under test please be mindful of others, courteous and professional.",
+	"Prefer Unicode over LaTeX math characters.",
 	"Only post code on request and do not patronise.",
 	"Use tabs when indenting source files.",
 	"Prefer named reusable functions over inlining code with arrow and map style suggestions."
@@ -36,8 +37,6 @@ import { decodeBase64, encodeBase64 } from "https://deno.land/std/encoding/base6
 import { expandGlob } from "https://deno.land/std/fs/mod.ts";
 import { resolve,basename } from "https://deno.land/std/path/mod.ts";
 import { dirname } from "node:path";
-
-import { latexToUnicode } from "npm:@devhub-io/latex-to-unicode";
 
 function shareName(path:string):string {
 //	console.log("shareName:",path);
@@ -111,7 +110,6 @@ type ConfigFlags = {
 	listen: boolean;
 	thinking: boolean;
 	underline: boolean;
-	latex: boolean;
 	persona: string;
 };
 
@@ -320,7 +318,6 @@ const flagNames={
 	listen : "listen for remote connections on port 8081",
 	thinking : "enable thinking mode with dual purpose models",
 	underline : "enable underline markdown support",
-	latex : "enable parsing of latex math symbols",
 	persona : "extend system prompt"
 };
 
@@ -346,8 +343,7 @@ const emptyConfig:ConfigFlags={
 	syncRelay:true,
 	listen:false,
 	thinking:true,
-	underline:false,
-	latex:true
+	underline:false
 };
 
 interface Share{
@@ -2329,33 +2325,6 @@ function insertTable(result:string[],table:string[][],addFence:boolean,discord:b
 const rohaPrompt=">";
 let colorCycle=0;
 
-// warning - do not call echo from here
-// work in progress latex $\mu$ support
-
-// kimi-k2 tiny tex→unicode mapper (extend as needed)
-
-function texToUnicode(tex: string): string {
-	return tex
-		// Greek
-		.replace(/\\alpha/g,'α').replace(/\\beta/g,'β').replace(/\\gamma/g,'γ')
-		.replace(/\\delta/g,'δ').replace(/\\theta/g,'θ').replace(/\\mu/g,'μ')
-		.replace(/\\pi/g,'π').replace(/\\sigma/g,'σ').replace(/\\omega/g,'ω')
-		// Math
-		.replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '$1⁄$2')
-		.replace(/\\sqrt\{([^}]+)\}/g, '√$1')
-		.replace(/\\sqrt/g,'√')
-		.replace(/\\cdot/g,'·').replace(/\\times/g,'×')
-		.replace(/\\leq/g,'≤').replace(/\\geq/g,'≥')
-		// Superscripts (simple single digit)
-		.replace(/\^([0-9])/g, (m, d) => "⁰¹²³⁴⁵⁶⁷⁸⁹"[d])
-		// Cleanup braces
-		.replace(/\{|\}/g, '');
-}
-
-function replaceLatex(line: string): string {
-	return line.replace(/(\$\$?)((\\.|[^$])+?)\1/g, (_, delim, tex) => texToUnicode(tex));
-}
-
 function mdToAnsi(md) {
 	const broken=roha.config.broken;
 	const lines=md.split("\n");
@@ -2407,10 +2376,6 @@ function mdToAnsi(md) {
 					const ink=Deno.noColor?"":ANSI.COLOR[(colorCycle++)&7];
 					line=ink + line + ANSI.RESET;	//ansiPop
 				}
-				// latex
-				if(roha.config.latex){
-					line=latexToUnicode(line);
-				}
 				// quotes
 				if (line.startsWith("> ")) {
 					line=quoteString(line.substring(2));
@@ -2429,8 +2394,6 @@ function mdToAnsi(md) {
 				if(roha.config.underline){
 					line=line.replace(/_(.*?)_/g, "\x1b[3m$1\x1b[0m");
 				}
-
-				line=replaceLatex(line);
 				// wordwrap
 				line=wordWrap(line,terminalColumns);
 			}
@@ -3171,10 +3134,6 @@ async function callCommand(command:string) {
 	let words=command.split(" ");
 	try {``
 		switch (words[0]) {
-			case "tex":
-				const tex=words[1];
-				echo(replaceLatex(tex));
-				break;
 			case "sys":
 			case "announce":
 				announceCommand(words);
