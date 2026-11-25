@@ -4,10 +4,10 @@
 
 // ⛯⛲🪣🐸🪠🐋🜁🐉🏛️❁𝕏🌟💫🌏📆💰👀🤖🫦💻👄🔧🧊❃🎙️🔉📷🖼️🗣️📡👁🧮📠⣯⛅⚙️🗜️🧰 🌕🌙✿
 
-// Testing with Deno 2.9.3 V8  14.9.207.2-rusty, TypeScript 6.0.3
+// Testing with Deno 2.9.8  V8 15.0.245.2-rusty, TypeScript 6.0.3
 
 const brandFountain="nitrologic Relay";
-const relayVersion="2.0.8";
+const relayVersion="2.0.9";
 const fountainName=brandFountain+" "+relayVersion;
 
 // system prompt
