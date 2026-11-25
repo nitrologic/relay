@@ -4,10 +4,10 @@
 
 // ⛯⛲🪣🐸🪠🐋🜁🐉🏛️❁𝕏🌟💫🌏📆💰👀🤖🫦💻👄🔧🧊❃🎙️🔉📷🖼️🗣️📡👁🧮📠⣯⛅⚙️🗜️🧰 🌕🌙✿
 
-// Testing with Deno 2.9.3 V8  14.9.207.2-rusty, TypeScript 6.0.3
+// Testing with Deno 2.9.8  V8 15.0.245.2-rusty, TypeScript 6.0.3
 
 const brandFountain="nitrologic Relay";
-const relayVersion="2.0.7";
+const relayVersion="2.0.9";
 const fountainName=brandFountain+" "+relayVersion;
 
 // system prompt
@@ -19,6 +19,7 @@ const rohaMihi="Welcome to the nitrologic model research institute.";
 
 const rohaGuide=[
 	"As one of many models under test please be mindful of others, courteous and professional.",
+	"Prefer Unicode over LaTeX math characters.",
 	"Only post code on request and do not patronise.",
 	"Use tabs when indenting source files.",
 	"Prefer named reusable functions over inlining code with arrow and map style suggestions."
@@ -2325,33 +2326,6 @@ function insertTable(result:string[],table:string[][],addFence:boolean,discord:b
 const rohaPrompt=">";
 let colorCycle=0;
 
-// warning - do not call echo from here
-// work in progress latex $\mu$ support
-
-// kimi-k2 tiny tex→unicode mapper (extend as needed)
-
-function texToUnicode(tex: string): string {
-	return tex
-		// Greek
-		.replace(/\\alpha/g,'α').replace(/\\beta/g,'β').replace(/\\gamma/g,'γ')
-		.replace(/\\delta/g,'δ').replace(/\\theta/g,'θ').replace(/\\mu/g,'μ')
-		.replace(/\\pi/g,'π').replace(/\\sigma/g,'σ').replace(/\\omega/g,'ω')
-		// Math
-		.replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '$1⁄$2')
-		.replace(/\\sqrt\{([^}]+)\}/g, '√$1')
-		.replace(/\\sqrt/g,'√')
-		.replace(/\\cdot/g,'·').replace(/\\times/g,'×')
-		.replace(/\\leq/g,'≤').replace(/\\geq/g,'≥')
-		// Superscripts (simple single digit)
-		.replace(/\^([0-9])/g, (m, d) => "⁰¹²³⁴⁵⁶⁷⁸⁹"[d])
-		// Cleanup braces
-		.replace(/\{|\}/g, '');
-}
-
-function replaceLatex(line: string): string {
-	return line.replace(/(\$\$?)((\\.|[^$])+?)\1/g, (_, delim, tex) => texToUnicode(tex));
-}
-
 function mdToAnsi(md) {
 	const broken=roha.config.broken;
 	const lines=md.split("\n");
@@ -2421,7 +2395,6 @@ function mdToAnsi(md) {
 				if(roha.config.underline){
 					line=line.replace(/_(.*?)_/g, "\x1b[3m$1\x1b[0m");
 				}
-				line=replaceLatex(line);
 				// wordwrap
 				line=wordWrap(line,terminalColumns);
 			}
@@ -3169,10 +3142,6 @@ async function callCommand(command:string) {
 	let words=command.split(" ");
 	try {``
 		switch (words[0]) {
-			case "tex":
-				const tex=words[1];
-				echo(replaceLatex(tex));
-				break;
 			case "sys":
 			case "announce":
 				announceCommand(words);
